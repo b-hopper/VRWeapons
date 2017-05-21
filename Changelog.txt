@@ -1,0 +1,64 @@
+------------------------------------------------
+v1.25
+------------------------------------------------
+	Added Ejector randomness sliders, to add some variety to how shells are ejected. Find the new sliders in the Manual Slide Manipulation window!
+	Weapons now have the option to kick back, as well as simply rotational. Additionally, weapons held in 2 hands will now kick, but significantly less than 1-handed.
+	Added a new ImpactProfileOverride script that can be attached to a GameObject with a collider (but no mesh) to instruct it on what impact it should use, instead of the default.
+	Fixed an issue where, if a weapon is held in 2 hands and the main hand is released, the weapon flies off.
+	Guns with infinite ammo should now eject rounds properly.
+	
+------------------------------------------------
+v1.24
+------------------------------------------------
+	Hey guys! Some good stuff with this update - added 5 sample weapons! These were commissioned from Bluesu, he has quite a few nice low-poly weapons packs. Find him here:
+	https://www.assetstore.unity3d.com/en/#!/search/page=1/sortby=popularity/query=publisher:11491
+	I asked him specifically to make certain types of weapons, each of them showing different features found in VRW. Feel free to use them, or just look into their building options 
+		to build similar weapons of your own.
+	Other than that - This update was focused on bug fixes. Not a whole lot new, this time. 
+
+------------------------------------------------
+v1.23
+------------------------------------------------
+	So I accidentally broke some people's projects once I moved to the SteamVR Interaction System, and now I'm here to fix it. VRTK mode now works. If you are using the [CameraRig] 
+		prefab, make sure you hit the "VRTK Mode" toggle in VRWControl. This update is mainly focused on fixing VRTK issues.
+
+	- Added a line renderer for bullet shots, found on the Weapon inspector when "Bullet", "Auto Fire" or "Burst Fire" firemodes are selected.
+	
+	As usual, if there are any issues with the new VRTK implementation please let me know so I can get it fixed. I have checked for bugs as well as I can, but I rely on your bug 
+		reports to track down the issues I'm not able to find. Email me here: slayd7@gmail.com 
+
+------------------------------------------------
+v1.22
+------------------------------------------------
+	Figured I'd start a changelog! I really should have done this a long time ago. 1.22 brings a lot of changes, some of which may break some projects. If there are any problems,
+		or you just want to go back to 1.21, send me an email at Slayd7@gmail.com, and I'll send you 1.21. I understand not everyone will want to upgrade to 1.22; however, I believe
+		it's worth it to move up. So, on to the changes:
+
+	- VRW now uses the Steam Interaction System. I felt that my interaction system wasn't reliable enough, so the entire pack has been converted over. What this means to you: 
+		If you have a [CameraRig] prefab in your scene, you'll need to change it out to a Player prefab, found in the latest SteamVR pack at SteamVR->InteractionSystem->Core->Prefabs.
+		My viveCharControl.cs script is no longer used as a result, and InitializeControllers.cs has been changed to VRWControl.cs. 
+
+	- Guns built with earlier versions of VRWeapons will need to be rebuilt, because of the following changes:
+	
+	- Weapon kick has been changed, now uses physics instead of lerping movement. This should fix the strange behavior caused whe moving weapons quickly, feels more realistic, and has 
+		the added bonus of 1-handed shooting having significantly more kick than 2-handed shooting.
+
+	- Manual slide manipulation has been completely overhauled. It now uses the SteamVR Interaction System's Linear Drive to drive bolt movement. By the time this update is pushed to the 
+		store, there will be a video up on my channel explaining how to set up bolt manipulation. It now includes the ability to rotate bolts before pulling them out, specifically to use 
+		for weapons like bolt-action rifles. In addition, you can set the bolt movement to be separate from the charging handle, inspired by the functionality of AR15 charging handles. In 
+		addition, you can now see if a weapon is loaded with the "Bullet shell" and "Unspent round" options in the builder. Again, this will be explained in the video, my channel is found 
+		here: https://www.youtube.com/channel/UChC2f8-8uX5E0BBYBrLP3Gw
+
+	- Shell and unspent round ejection has been moved to the slide manipulation window, in order to correctly set where rounds sit on the bolt face.
+
+	- There is a new VRWAttachment script for weapon attachments, which is a barebones event system set up so you can use your own scripts. I am including a couple examples, a flashlight, 
+		which you can turn on and off by putting a hand over the attachment and pulling the trigger, and a scope with an adjustable zoom, operated in the same way. There is a "push and hold" 
+		functionality that you can implement your own function with as well, giving the option to have 2 functions on one attachment.
+
+	- A new button, "Add VRWInteractableWeapon Script," has been added. I put this in because it's now possible to use a weapon as an attachment for another weapon, inspired by the M203 
+		underbarrel grenade launcher. If the weapon you are building is NOT an attachment weapon, push that button to make it a standalone weapon.
+
+	- Automatic projectile fire mode has been added. Behaves just like automatic fire, but fires projectiles instead of raycast bullets.
+
+	- For now, in VRWControl the "Allow swapping hands" button and the 'Grab on Start" options have been disabled. I'm having some issues implementing these with the new interaction system, 
+		but expect a fix in a future update.

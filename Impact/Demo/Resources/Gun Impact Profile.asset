@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79956ec2955e74103a684fd53a698027, type: 3}
+  m_Name: Gun Impact Profile
+  m_EditorClassIdentifier: 
+  defaultImpact:
+    impactType: 0
+    material: {fileID: 0}
+    texture: {fileID: 0}
+    impactPrefabs:
+    - {fileID: 1000010844279614, guid: 29a8094f6c9b4456ca6f9bd53cd49e53, type: 2}
+  impacts:
+  - impactType: 0
+    material: {fileID: 2100000, guid: a7064236f4c5746fdb938d471212d7db, type: 2}
+    texture: {fileID: 0}
+    impactPrefabs:
+    - {fileID: 1000010844279614, guid: 2a625397122364772b190d9e95d15b0b, type: 2}
+  - impactType: 0
+    material: {fileID: 2100000, guid: c3f3610a3ee7d49d1aadf20dc6309c53, type: 2}
+    texture: {fileID: 0}
+    impactPrefabs:
+    - {fileID: 1000010844279614, guid: 9f9d27234e5b54d3a8fa8974948cd2ce, type: 2}
+  - impactType: 0
+    material: {fileID: 2100000, guid: 08a39f9edf3a143ad817dac5f11b0079, type: 2}
+    texture: {fileID: 0}
+    impactPrefabs:
+    - {fileID: 1000010844279614, guid: e13b128198b49474b9fb8396f7672779, type: 2}
+  - impactType: 1
+    material: {fileID: 0}
+    texture: {fileID: 2800000, guid: a27ebb60ed0d84cdcac6b9f836bfe27d, type: 3}
+    impactPrefabs:
+    - {fileID: 1000010844279614, guid: 2a625397122364772b190d9e95d15b0b, type: 2}
+  - impactType: 1
+    material: {fileID: 0}
+    texture: {fileID: 2800000, guid: 0958fe9c844414aa6859e8a09c11ee23, type: 3}
+    impactPrefabs:
+    - {fileID: 1000010844279614, guid: 9f9d27234e5b54d3a8fa8974948cd2ce, type: 2}
+  - impactType: 1
+    material: {fileID: 0}
+    texture: {fileID: 2800000, guid: d0578a78540c24e02a9c1713829937db, type: 3}
+    impactPrefabs:
+    - {fileID: 1000010844279614, guid: e13b128198b49474b9fb8396f7672779, type: 2}
