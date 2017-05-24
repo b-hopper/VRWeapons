@@ -18,7 +18,7 @@ public class VRWControl : MonoBehaviour
     [Header("Which hand starts with weapon?")]
     [Range(0,1)]
     public int WeaponHand;*/
-    Weapon[] WeaponsInScene;
+    VRTK.Weapon[] WeaponsInScene;
     magazine[] MagsInScene;
     public float throwForce = 1;
     //public float debugTimeScale = 1;
@@ -30,7 +30,7 @@ public class VRWControl : MonoBehaviour
 
     struct wpnInfo
     {
-        public Weapon HeldWeapon;
+        public VRTK.Weapon HeldWeapon;
         public magazine HeldWeaponMagazine;
         public SteamVR_TrackedObject ActiveController;
     }
@@ -159,7 +159,7 @@ public class VRWControl : MonoBehaviour
                 obj.gameObject.layer = LayerMask.NameToLayer("VRWControllers");
                 if (obj.GetComponent<Collider>() == null)
                 {
-                    Debug.LogError("No collider found on controller " + obj);
+                    //Debug.LogError("No collider found on controller " + obj);
                 }
                 if (obj.GetComponent<Collider>() != null && !obj.GetComponent<Collider>().isTrigger)
                 {
@@ -203,7 +203,7 @@ public class VRWControl : MonoBehaviour
         yield break;
     }*/
     
-    public void SetHeldWeapon(Weapon wpn, magazine mag, SteamVR_TrackedObject cntrl)
+    public void SetHeldWeapon(VRTK.Weapon wpn, magazine mag, SteamVR_TrackedObject cntrl)
     {
         for (int i = 0; i < 2; i++)
         {
@@ -215,7 +215,7 @@ public class VRWControl : MonoBehaviour
         }
     }
 
-    public Weapon GetHeldWeapon(SteamVR_TrackedObject cntrl)
+    public VRTK.Weapon GetHeldWeapon(SteamVR_TrackedObject cntrl)
     {
         for (int i = 0; i < 2; i++)
         {

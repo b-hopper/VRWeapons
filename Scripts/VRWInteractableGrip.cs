@@ -8,7 +8,7 @@ using Valve.VR.InteractionSystem;
 public class VRWInteractableGrip : MonoBehaviour
 {
     ConfigurableJoint handJoint, weapJoint;
-    Weapon thisWeap;
+    VRTK.Weapon thisWeap;
     Valve.VR.EVRButtonId grabButton;
     bool mustHoldDownGrip, gripped, isActive;
     Hand grippingHand;
@@ -25,7 +25,7 @@ public class VRWInteractableGrip : MonoBehaviour
     void Awake()
     {
         isActive = true;
-        thisWeap = GetComponentInParent<Weapon>();
+        thisWeap = GetComponentInParent<VRTK.Weapon>();
         weapJoint = thisWeap.GetComponent<ConfigurableJoint>();
         control = FindObjectOfType<VRWControl>();
         thisCollider = GetComponent<Collider>();

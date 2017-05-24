@@ -5,7 +5,7 @@ using Valve.VR.InteractionSystem;
 
 public class Flashlight : MonoBehaviour {
     
-    Weapon parentWeapon;
+    VRTK.Weapon parentWeapon;
     public GameObject light;
     VRWControl control;
     Hand currentHand;

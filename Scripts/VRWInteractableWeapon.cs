@@ -11,7 +11,7 @@ public class VRWInteractableWeapon : MonoBehaviour
     private Vector3 oldPosition;
     private Quaternion oldRotation;
     public ConfigurableJoint handJoint, thisJoint;
-    Weapon thisWeap;
+    VRTK.Weapon thisWeap;
     Valve.VR.EVRButtonId grabButton, fireButton, dropMag;
     public GameObject disappearingHand, disappearingHandHighlight;
     Vector3 oldHandPos, handPos;
@@ -26,7 +26,7 @@ public class VRWInteractableWeapon : MonoBehaviour
     void Awake()
     {
         thisJoint = GetComponent<ConfigurableJoint>();
-        thisWeap = GetComponent<Weapon>();
+        thisWeap = GetComponent<VRTK.Weapon>();
         control = FindObjectOfType<VRWControl>();
         velocityEstimator = GetComponent<VelocityEstimator>();
 

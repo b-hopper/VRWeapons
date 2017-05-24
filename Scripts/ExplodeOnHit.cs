@@ -8,12 +8,12 @@ public class ExplodeOnHit : MonoBehaviour {
 
     public GameObject explosion;
     Vector3 origin;
-    Weapon.Attack attack;
+    VRTK.Weapon.Attack attack;
 
     void Awake()
     {
         origin = transform.position;
-        attack = new Weapon.Attack
+        attack = new VRTK.Weapon.Attack
         {
             damage = 1,
             headshotMultiplier = 1,

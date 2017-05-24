@@ -5,7 +5,7 @@ using Valve.VR.InteractionSystem;
 public class AttackReceiver : MonoBehaviour, IAttackReceiver {
 	public UnityEvent OnAttackReceived;
 
-	public void ReceiveAttack (Weapon.Attack attack)
+	public void ReceiveAttack (VRTK.Weapon.Attack attack)
 	{
 		OnAttackReceived.Invoke();
 	}

@@ -11,7 +11,7 @@ public class magazine : MonoBehaviour
 {
     public int ammo;
     public float magEjectForce;
-    public Weapon weapon;
+    public VRTK.Weapon weapon;
     public int weaponType;
     public bool ableToUse = true;
     public Vector3 adjustPos, adjustRot, magEjectDir;

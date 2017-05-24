@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEditor;
 using Valve.VR.InteractionSystem;
 
-[CustomEditor (typeof(Weapon))]
+[CustomEditor (typeof(VRTK.Weapon))]
 
 
 public class WeaponEditor : Editor
@@ -91,10 +91,10 @@ public class WeaponEditor : Editor
 
 	public static void AssignLayers ()
 	{
-		Weapon[] tmp = FindObjectsOfType<Weapon> ();
+        VRTK.Weapon[] tmp = FindObjectsOfType<VRTK.Weapon> ();
 		magazine[] mag = FindObjectsOfType<magazine> ();
         ReloadPoint[] rld = FindObjectsOfType<ReloadPoint>();
-		foreach (Weapon wpn in tmp) {
+		foreach (VRTK.Weapon wpn in tmp) {
 			if (wpn.gameObject.layer != LayerMask.NameToLayer ("Weapon")) {
 				wpn.gameObject.layer = LayerMask.NameToLayer ("Weapon");
 			}
@@ -116,7 +116,7 @@ public class WeaponEditor : Editor
 #region Main inspector view
     public override void OnInspectorGUI ()
 	{
-		Weapon weaponScript = (Weapon)target;
+        VRTK.Weapon weaponScript = (VRTK.Weapon)target;
 		//base.OnInspectorGUI();
 		Undo.RecordObject (weaponScript, "Weapon Modifications");
 		if (GUILayout.Button ("Set up layers and tags")) {
@@ -174,23 +174,23 @@ public class WeaponEditor : Editor
 			weaponScript.fireRate = EditorGUILayout.FloatField ("Fire rate", weaponScript.fireRate);
 		}
 
-		weaponScript.fireMode = (Weapon.FireMode)EditorGUILayout.EnumPopup ("Fire mode", weaponScript.fireMode);
+		weaponScript.fireMode = (VRTK.Weapon.FireMode)EditorGUILayout.EnumPopup ("Fire mode", weaponScript.fireMode);
 
-		if (weaponScript.fireMode == Weapon.FireMode.BurstFire) {
+		if (weaponScript.fireMode == VRTK.Weapon.FireMode.BurstFire) {
 			weaponScript.burst = EditorGUILayout.IntField ("Burst amount", weaponScript.burst);
-		} else if (weaponScript.fireMode == Weapon.FireMode.Projectile) {
+		} else if (weaponScript.fireMode == VRTK.Weapon.FireMode.Projectile) {
 			weaponScript.projectile = (GameObject)EditorGUILayout.ObjectField ("Projectile", weaponScript.projectile, typeof(GameObject), true);
 			weaponScript.projForce = (float)EditorGUILayout.FloatField ("Projectile shot force", weaponScript.projForce);
             weaponScript.projectileRotationalOffset = EditorGUILayout.Vector3Field("Projectile rotational offset", weaponScript.projectileRotationalOffset);
-		} else if (weaponScript.fireMode == Weapon.FireMode.Shotgun)
+		} else if (weaponScript.fireMode == VRTK.Weapon.FireMode.Shotgun)
         {
             weaponScript.shotgunPellets = (int)EditorGUILayout.IntField("Shotgun pellets per shot", weaponScript.shotgunPellets);
-        } else if (weaponScript.fireMode == Weapon.FireMode.AutofireProj)
+        } else if (weaponScript.fireMode == VRTK.Weapon.FireMode.AutofireProj)
         {
             weaponScript.projectile = (GameObject)EditorGUILayout.ObjectField("Projectile", weaponScript.projectile, typeof(GameObject), true);
             weaponScript.projForce = (float)EditorGUILayout.FloatField("Projectile shot force", weaponScript.projForce);
         }
-        if (weaponScript.fireMode == Weapon.FireMode.Bullet || weaponScript.fireMode == Weapon.FireMode.AutoFire || weaponScript.fireMode == Weapon.FireMode.BurstFire)
+        if (weaponScript.fireMode == VRTK.Weapon.FireMode.Bullet || weaponScript.fireMode == VRTK.Weapon.FireMode.AutoFire || weaponScript.fireMode == VRTK.Weapon.FireMode.BurstFire)
         {
             weaponScript.usesLineRenderer = EditorGUILayout.Toggle("Use line renderer for bullets?", weaponScript.usesLineRenderer);
             if (weaponScript.usesLineRenderer)
@@ -235,7 +235,7 @@ public class WeaponEditor : Editor
             //EditorWindow window = EditorWindow.GetWindow(typeof(ImpactProfileWindow), false, "Impact Profile");
         }
 
-		if (weaponScript.fireMode != Weapon.FireMode.Projectile) {
+		if (weaponScript.fireMode != VRTK.Weapon.FireMode.Projectile) {
 			weaponScript.impactProfile = (ImpactProfile)EditorGUILayout.ObjectField("Impact Profile: ", weaponScript.impactProfile, typeof(ImpactProfile), true);
 		}
 		weaponScript.force = EditorGUILayout.FloatField ("Impact force", weaponScript.force);
@@ -284,12 +284,12 @@ public class WeaponBuild : EditorWindow
     void OnGUI()
     {
         int count = 0;
-        Weapon[] tmp = FindObjectsOfType<Weapon>();
-        foreach (Weapon wpn in tmp)
+        VRTK.Weapon[] tmp = FindObjectsOfType<VRTK.Weapon>();
+        foreach (VRTK.Weapon wpn in tmp)
         {
             if (Selection.activeGameObject != null)
             {
-                if (wpn == Selection.activeGameObject.GetComponent<Weapon>() && !found)
+                if (wpn == Selection.activeGameObject.GetComponent<VRTK.Weapon>() && !found)
                 {
                     index = count;
                     found = true;
@@ -299,17 +299,17 @@ public class WeaponBuild : EditorWindow
         }
         found = true;
         count = 0;
-        foreach (Weapon wpn in tmp)
+        foreach (VRTK.Weapon wpn in tmp)
             count++;
         string[] names = new string[count];
         int i = 0;
-        foreach (Weapon wpn in tmp) {
+        foreach (VRTK.Weapon wpn in tmp) {
             names[i] = wpn.name;
             i++;
         }
 
         index = EditorGUILayout.Popup("Weapon: ", index, names);
-        Weapon weaponScript = tmp[index];
+        VRTK.Weapon weaponScript = tmp[index];
 
         EditorGUILayout.TextArea("", GUI.skin.horizontalSlider);
         scrollPosition = GUILayout.BeginScrollView(scrollPosition, false, false, GUILayout.Width(400), GUILayout.Height(position.height - 50));
@@ -755,8 +755,8 @@ public class WeaponBuild : EditorWindow
                 {
                     if (weaponScript.mag != null)
                     {
-                        Weapon[] tmpArray = FindObjectsOfType<Weapon>();
-                        foreach (Weapon wpn in tmpArray)
+                        VRTK.Weapon[] tmpArray = FindObjectsOfType<VRTK.Weapon>();
+                        foreach (VRTK.Weapon wpn in tmpArray)
                         {
                             if (wpn.weaponType == weaponScript.weaponType)
                             {
@@ -770,7 +770,7 @@ public class WeaponBuild : EditorWindow
                             while (!solved)
                             {
                                 solved = true;
-                                foreach (Weapon wpn in tmpArray)
+                                foreach (VRTK.Weapon wpn in tmpArray)
                                 {
                                     if (wpn.weaponType == i)
                                     {
@@ -815,10 +815,10 @@ public class WeaponBuild : EditorWindow
                 }
                 else
                 {
-                    Weapon[] tmpArray = FindObjectsOfType<Weapon>();
+                    VRTK.Weapon[] tmpArray = FindObjectsOfType<VRTK.Weapon>();
                     if (weaponScript.intMag.ammoObj != null)
                     {
-                        foreach (Weapon wpn in tmpArray)
+                        foreach (VRTK.Weapon wpn in tmpArray)
                         {
                             if (wpn.weaponType == weaponScript.weaponType)
                             {
@@ -830,7 +830,7 @@ public class WeaponBuild : EditorWindow
                         while (!solved)
                         {
                             solved = true;
-                            foreach (Weapon wpn in tmpArray)
+                            foreach (VRTK.Weapon wpn in tmpArray)
                             {
                                 Debug.Log("Comparing weapon " + wpn + " of type " + wpn.weaponType + " with possible type " + i);
                                 if (wpn.weaponType == i)
@@ -846,7 +846,7 @@ public class WeaponBuild : EditorWindow
                         }
                         
                             weaponScript.weaponType = i;
-                            weaponScript.intMag.ammoObj.GetComponent<VRWRound>().weaponType = i;
+                            weaponScript.intMag.ammoObj.GetComponent<VRWRound>().WeaponType = i;
                         weaponScript.showPairMag = false;
                         weaponScript.intMag.ammoObj.tag = "Magazine";
 
@@ -994,12 +994,12 @@ public class SlideSetup : EditorWindow
     void OnGUI()
     {
         int count = 0;
-        Weapon[] tmp = FindObjectsOfType<Weapon>();
-        foreach (Weapon wpn in tmp)
+        VRTK.Weapon[] tmp = FindObjectsOfType<VRTK.Weapon>();
+        foreach (VRTK.Weapon wpn in tmp)
         {
             if (Selection.activeGameObject != null)
             {
-                if (wpn == Selection.activeGameObject.GetComponent<Weapon>() && !found)
+                if (wpn == Selection.activeGameObject.GetComponent<VRTK.Weapon>() && !found)
                 {
                     index = count;
                     found = true;
@@ -1009,18 +1009,18 @@ public class SlideSetup : EditorWindow
         }
         found = true;
         count = 0;
-        foreach (Weapon wpn in tmp)
+        foreach (VRTK.Weapon wpn in tmp)
             count++;
         string[] names = new string[count];
         int i = 0;
-        foreach (Weapon wpn in tmp)
+        foreach (VRTK.Weapon wpn in tmp)
         {
             names[i] = wpn.name;
             i++;
         }
 
         index = EditorGUILayout.Popup("Weapon: ", index, names);
-        Weapon weaponScript = tmp[index];
+        VRTK.Weapon weaponScript = tmp[index];
 
         //scrollPosition = GUILayout.BeginScrollView(scrollPosition, false, false, GUILayout.Width(400), GUILayout.Height(position.height - 25));
         Undo.RecordObject(weaponScript, "Weapon Building");

@@ -24,7 +24,7 @@ public class VRWSlideManipulation : MonoBehaviour
     Vector3 originalPosition;
     Hand manipulatingHand;
     public GameObject slideObj;
-    Weapon thisWeap;
+    VRTK.Weapon thisWeap;
     bool slideMovesOnFiring, autoRackForward, justManip, isManip, isActive, clearDevices;
     float slideLeeway, lastLinMapValue;
     VRWControl control;
@@ -40,7 +40,7 @@ public class VRWSlideManipulation : MonoBehaviour
         isActive = true;
         originalPosition = transform.localPosition;
         control = FindObjectOfType<VRWControl>();
-        thisWeap = GetComponentInParent<Weapon>();
+        thisWeap = GetComponentInParent<VRTK.Weapon>();
 
         slideMovesOnFiring = thisWeap.slideMovesOnFiring;
         autoRackForward = thisWeap.autoRackForward;

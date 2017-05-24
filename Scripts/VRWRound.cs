@@ -7,7 +7,7 @@ using Valve.VR.InteractionSystem;
 
 public class VRWRound : MonoBehaviour {
 
-    public int weaponType, amountPerRound = 1;
+    public int WeaponType, amountPerRound = 1;
     bool ableToUse;
     ConfigurableJoint handJoint;
     Rigidbody rBody;

@@ -6,7 +6,7 @@ public class ReloadPoint : MonoBehaviour {
 
     magazine mag;
     VRWRound round;
-    public Weapon weap;
+    public VRTK.Weapon weap;
 
     void OnTriggerStay(Collider col)
     {
@@ -28,7 +28,7 @@ public class ReloadPoint : MonoBehaviour {
                 }
             }
         }
-        else if (round != null && weap.weaponType == round.weaponType && (round.held || !weap.magNeedsHeldToReload))
+        else if (round != null && weap.weaponType == round.WeaponType && (round.held || !weap.magNeedsHeldToReload))
         {
             if (weap.chamberOpen || !weap.chamberMustBeOpenToReload)
             {

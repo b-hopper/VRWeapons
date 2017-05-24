@@ -8,7 +8,7 @@ using Valve.VR.InteractionSystem;
 public class VRWAttachment : MonoBehaviour, IAttachmentEvents {
     public UnityEvent OnTriggerPress;
     public UnityEvent OnTriggerLongPress;
-    Weapon thisWeap;
+    VRTK.Weapon thisWeap;
     public float longPressTimeNeeded = 1;
     Hand currentHand;
     SteamVR_Controller.Device device;
@@ -32,7 +32,7 @@ public class VRWAttachment : MonoBehaviour, IAttachmentEvents {
         fireButton = control.fireButton;
         dropMag = control.dropMag;
         
-        thisWeap = GetComponentInParent<Weapon>();
+        thisWeap = GetComponentInParent<VRTK.Weapon>();
 
         if (control.VRTKMode)
         {
