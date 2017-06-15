@@ -30,7 +30,7 @@ public class ExplodeOnHit : MonoBehaviour {
             Collider[] hitColliders = Physics.OverlapSphere(transform.position, 2);
             for (int i = 0; i < hitColliders.Length; i++)
             {
-                ExecuteEvents.Execute<IAttackReceiver>(hitColliders[i].gameObject, null, ((handler, eventData) => handler.ReceiveAttack(attack)));
+                //ExecuteEvents.Execute<IAttackReceiver>(hitColliders[i].gameObject, null, ((handler, eventData) => handler.ReceiveAttack(attack)));
             }
             Destroy(this.gameObject);
         }

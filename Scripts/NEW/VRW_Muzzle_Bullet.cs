@@ -1,23 +1,36 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using Valve.VR.InteractionSystem;
 
 [RequireComponent(typeof(AudioSource))]
 
-public class VRW_Muzzle_Bullet : MonoBehaviour, VRTK.IMuzzleActions {
-    AudioSource audioSource;
-    VRTK.VRW_Weapon weapon;
+public class VRW_Muzzle_Bullet : MonoBehaviour, IVRW_MuzzleActions {
+    IVRW_KickActions Kick;
+    IVRW_EjectorActions Ejector;
+    IVRW_BoltActions Bolt { get; set; }
 
-    void Awake()
+    AudioSource audioSource;
+    VRW_Weapon thisWeapon;
+    VRWControl control;
+
+    public float fireRate, range, bulletSpreadRange, damage;
+    float nextFire;
+    
+    void Start()
     {
-        weapon = GetComponentInParent<VRTK.VRW_Weapon>();
+        thisWeapon = GetComponentInParent<VRW_Weapon>();
         audioSource = GetComponent<AudioSource>();
+        control = FindObjectOfType<VRWControl>();
+        
     }
 
 
     public void StartFiring()
     {
         Debug.Log("SCHUT");
+        Fire();
     }
 
     public void StopFiring()
@@ -27,16 +40,27 @@ public class VRW_Muzzle_Bullet : MonoBehaviour, VRTK.IMuzzleActions {
 
     void Fire()
     {
-
         if (Time.time - nextFire >= fireRate)
         {
-            PlaySound(shotSoundSource, 0);
-            if (chamberedRound != null && bulletShell != null)
+            FireBullet();
+            nextFire = Time.time;
+        }
+
+
+
+
+
+
+        /*if (Time.time - nextFire >= fireRate)
+        {
+            PlaySound(0);
+            if (thisWeapon.chamberedRound != null && bulletShell != null)
             {
                 DestroyImmediate(chamberedRound.gameObject);
                 if (!isBoltSeparate)
                 {
-                    chamberedRound = Instantiate(bulletShell, chamberedRoundLocation.position, chamberedRoundLocation.rotation);
+                    chamberedRound = thisWeapon.shellPool.GetNewObj();
+                        Instantiate(bulletShell, chamberedRoundLocation.position, chamberedRoundLocation.rotation);
                     chamberedRound.transform.parent = slideObj.transform;
                 }
                 else
@@ -98,7 +122,54 @@ public class VRW_Muzzle_Bullet : MonoBehaviour, VRTK.IMuzzleActions {
             StartCoroutine(Kick());
             nextFire = Time.time;
             justFired = true;
+        }*/
+    }
+
+    void FireBullet()
+    {
+        PlaySound(0);
+        RaycastHit hit;
+        Vector3 shotLocation = (transform.forward * range) + (Random.insideUnitSphere * bulletSpreadRange);
+        Debug.DrawRay(transform.position, shotLocation * range, Color.red, 15f);
+        if (Physics.Raycast(transform.position, shotLocation, out hit, range, control.shotMask))
+        {
+            ExecuteEvents.Execute<IAttackReceiver>(hit.collider.gameObject, null, ((handler, eventData) => handler.ReceiveAttack(thisWeapon.NewAttack(damage, transform.position, hit))));
+        }
+
+        if (!thisWeapon.infiniteAmmo) { thisWeapon.SetChambered(false); }
+
+        if (Kick != null)
+        {
+            Kick.Kick(thisWeapon.transform, null);
+        }
+        if (Ejector != null)
+        {
+            Ejector.Eject();
+        }
+        if (Bolt != null/* && thisWeap.boltMovesOnFiring*/)
+        {
+            Bolt.BoltBack();
         }
     }
 
+    void PlaySound(int clip)
+    {
+        Debug.Log("Play Sound");
+        audioSource.Play();
+    }
+
+    public void SetEjector(IVRW_EjectorActions newEjector)
+    {
+        Ejector = newEjector;
+    }
+
+    public void SetKick(IVRW_KickActions newKick)
+    {
+        Kick = newKick;
+    }
+
+    public void SetBolt(IVRW_BoltActions newBolt)
+    {
+        Bolt = newBolt;
+    }
 }

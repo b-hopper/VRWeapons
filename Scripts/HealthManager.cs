@@ -30,7 +30,7 @@ public class HealthManager : MonoBehaviour, IAttackReceiver {
 		Reset();
 	}
 
-	public void ReceiveAttack (VRTK.Weapon.Attack attack)
+	public void ReceiveAttack (VRW_Weapon.Attack attack)
 	{
         currentHealth -= attack.damage;
 		OnDamaged.Invoke();
