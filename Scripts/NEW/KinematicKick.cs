@@ -8,22 +8,22 @@ namespace VRWeapons
     {
         Weapon thisWeap;
         Vector3 originalPos, originalRot, targetPos, targetRot, currentPos, currentRot;
-        float rotLerpVal, posLerpVal;
+        float lerpVal;
         bool fixPosition, isKicking, originalPosSet;
         int shotsFiredSinceReset;
 
         [Tooltip("Amount (and direction) the weapon moves positionally when fired. Logarithmically tapers down with each shot.")]
         [SerializeField]
-        Vector3 amountToMove;
+        Vector3 amountToMove = new Vector3(0, 0.05f, -0.025f);
         [Tooltip("Amount (and direction) the weapon rotates when fired. Logarithmically tapers down with each shot.")]
         [SerializeField]
-        Vector3 amountToRotate;
-        [Tooltip("How quickly the weapon recoils.")]
+        Vector3 amountToRotate = new Vector3(-5, 0, 0);
+        [Tooltip("How quickly the weapon recoils. 1 is instant, 0 is no movement.")]
         [SerializeField]
-        float recoilLerpSpeed;
-        [Tooltip("How quickly the weapon recovers.")]
+        float recoilLerpSpeed = 0.334f;
+        [Tooltip("How quickly the weapon recovers. 1 is instant, 0 is no movement.")]
         [SerializeField]
-        float recoverLerpSpeed;
+        float recoverLerpSpeed = 0.05f;
 
         private void Start()
         {
@@ -35,14 +35,20 @@ namespace VRWeapons
             if (!originalPosSet)
             {
                 originalPos = transform.localPosition;  // Only set original position if it's back to zero.
+                originalRot = transform.localEulerAngles;
                 originalPosSet = true;
             }
 
             shotsFiredSinceReset++;
             currentPos = transform.localPosition;
-            targetPos = new Vector3(targetPos.x + (amountToMove.x * 1/shotsFiredSinceReset),
-                targetPos.y + (amountToMove.y * 1 / shotsFiredSinceReset),
-                targetPos.z + (amountToMove.z * 1 / shotsFiredSinceReset));
+            targetPos = new Vector3(currentPos.x + (amountToMove.x * 1 / shotsFiredSinceReset),
+                currentPos.y + (amountToMove.y * 1 / shotsFiredSinceReset),
+                currentPos.z + (amountToMove.z * 1 / shotsFiredSinceReset));
+
+            currentRot = transform.localEulerAngles;
+            targetRot = new Vector3(currentRot.x + (amountToRotate.x * 1 / shotsFiredSinceReset),
+                currentRot.y + (amountToRotate.y * 1 / shotsFiredSinceReset),
+                currentRot.z + (amountToRotate.z * 1 / shotsFiredSinceReset));
 
             isKicking = true;
         }
@@ -51,27 +57,53 @@ namespace VRWeapons
         {
             if (isKicking)
             {
-                transform.localPosition = Vector3.Lerp(currentPos, targetPos, posLerpVal);
-                Debug.Log(posLerpVal);
-                posLerpVal += recoilLerpSpeed;
-                if (posLerpVal >= 1)
-                {
-                    fixPosition = true;
-                    isKicking = false;
-                }
+                DoPositionalRecoil();
+                DoRotationalRecoil();
             }
             else if (fixPosition)
             {
-                Debug.Log("Fixing position");
-                transform.localPosition = Vector3.Lerp(originalPos, transform.localPosition, posLerpVal);
-                posLerpVal -= recoverLerpSpeed;
-                if (posLerpVal <= 0)
-                {
-                    fixPosition = false;
-                    shotsFiredSinceReset = 0;
-                    targetPos = originalPos;
-                }
+                DoPositionalRecovery();
+                DoRotationalRecovery();
             }
+        }
+
+        void DoPositionalRecoil()
+        {
+            if (lerpVal >= 1)
+            {
+                lerpVal = 1;
+                fixPosition = true;
+                isKicking = false;
+            }
+            transform.localPosition = Vector3.Lerp(currentPos, targetPos, lerpVal);
+            lerpVal += recoilLerpSpeed;
+        }
+
+        void DoPositionalRecovery()
+        { 
+            if (!thisWeap.IsWeaponFiring())
+            {
+                shotsFiredSinceReset = 0;
+                Debug.Log("Shots fired since reset... reset");
+            }
+            if (lerpVal <= 0)
+            {
+                lerpVal = 0;
+                fixPosition = false;
+                targetPos = originalPos;
+            }
+            transform.localPosition = Vector3.Lerp(originalPos, transform.localPosition, lerpVal);
+            lerpVal -= recoverLerpSpeed;
+        }
+
+        void DoRotationalRecoil()
+        {
+            transform.localEulerAngles = Vector3.Lerp(currentRot, targetRot, lerpVal);
+        }
+
+        void DoRotationalRecovery()
+        {
+            transform.localEulerAngles = Vector3.Lerp(originalRot, transform.localEulerAngles, lerpVal);
         }
     }
 }

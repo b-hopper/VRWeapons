@@ -223,5 +223,10 @@ namespace VRWeapons
                 Kick.Kick();
             }
         }
+
+        public bool IsWeaponFiring()
+        {
+            return isFiring;
+        }
     }
 }
