@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Valve.VR.InteractionSystem;
+using VRWeapons;
 
 [RequireComponent(typeof(Interactable))]
 

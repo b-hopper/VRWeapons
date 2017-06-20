@@ -5,7 +5,7 @@ using Valve.VR.InteractionSystem;
 public class VRWControl : MonoBehaviour
 {
     private Hand.AttachmentFlags attachmentFlags = Hand.defaultAttachmentFlags & (~Hand.AttachmentFlags.SnapOnAttach) & (~Hand.AttachmentFlags.DetachOthers);
-    float VRWVersion = 1.25f;
+    float VRWVersion = 2.0f;
     public bool VRTKMode;
     [Header("Show controller when weapon grabbed?")]
     public bool showDeviceMainHand;

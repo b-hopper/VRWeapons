@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 using Valve.VR.InteractionSystem;
+using VRWeapons;
 
 public class HealthManager : MonoBehaviour, IAttackReceiver {
 
@@ -30,7 +31,7 @@ public class HealthManager : MonoBehaviour, IAttackReceiver {
 		Reset();
 	}
 
-	public void ReceiveAttack (VRW_Weapon.Attack attack)
+	public void ReceiveAttack (VRWeapons.Weapon.Attack attack)
 	{
         currentHealth -= attack.damage;
 		OnDamaged.Invoke();

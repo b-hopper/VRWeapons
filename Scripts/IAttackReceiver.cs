@@ -1,10 +1,11 @@
 using UnityEngine.EventSystems;
+using VRWeapons;
 
-namespace Valve.VR.InteractionSystem
+namespace VRWeapons
 {
 
     public interface IAttackReceiver : IEventSystemHandler
     {
-        void ReceiveAttack(VRW_Weapon.Attack attack);
+        void ReceiveAttack(VRWeapons.Weapon.Attack attack);
     }
 }
