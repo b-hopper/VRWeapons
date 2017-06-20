@@ -10,7 +10,7 @@ There are a couple things I couldn't automate, that you need to do to get starte
 6. For dynamic impacts, click the "Set up Impact Profile" button. This will create a new asset under VRWeapons/Impact Profiles. Drag and drop your impact prefabs on to the default slot if you don't need dynamic
 	impacts. Then, for each impact, assign it a material and an impact prefab (or multiple, if you want different variations). Then, simply drag the impact profile onto the Impact Profile slot on the Weapon.
 	NOTE: VRW does not currently come with any impact prefabs. Plenty available on the asset store, though :)
-7. Buttons are re-mappable through VRWControl. (Note: Because of the way SteamVR enumerates button inputs, things may not appear correct at first glance. For example, if you select "K_E Button_Steam VR_Trigger"
+7. Buttons are re-mappable through VRWeapons.VRWControl. (Note: Because of the way SteamVR enumerates button inputs, things may not appear correct at first glance. For example, if you select "K_E Button_Steam VR_Trigger"
 	it will automatically change to "K_E Button_Axis 1." This is normal and works as intended.)
 NOTE: If the test scene is not working properly, make sure you have clicked the "Set up layers and tags" button on a Weapon first.
 

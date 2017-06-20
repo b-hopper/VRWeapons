@@ -20,7 +20,7 @@ v1.24
 v1.23
 ------------------------------------------------
 	So I accidentally broke some people's projects once I moved to the SteamVR Interaction System, and now I'm here to fix it. VRTK mode now works. If you are using the [CameraRig] 
-		prefab, make sure you hit the "VRTK Mode" toggle in VRWControl. This update is mainly focused on fixing VRTK issues.
+		prefab, make sure you hit the "VRTK Mode" toggle in VRWeapons.VRWControl. This update is mainly focused on fixing VRTK issues.
 
 	- Added a line renderer for bullet shots, found on the Weapon inspector when "Bullet", "Auto Fire" or "Burst Fire" firemodes are selected.
 	
@@ -36,7 +36,7 @@ v1.22
 
 	- VRW now uses the Steam Interaction System. I felt that my interaction system wasn't reliable enough, so the entire pack has been converted over. What this means to you: 
 		If you have a [CameraRig] prefab in your scene, you'll need to change it out to a Player prefab, found in the latest SteamVR pack at SteamVR->InteractionSystem->Core->Prefabs.
-		My viveCharControl.cs script is no longer used as a result, and InitializeControllers.cs has been changed to VRWControl.cs. 
+		My viveCharControl.cs script is no longer used as a result, and InitializeControllers.cs has been changed to VRWeapons.VRWControl.cs. 
 
 	- Guns built with earlier versions of VRWeapons will need to be rebuilt, because of the following changes:
 	
@@ -60,5 +60,5 @@ v1.22
 
 	- Automatic projectile fire mode has been added. Behaves just like automatic fire, but fires projectiles instead of raycast bullets.
 
-	- For now, in VRWControl the "Allow swapping hands" button and the 'Grab on Start" options have been disabled. I'm having some issues implementing these with the new interaction system, 
+	- For now, in VRWeapons.VRWControl the "Allow swapping hands" button and the 'Grab on Start" options have been disabled. I'm having some issues implementing these with the new interaction system, 
 		but expect a fix in a future update.

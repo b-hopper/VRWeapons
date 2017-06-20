@@ -4,7 +4,7 @@ using UnityEngine;
 using VRTK;
 using VRWeapons;
 
-public class Weapon_VRTK_Handler : VRTK_InteractableObject
+public class Weapon_VRTK_InteractableObject : VRTK_InteractableObject
 {
     VRWeapons.Weapon thisWeap;
 
@@ -13,6 +13,10 @@ public class Weapon_VRTK_Handler : VRTK_InteractableObject
         thisWeap = GetComponent<VRWeapons.Weapon>();
     }
 
+    public override void OnInteractableObjectGrabbed(InteractableObjectEventArgs e)
+    {
+        base.OnInteractableObjectGrabbed(e);
+    }
 
     public override void StartUsing(GameObject usingObject)
     {

@@ -19,21 +19,70 @@ namespace VRWeapons
         IObjectPool flashPool;
         public IBulletBehavior chamberedRound;
         public IMagazine Magazine;
-        public bool infiniteAmmo, autoRackForward;
-        bool isFiring, justFired;
+
+        AudioSource audioSource;
+        AudioClip soundToPlay;
+        
+        bool isFiring, justFired, stopFiring;
+
+        float nextFire;
+        [HideInInspector]
+
+        //// Shown in inspector ////
+        [Tooltip("Weapon will never run out of ammo.")]
+        [SerializeField]
+        bool infiniteAmmo;
+
+        [Tooltip("Bolt will rack forward after racking backward, unless magazine is inserted and empty.")]
+        [SerializeField]
+        public bool autoRackForward;
+
+        [Tooltip("Bolt moves back on firing. Disable for bolt/pump action weapons.")]
+        [SerializeField]
+        bool boltMovesOnFiring;
+
+        public ImpactProfile impactProfile;
 
         [SerializeField]
         FireMode fireMode;
 
-        [SerializeField]
+        [Tooltip("Fire rate in seconds")]
+        [SerializeField]        
         float fireRate;
-        float nextFire;
+
+        [Tooltip("Sound effect played when magazine is inserted.")]
+        [SerializeField]
+        AudioClip MagIn;
+        [Tooltip("Sound effect played when magazine is removed.")]
+        [SerializeField]
+        AudioClip MagOut;
+        [Tooltip("Sound effect played when bolt is moved back.")]
+        [SerializeField]
+        AudioClip SlideBack;
+        [Tooltip("Sound effect played when bolt is moved forward.")]
+        [SerializeField]
+        AudioClip SlideForward;
+        [Tooltip("Sound effect played when attempting to fire an empty weapon.")]
+        [SerializeField]
+        AudioClip DryFire;
+
+        //// End shown in inspector ////
 
         [System.Serializable]
         public enum FireMode
         {
             SemiAuto = 1,
-            Automatic = 2
+            Automatic = 2,
+            Burst = 3
+        }
+
+        public enum AudioClips
+        {
+            MagIn = 0,
+            MagOut = 1,
+            SlideForward = 2,
+            SlideBack = 3,
+            DryFire = 4
         }
                 
         [System.Serializable]
@@ -48,8 +97,10 @@ namespace VRWeapons
         {
             Muzzle = GetComponentInChildren<IMuzzleActions>();  // TEMPORARY, to be assigned in-editor later
             Bolt = GetComponentInChildren<IBoltActions>();
-            Muzzle.SetBolt(Bolt);
-
+            Ejector = GetComponentInChildren<IEjectorActions>();
+            Kick = GetComponent<IKickActions>();
+            Bolt.SetEjector(Ejector);
+            audioSource = GetComponent<AudioSource>();
         }
 
         public void StartFiring(GameObject usingObject)
@@ -59,6 +110,7 @@ namespace VRWeapons
 
         public void StopFiring(GameObject previousUsingObject)
         {
+            stopFiring = true;
             isFiring = false;
         }
 
@@ -68,7 +120,34 @@ namespace VRWeapons
         }
 
 
-        void PlaySound(int clip) { }
+        public void PlaySound(Weapon.AudioClips clip)
+        {
+            switch (clip)
+            {
+                case AudioClips.MagIn:
+                    soundToPlay = MagIn;
+                    break;
+                case AudioClips.MagOut:
+                    soundToPlay = MagOut;
+                    break;
+                case AudioClips.SlideForward:
+                    soundToPlay = SlideForward;
+                    break;
+                case AudioClips.SlideBack:
+                    soundToPlay = SlideBack;
+                    break;
+                case AudioClips.DryFire:
+                    soundToPlay = DryFire;
+                    break;
+            }
+            if (soundToPlay != null)
+            {
+                audioSource.pitch = Time.timeScale;
+                audioSource.clip = soundToPlay;
+                audioSource.Play();
+            }
+
+        }
 
         public Attack NewAttack(float newDamage, Vector3 newOrigin, RaycastHit newHit)
         {
@@ -78,6 +157,36 @@ namespace VRWeapons
                 origin = newOrigin,
                 hitInfo = newHit
             };
+        }
+
+        private void FixedUpdate()
+        {
+            if (isFiring)
+            {
+                if (!justFired || fireMode == FireMode.Automatic)
+                {
+                    if ((Time.time - nextFire >= fireRate) && IsChambered())
+                    {
+                        Muzzle.StartFiring(chamberedRound);
+                        DoOnFireActions();
+                        chamberedRound = null;
+                        nextFire = Time.time;
+                        justFired = true;
+                    }
+                    else if (Time.time - nextFire >= fireRate)
+                    {
+                        PlaySound(AudioClips.DryFire);
+                        nextFire = Time.time;
+                        justFired = true;
+                    }
+                }
+            }
+            else if (stopFiring)
+            {
+                stopFiring = false;
+                justFired = false;
+                Muzzle.StopFiring();
+            }
         }
 
         #region Editor-Friendly functions
@@ -101,26 +210,18 @@ namespace VRWeapons
             return val;
         }
 
-        private void FixedUpdate()
+        #endregion
+
+        void DoOnFireActions()
         {
-            if (isFiring)
+            if (Bolt != null && boltMovesOnFiring)
             {
-                if (!justFired || fireMode == FireMode.Automatic)
-                {
-                    if ((Time.time - nextFire >= fireRate) && IsChambered())
-                    {
-                        Muzzle.StartFiring(chamberedRound);
-                        chamberedRound = null;
-                        justFired = true;
-                    }
-                }
+                Bolt.BoltBack();
             }
-            else
+            if (Kick != null)
             {
-                justFired = false;
-                Muzzle.StopFiring();
+                Kick.Kick();
             }
         }
-        #endregion
     }
 }

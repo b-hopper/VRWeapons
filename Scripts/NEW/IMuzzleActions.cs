@@ -9,8 +9,5 @@ namespace VRWeapons
     {
         void StartFiring(IBulletBehavior round);
         void StopFiring();
-        void SetEjector(IEjectorActions newEjector);
-        void SetBolt(IBoltActions newBolt);
-        void SetKick(IKickActions newKick);
     }
 }

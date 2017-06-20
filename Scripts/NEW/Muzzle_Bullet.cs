@@ -10,44 +10,34 @@ namespace VRWeapons
 {
     [RequireComponent(typeof(AudioSource))]
     public class Muzzle_Bullet : MonoBehaviour, IMuzzleActions {
-        IKickActions Kick;
-        IEjectorActions Ejector;
-        IBoltActions Bolt;
 
         AudioSource audioSource;
         Weapon thisWeapon;
-        VRWControl control;
+        VRWeapons.VRWControl control;
 
-        public float fireRate, range, bulletSpreadRange, damage;
-        float nextFire;
+        public float range, bulletSpreadRange, damage;
 
         void Start()
         {
             thisWeapon = GetComponentInParent<Weapon>();
             audioSource = GetComponent<AudioSource>();
-            control = FindObjectOfType<VRWControl>();
+            control = FindObjectOfType<VRWeapons.VRWControl>();
 
         }
 
 
         public void StartFiring(IBulletBehavior round)
         {
-            Debug.Log("SCHUT");
             Fire(round);
         }
 
         public void StopFiring()
         {
-            Debug.Log("STOPSCHUT");
         }
 
         void Fire(IBulletBehavior round)
         {
-            if (Time.time - nextFire >= fireRate)   // NEEDS CHANGING, Weapon.cs should decide. Muzzle actions should only fire
-            {
-                FireBullet(round);
-                nextFire = Time.time;
-            }
+            FireBullet(round);
 
 
 
@@ -133,40 +123,12 @@ namespace VRWeapons
             PlaySound(0);
 
             round.DoBulletBehavior(transform, damage, range, bulletSpreadRange, thisWeapon, control.shotMask);
-            
-            if (Kick != null)
-            {
-                Kick.Kick(thisWeapon.transform, null);
-            }
-            if (Ejector != null)
-            {
-                Ejector.Eject();
-            }
-            if (Bolt != null/* && thisWeap.boltMovesOnFiring*/)
-            {
-                Bolt.BoltBack();
-            }
         }
 
         void PlaySound(int clip)
         {
-            Debug.Log("Play Sound");
             audioSource.Play();
         }
-
-        public void SetEjector(IEjectorActions newEjector)
-        {
-            Ejector = newEjector;
-        }
-
-        public void SetKick(IKickActions newKick)
-        {
-            Kick = newKick;
-        }
-
-        public void SetBolt(IBoltActions newBolt)
-        {
-            Bolt = newBolt;
-        }
+        
     }
 }

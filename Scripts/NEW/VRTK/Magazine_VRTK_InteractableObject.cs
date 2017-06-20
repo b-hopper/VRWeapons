@@ -4,7 +4,7 @@ using UnityEngine;
 using VRTK;
 using VRWeapons;
 
-public class Magazine_VRTK_Handler : VRTK_InteractableObject {
+public class Magazine_VRTK_InteractableObject : VRTK_InteractableObject {
 
 	
 }

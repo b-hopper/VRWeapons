@@ -9,15 +9,22 @@ public class MagDropZone : VRTK_SnapDropZone {
 
     private void Start()
     {
+        GameObject mag;
         thisWeap = GetComponentInParent<VRWeapons.Weapon>();
+        Debug.Log(thisWeap);
+
+        if ((thisWeap.GetComponentInChildren<Magazine_VRTK_InteractableObject>()) != null) {
+            mag = thisWeap.GetComponentInChildren<Magazine_VRTK_InteractableObject>().gameObject;
+            ForceSnap(mag);
+        }
     }
 
     public override void OnObjectSnappedToDropZone(SnapDropZoneEventArgs e)
     {
+        IMagazine mag = e.snappedObject.GetComponent<IMagazine>();
         base.OnObjectSnappedToDropZone(e);
         
-        e.snappedObject.GetComponent<IMagazine>().MagIn(thisWeap);
-        thisWeap.ChamberNewRound(e.snappedObject.GetComponent<IMagazine>().FeedRound());    // TEMPORARY, to be handled by bolt actions later
+        mag.MagIn(thisWeap);
     }
 
     public override void OnObjectUnsnappedFromDropZone(SnapDropZoneEventArgs e)
