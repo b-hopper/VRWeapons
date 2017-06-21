@@ -22,8 +22,10 @@ namespace VRWeapons
 
         AudioSource audioSource;
         AudioClip soundToPlay;
-        
+
         bool isFiring, justFired, stopFiring;
+        [HideInInspector]
+        public bool secondHandGripped;
 
         float nextFire;
         [HideInInspector]
@@ -116,7 +118,7 @@ namespace VRWeapons
 
         public void ChamberNewRound(IBulletBehavior round)
         {
-            chamberedRound = round;                             // TEMPORARY, to be handled by bolt actions
+            chamberedRound = round;
         }
 
 
@@ -189,7 +191,7 @@ namespace VRWeapons
             }
         }
 
-        #region Editor-Friendly functions
+        #region Attachment-Friendly functions
         public void SetMuzzle(IMuzzleActions newMuzzle)
         {
             Muzzle = newMuzzle;

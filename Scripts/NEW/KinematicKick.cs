@@ -24,6 +24,9 @@ namespace VRWeapons
         [Tooltip("How quickly the weapon recovers. 1 is instant, 0 is no movement.")]
         [SerializeField]
         float recoverLerpSpeed = 0.05f;
+        [Tooltip("Decreases the amount of kick when 2-hand gripped by multiplication. 0 = no kick, 1 = full kick.")]
+        [SerializeField]
+        float twoHandGripKickReduction = 0.5f;
 
         private void Start()
         {
@@ -32,6 +35,7 @@ namespace VRWeapons
 
         public void Kick()
         {
+            float tmpKickReduction = 1;
             if (!originalPosSet)
             {
                 originalPos = transform.localPosition;  // Only set original position if it's back to zero.
@@ -39,17 +43,25 @@ namespace VRWeapons
                 originalPosSet = true;
             }
 
+            if (thisWeap.secondHandGripped)
+            {
+                tmpKickReduction *= twoHandGripKickReduction;
+            }
+
             shotsFiredSinceReset++;
             currentPos = transform.localPosition;
-            targetPos = new Vector3(currentPos.x + (amountToMove.x * 1 / shotsFiredSinceReset),
-                currentPos.y + (amountToMove.y * 1 / shotsFiredSinceReset),
-                currentPos.z + (amountToMove.z * 1 / shotsFiredSinceReset));
+            targetPos = new Vector3(currentPos.x + ((amountToMove.x * 1 / shotsFiredSinceReset) * tmpKickReduction),
+                currentPos.y + ((amountToMove.y * 1 / shotsFiredSinceReset) * tmpKickReduction),
+                currentPos.z + ((amountToMove.z * 1 / shotsFiredSinceReset) * tmpKickReduction));
 
-            currentRot = transform.localEulerAngles;
-            targetRot = new Vector3(currentRot.x + (amountToRotate.x * 1 / shotsFiredSinceReset),
-                currentRot.y + (amountToRotate.y * 1 / shotsFiredSinceReset),
-                currentRot.z + (amountToRotate.z * 1 / shotsFiredSinceReset));
+            if (!thisWeap.secondHandGripped)
+            {
+                currentRot = transform.localEulerAngles;
 
+                targetRot = new Vector3(currentRot.x + (amountToRotate.x * 1 / shotsFiredSinceReset),
+                    currentRot.y + (amountToRotate.y * 1 / shotsFiredSinceReset),
+                    currentRot.z + (amountToRotate.z * 1 / shotsFiredSinceReset));
+            }
             isKicking = true;
         }
 
@@ -58,12 +70,18 @@ namespace VRWeapons
             if (isKicking)
             {
                 DoPositionalRecoil();
-                DoRotationalRecoil();
+                if (!thisWeap.secondHandGripped)
+                {
+                    DoRotationalRecoil();
+                }
             }
             else if (fixPosition)
             {
                 DoPositionalRecovery();
-                DoRotationalRecovery();
+                if (!thisWeap.secondHandGripped)
+                {
+                    DoRotationalRecovery();
+                }
             }
         }
 

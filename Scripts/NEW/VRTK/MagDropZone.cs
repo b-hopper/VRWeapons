@@ -6,16 +6,17 @@ using VRWeapons;
 
 public class MagDropZone : VRTK_SnapDropZone {
     VRWeapons.Weapon thisWeap;
+    [Tooltip("Select a mag here to load mag on start.")]
+    [SerializeField]
+    GameObject startingMag;
 
     private void Start()
     {
-        GameObject mag;
         thisWeap = GetComponentInParent<VRWeapons.Weapon>();
         Debug.Log(thisWeap);
 
-        if ((thisWeap.GetComponentInChildren<Magazine_VRTK_InteractableObject>()) != null) {
-            mag = thisWeap.GetComponentInChildren<Magazine_VRTK_InteractableObject>().gameObject;
-            ForceSnap(mag);
+        if (startingMag != null) {
+            ForceSnap(startingMag);
         }
     }
 

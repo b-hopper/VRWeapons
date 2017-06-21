@@ -9,7 +9,7 @@ using VRWeapons;
 namespace VRWeapons
 {
     [RequireComponent(typeof(AudioSource))]
-    public class Muzzle_Bullet : MonoBehaviour, IMuzzleActions {
+    public class Muzzle : MonoBehaviour, IMuzzleActions {
 
         AudioSource audioSource;
         Weapon thisWeapon;

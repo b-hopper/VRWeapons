@@ -8,7 +8,6 @@ namespace VRWeapons
 {
     public class RaycastBullet : MonoBehaviour, IBulletBehavior
     {
-        public IMagazine thisMag;
        
         public void DoBulletBehavior(Transform muzzleDir, float damage, float range, float bulletSpreadRange, Weapon thisWeapon, LayerMask shotMask)
         {
