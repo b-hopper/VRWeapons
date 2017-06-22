@@ -29,8 +29,7 @@ namespace VRWeapons
         public LayerMask shotMask;
         Hand[] hands;
         JointDrive jDrive, jZDrive;
-
-
+        
         struct wpnInfo
         {
             public Weapon HeldWeapon;

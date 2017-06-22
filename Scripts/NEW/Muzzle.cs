@@ -13,7 +13,10 @@ namespace VRWeapons
 
         AudioSource audioSource;
         Weapon thisWeapon;
-        VRWeapons.VRWControl control;
+        VRWControl control;
+        GameObject currentFlash;
+
+        IObjectPool flashPool;
 
         public float range, bulletSpreadRange, damage;
 
@@ -21,8 +24,8 @@ namespace VRWeapons
         {
             thisWeapon = GetComponentInParent<Weapon>();
             audioSource = GetComponent<AudioSource>();
-            control = FindObjectOfType<VRWeapons.VRWControl>();
-
+            control = FindObjectOfType<VRWControl>();
+            flashPool = GetComponent<IObjectPool>();
         }
 
 
@@ -38,11 +41,6 @@ namespace VRWeapons
         void Fire(IBulletBehavior round)
         {
             FireBullet(round);
-
-
-
-
-
 
             /*if (Time.time - nextFire >= fireRate)
             {
@@ -123,11 +121,19 @@ namespace VRWeapons
             PlaySound(0);
 
             round.DoBulletBehavior(transform, damage, range, bulletSpreadRange, thisWeapon, control.shotMask);
+            DoMuzzleFlash();
         }
 
         void PlaySound(int clip)
         {
             audioSource.Play();
+        }
+
+        void DoMuzzleFlash()
+        {
+            currentFlash = flashPool.GetNewObj();
+            currentFlash.transform.parent = this.transform;
+            currentFlash.transform.localPosition = Vector3.zero;
         }
         
     }

@@ -11,35 +11,43 @@ namespace VRWeapons
         public GameObject[] ObjectsInPool;
         Dictionary<int, GameObject[]> ObjPool;
         int[] objIndex;
-        int pools;
+        int poolIndex;
 
         private void Start()
         {
             ObjPool = new Dictionary<int, GameObject[]>();
-            pools = 0;
+            poolIndex = 0;
+            objIndex = new int[ObjectsInPool.Length];
             foreach (GameObject obj in ObjectsInPool)
             {
-                GameObject newPool = new GameObject(obj.name + "Pool");
+                GameObject newPool = new GameObject(obj.name + "_Pool");
+                GameObject[] pool = new GameObject[ObjectsPerElement];
+
                 for (int i = 0; i < ObjectsPerElement; i++)
                 {
-                    ObjPool[pools] = new GameObject[ObjectsPerElement];
-
-                    ObjPool[pools][i] = Instantiate(obj);
-                    ObjPool[pools][i].SetActive(false);
-                    ObjPool[pools][i].transform.parent = newPool.transform;
-                    Debug.Log("Added object " + obj + " to Object Pool in position: " + pools + ", " + i);
+                    GameObject tmp = Instantiate(obj);
+                    pool[i] = tmp;
+                    tmp.SetActive(false);
+                    tmp.transform.parent = newPool.transform;                    
                 }
-                pools++;
+                ObjPool.Add(poolIndex, pool);
+                poolIndex++;
             }
-            objIndex = new int[pools];
+            poolIndex--;
         }
 
         public GameObject GetNewObj()
         {
+            GameObject[] objArray;
             GameObject obj;
-            int selectedIndex = Random.Range(0, pools);
-            obj = ObjPool[selectedIndex][objIndex[selectedIndex]];
-            objIndex[selectedIndex] = (objIndex[selectedIndex] + 1) % ObjectsPerElement;
+
+            int selectedIndex = Random.Range(0, poolIndex);
+
+            objArray = ObjPool[selectedIndex];
+
+            obj = objArray[objIndex[selectedIndex]];
+
+            objIndex[selectedIndex] = (objIndex[selectedIndex] + 1) % (ObjectsPerElement);
 
             obj.SetActive(true);
             return obj;

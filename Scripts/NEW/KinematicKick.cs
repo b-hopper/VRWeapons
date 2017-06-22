@@ -12,20 +12,19 @@ namespace VRWeapons
         bool fixPosition, isKicking, originalPosSet;
         int shotsFiredSinceReset;
 
-        [Tooltip("Amount (and direction) the weapon moves positionally when fired. Logarithmically tapers down with each shot.")]
-        [SerializeField]
+        [Tooltip("Amount (and direction) the weapon moves positionally when fired. Logarithmically tapers down with each shot."), SerializeField]
         Vector3 amountToMove = new Vector3(0, 0.05f, -0.025f);
-        [Tooltip("Amount (and direction) the weapon rotates when fired. Logarithmically tapers down with each shot.")]
-        [SerializeField]
+
+        [Tooltip("Amount (and direction) the weapon rotates when fired. Logarithmically tapers down with each shot."), SerializeField]
         Vector3 amountToRotate = new Vector3(-5, 0, 0);
-        [Tooltip("How quickly the weapon recoils. 1 is instant, 0 is no movement.")]
-        [SerializeField]
+
+        [Tooltip("How quickly the weapon recoils. 1 is instant, 0 is no movement."), SerializeField]
         float recoilLerpSpeed = 0.334f;
-        [Tooltip("How quickly the weapon recovers. 1 is instant, 0 is no movement.")]
-        [SerializeField]
+
+        [Tooltip("How quickly the weapon recovers. 1 is instant, 0 is no movement."), SerializeField]
         float recoverLerpSpeed = 0.05f;
-        [Tooltip("Decreases the amount of kick when 2-hand gripped by multiplication. 0 = no kick, 1 = full kick.")]
-        [SerializeField]
+
+        [Tooltip("Decreases the amount of kick when 2-hand gripped by multiplication. 0 = no kick, 1 = full kick."), SerializeField]
         float twoHandGripKickReduction = 0.5f;
 
         private void Start()
@@ -38,7 +37,7 @@ namespace VRWeapons
             float tmpKickReduction = 1;
             if (!originalPosSet)
             {
-                originalPos = transform.localPosition;  // Only set original position if it's back to zero.
+                originalPos = transform.localPosition;
                 originalRot = transform.localEulerAngles;
                 originalPosSet = true;
             }
@@ -102,7 +101,6 @@ namespace VRWeapons
             if (!thisWeap.IsWeaponFiring())
             {
                 shotsFiredSinceReset = 0;
-                Debug.Log("Shots fired since reset... reset");
             }
             if (lerpVal <= 0)
             {

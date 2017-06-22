@@ -4,7 +4,8 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace VRWeapons {
-
+    
+    [System.Serializable]
     public class ShotgunBullet : MonoBehaviour, IBulletBehavior{
 
         [Tooltip("Shotgun pellets per shell.")]

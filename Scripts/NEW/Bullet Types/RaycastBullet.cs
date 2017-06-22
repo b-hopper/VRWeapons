@@ -6,6 +6,7 @@ using VRWeapons;
 
 namespace VRWeapons
 {
+    [System.Serializable]
     public class RaycastBullet : MonoBehaviour, IBulletBehavior
     {
        

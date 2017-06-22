@@ -8,7 +8,7 @@ namespace VRWeapons
 
     [RequireComponent(typeof(AudioSource))]
 
-
+    [System.Serializable]
     public class Weapon : MonoBehaviour
     {
         IMuzzleActions Muzzle;
@@ -16,7 +16,6 @@ namespace VRWeapons
         IKickActions Kick;
         IBoltActions Bolt;
         IObjectPool shellPool;
-        IObjectPool flashPool;
         public IBulletBehavior chamberedRound;
         public IMagazine Magazine;
 
@@ -24,23 +23,22 @@ namespace VRWeapons
         AudioClip soundToPlay;
 
         bool isFiring, justFired, stopFiring;
+        int burstCount;
+
         [HideInInspector]
         public bool secondHandGripped;
 
         float nextFire;
-        [HideInInspector]
 
         //// Shown in inspector ////
-        [Tooltip("Weapon will never run out of ammo.")]
-        [SerializeField]
+        [Tooltip("Weapon will never run out of ammo."), SerializeField]
         bool infiniteAmmo;
 
-        [Tooltip("Bolt will rack forward after racking backward, unless magazine is inserted and empty.")]
-        [SerializeField]
+        [Tooltip("Bolt will rack forward after racking backward, unless magazine is inserted and empty."), SerializeField]
         public bool autoRackForward;
 
-        [Tooltip("Bolt moves back on firing. Disable for bolt/pump action weapons.")]
-        [SerializeField]
+
+        [Tooltip("Bolt moves back on firing. Disable for bolt/pump action weapons."), SerializeField]
         bool boltMovesOnFiring;
 
         public ImpactProfile impactProfile;
@@ -48,24 +46,25 @@ namespace VRWeapons
         [SerializeField]
         FireMode fireMode;
 
-        [Tooltip("Fire rate in seconds")]
-        [SerializeField]        
+        [Tooltip("Fire rate in seconds"), SerializeField]        
         float fireRate;
 
-        [Tooltip("Sound effect played when magazine is inserted.")]
-        [SerializeField]
+        [Tooltip("Only applies to burst fire mode."), SerializeField]
+        int burstAmount;
+
+        [Tooltip("Sound effect played when magazine is inserted."), SerializeField]
         AudioClip MagIn;
-        [Tooltip("Sound effect played when magazine is removed.")]
-        [SerializeField]
+
+        [Tooltip("Sound effect played when magazine is removed."), SerializeField]
         AudioClip MagOut;
-        [Tooltip("Sound effect played when bolt is moved back.")]
-        [SerializeField]
+
+        [Tooltip("Sound effect played when bolt is moved back."), SerializeField]
         AudioClip SlideBack;
-        [Tooltip("Sound effect played when bolt is moved forward.")]
-        [SerializeField]
+
+        [Tooltip("Sound effect played when bolt is moved forward."), SerializeField]
         AudioClip SlideForward;
-        [Tooltip("Sound effect played when attempting to fire an empty weapon.")]
-        [SerializeField]
+
+        [Tooltip("Sound effect played when attempting to fire an empty weapon."), SerializeField]
         AudioClip DryFire;
 
         //// End shown in inspector ////
@@ -121,7 +120,6 @@ namespace VRWeapons
             chamberedRound = round;
         }
 
-
         public void PlaySound(Weapon.AudioClips clip)
         {
             switch (clip)
@@ -165,7 +163,7 @@ namespace VRWeapons
         {
             if (isFiring)
             {
-                if (!justFired || fireMode == FireMode.Automatic)
+                if (!justFired || fireMode == FireMode.Automatic || (fireMode == FireMode.Burst && burstCount < burstAmount))
                 {
                     if ((Time.time - nextFire >= fireRate) && IsChambered())
                     {
@@ -174,6 +172,7 @@ namespace VRWeapons
                         chamberedRound = null;
                         nextFire = Time.time;
                         justFired = true;
+                        burstCount++;
                     }
                     else if (Time.time - nextFire >= fireRate)
                     {
@@ -187,6 +186,7 @@ namespace VRWeapons
             {
                 stopFiring = false;
                 justFired = false;
+                burstCount = 0;
                 Muzzle.StopFiring();
             }
         }
