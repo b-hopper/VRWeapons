@@ -25,6 +25,8 @@ namespace VRWeapons
                         {
                             mag.rounds[i] = Instantiate(mag.rounds[0]);
                             mag.rounds[i].transform.parent = mag.transform;
+                            mag.rounds[i].transform.localPosition = mag.rounds[0].transform.localPosition;
+                            mag.rounds[i].transform.localEulerAngles = mag.rounds[0].transform.localEulerAngles;
                         }
                     }
                 }

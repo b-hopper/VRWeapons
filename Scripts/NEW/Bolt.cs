@@ -12,10 +12,17 @@ namespace VRWeapons
         IEjectorActions Ejector;
 
         float boltLerpPos, boltMoveSpeed, lastBoltLerpPos;
-        bool movingBack, movingForward, isManip, canChamberNewRound, justPlayedSoundForward = true, justPlayedSoundBack, doNotPlaySound;
+        bool movingBack, movingForward, isManip, canChamberNewRound, justPlayedSoundForward = true,
+            justPlayedSoundBack, doNotPlaySound, justEjected;
 
         public bool boltMovesSeparate;
         public int slideTimeInFrames;
+
+        Rigidbody chamberedRoundRB;
+        Transform chamberedRoundT;
+
+        [Tooltip("Location of round on bolt face. Should be child of bolt. Align round with desired location, then set it inactive."), SerializeField]
+        Transform chamberedRoundSnapT;
 
         public Transform boltGroup, bolt;
         public Vector3 GroupStartPosition;
@@ -44,6 +51,19 @@ namespace VRWeapons
         {
             if (thisWeap.Magazine != null)
             {
+                // Getting Rigidbody and Transform to snap into position and eject correctly
+                chamberedRoundRB = thisWeap.Magazine.GetRoundRigidBody();
+                chamberedRoundT = thisWeap.Magazine.GetRoundTransform();
+
+                // Setting round in correct position on bolt face
+                if (chamberedRoundT != null)
+                {
+                    chamberedRoundT.parent = transform;
+                    chamberedRoundT.localEulerAngles = chamberedRoundSnapT.localEulerAngles;
+                    chamberedRoundT.localPosition = chamberedRoundSnapT.localPosition;
+                }
+
+                // Setting up the chambered round to prepare for firing
                 return thisWeap.Magazine.FeedRound();
             }
             else
@@ -58,14 +78,10 @@ namespace VRWeapons
             {
                 doNotPlaySound = true;
                 boltLerpPos += boltMoveSpeed;
+
+
                 if (boltLerpPos >= 1)
                 {
-                    if (Ejector != null)
-                    {
-                        Ejector.Eject();
-                    }
-
-
                     boltLerpPos = 1;
                     movingBack = false;
                     if (thisWeap.autoRackForward)
@@ -86,14 +102,24 @@ namespace VRWeapons
                     if (canChamberNewRound)
                     {
                         thisWeap.chamberedRound = ChamberNewRound();
+                        justEjected = false;
                         canChamberNewRound = false;
                     }
                 }
 
             }
-
+            
             if (boltLerpPos >= 0.9f)
             {
+                if (!justEjected)
+                {
+                    if (Ejector != null && chamberedRoundT != null && chamberedRoundRB != null)
+                    {
+                        Ejector.Eject(chamberedRoundT, chamberedRoundRB);
+                    }
+                }
+
+                justEjected = true;
                 canChamberNewRound = true;
             }
             

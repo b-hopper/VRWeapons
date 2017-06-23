@@ -46,6 +46,24 @@ namespace VRWeapons
             return val;
         }
 
+        public Rigidbody GetRoundRigidBody()
+        {
+            if (index >= 0)
+            {
+                return rounds[index].GetComponent<Rigidbody>();
+            }
+            return null;
+        }
+
+        public Transform GetRoundTransform()
+        {
+            if (index >= 0)
+            {
+                return rounds[index].transform;
+            }
+            return null;
+        }
+
         public IBulletBehavior FeedRound()
         {
             IBulletBehavior tmp = null;
@@ -94,7 +112,27 @@ namespace VRWeapons
                     index = j - offset;
                 }
             }
-            
+            FixRoundsList(rounds);  // Fix GameObjects list to match IBulletBehavior list. GameObjects list is used for ejector RigidBodies and Transforms.
+        }
+
+        void FixRoundsList(GameObject[] list)
+        {
+            int offset = 0;
+            for (int i = 0; i < list.Length; i++)
+            {
+                if (list[i] == null)
+                {
+                    offset++;
+                }
+                if (i + offset > list.Length - 1)
+                {
+                    list[i] = null;
+                }
+                else
+                {
+                    list[i] = list[i + offset];
+                }
+            }
         }
 
         void ReportRoundsInMag()

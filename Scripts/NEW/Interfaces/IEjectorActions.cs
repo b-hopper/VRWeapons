@@ -7,6 +7,6 @@ namespace VRWeapons
 {
     public interface IEjectorActions
     {
-        void Eject();
+        void Eject(Transform t, Rigidbody rb);
     }
 }

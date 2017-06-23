@@ -12,5 +12,7 @@ namespace VRWeapons
         void MagOut(Weapon weap);
         bool PushBullet(IBulletBehavior newRound);
         bool PopBullet();
+        Rigidbody GetRoundRigidBody();
+        Transform GetRoundTransform();
     }
 }
