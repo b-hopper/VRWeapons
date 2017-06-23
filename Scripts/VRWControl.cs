@@ -106,7 +106,7 @@ namespace VRWeapons
                 //StartCoroutine(StartWithWeapon());
             }*/
 
-            Debug.Log("VRWeapons v" + VRWVersion);
+            Debug.Log("VRWeapons v" + VRWVersion.ToString("F2"));
 
         }
 

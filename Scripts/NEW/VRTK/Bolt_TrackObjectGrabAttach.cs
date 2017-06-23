@@ -18,7 +18,7 @@ public class Bolt_TrackObjectGrabAttach : VRTK_InteractableObject
 
     Vector3 boltMin, boltMax, startPos, currentPos;
     [SerializeField]
-    Vector3 thisMin, thisMax;
+    Vector3 boltClosedPosition, boltOpenPosition;
 
 
     private void Start()
@@ -42,17 +42,17 @@ public class Bolt_TrackObjectGrabAttach : VRTK_InteractableObject
             hasMoved = true;
             currentPos = new Vector3(startPos.x, startPos.y, transform.localPosition.z);
             transform.localPosition = currentPos;
-            if (transform.localPosition.z < thisMax.z)
+            if (transform.localPosition.z < boltOpenPosition.z)
             {
-                currentPos = new Vector3(transform.localPosition.x, transform.localPosition.y, thisMax.z);
+                currentPos = new Vector3(transform.localPosition.x, transform.localPosition.y, boltOpenPosition.z);
                 transform.localPosition = currentPos;
             }
-            else if (transform.localPosition.z > thisMin.z)
+            else if (transform.localPosition.z > boltClosedPosition.z)
             {
-                currentPos = new Vector3(transform.localPosition.x, transform.localPosition.y, thisMin.z);
+                currentPos = new Vector3(transform.localPosition.x, transform.localPosition.y, boltClosedPosition.z);
                 transform.localPosition = currentPos;
             }
-            lerpValue = VRWControl.InverseLerp(thisMin, thisMax, transform.localPosition);
+            lerpValue = VRWControl.InverseLerp(boltClosedPosition, boltOpenPosition, transform.localPosition);
             i.SetLerpValue(lerpValue);
         }
         else if (hasMoved)
@@ -68,7 +68,7 @@ public class Bolt_TrackObjectGrabAttach : VRTK_InteractableObject
         
         if (lerpValue != oldLerpValue)
         {
-            transform.localPosition = Vector3.Lerp(thisMin, thisMax, lerpValue);
+            transform.localPosition = Vector3.Lerp(boltClosedPosition, boltOpenPosition, lerpValue);
         }
 
 

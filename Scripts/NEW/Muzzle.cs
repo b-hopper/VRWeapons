@@ -16,18 +16,25 @@ namespace VRWeapons
         VRWControl control;
         GameObject currentFlash;
 
-        IObjectPool flashPool;
+        //IObjectPool flashPool;
+
+        Dictionary<GameObject, List<ParticleSystem>> flashPool;
 
         public float range, bulletSpreadRange, damage;
 
+        [Tooltip("Muzzle flash objects. If the object contains a Particle System, use empty parent GameObject and set particle system GameObjects as children."), SerializeField]
+        GameObject[] muzzleFlashes;
+
         void Start()
         {
+            /* All the expensive GetComponent and FindObject operations are in Start(), to reduce runtime lag as much as possible. */
             thisWeapon = GetComponentInParent<Weapon>();
             audioSource = GetComponent<AudioSource>();
             control = FindObjectOfType<VRWControl>();
-            flashPool = GetComponent<IObjectPool>();
-        }
+            flashPool = new Dictionary<GameObject, List<ParticleSystem>>();
 
+            AddObjectsToFlashPool();
+        }
 
         public void StartFiring(IBulletBehavior round)
         {
@@ -131,9 +138,41 @@ namespace VRWeapons
 
         void DoMuzzleFlash()
         {
-            currentFlash = flashPool.GetNewObj();
-            currentFlash.transform.parent = this.transform;
+            currentFlash = muzzleFlashes[Random.Range(0, muzzleFlashes.Length)];
+
+            currentFlash.SetActive(true);
+
             currentFlash.transform.localPosition = Vector3.zero;
+
+            List<ParticleSystem> tmp;
+            if (flashPool.TryGetValue(currentFlash, out tmp))
+            {
+                tmp = flashPool[currentFlash];
+                foreach(ParticleSystem a in tmp)
+                {
+                    a.Clear();
+                    a.Play();
+                }
+            }
+        }
+
+        void AddObjectsToFlashPool()
+        {
+            for (int i = 0; i < muzzleFlashes.Length; i++)
+            {
+                List<ParticleSystem> tmp = new List<ParticleSystem>(muzzleFlashes[i].GetComponentsInChildren<ParticleSystem>());
+
+                if (tmp.Count > 0)
+                {
+                    flashPool.Add(muzzleFlashes[i], tmp);
+                }               
+
+                muzzleFlashes[i].transform.parent = transform;
+
+                muzzleFlashes[i].SetActive(false);
+
+                tmp = null;
+            }
         }
         
     }

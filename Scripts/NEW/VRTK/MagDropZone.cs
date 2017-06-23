@@ -13,7 +13,6 @@ public class MagDropZone : VRTK_SnapDropZone {
     private void Start()
     {
         thisWeap = GetComponentInParent<VRWeapons.Weapon>();
-        Debug.Log(thisWeap);
 
         if (startingMag != null) {
             ForceSnap(startingMag);
