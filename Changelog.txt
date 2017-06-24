@@ -1,3 +1,17 @@
+NOTES:
+
+	Empty bullet shell object must be on a layer that does NOT interact with weapon, else ejector does not function correctly.
+
+
+
+
+
+
+
+
+
+
+
 ------------------------------------------------
 v1.25
 ------------------------------------------------

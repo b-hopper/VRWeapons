@@ -14,10 +14,11 @@ namespace VRWeapons
 
         void IsCurrentlyBeingManipulated(bool val);
 
+        void ReplaceRoundWithEmptyShell(GameObject go);
+
         Vector3 GetMinValue();
         Vector3 GetMaxValue();
 
-        float GetLerpValue();
-        void SetLerpValue(float val);
+        float boltLerpVal { set; get; }
     }
 }

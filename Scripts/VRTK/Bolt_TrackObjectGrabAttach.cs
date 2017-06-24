@@ -53,7 +53,7 @@ public class Bolt_TrackObjectGrabAttach : VRTK_InteractableObject
                 transform.localPosition = currentPos;
             }
             lerpValue = VRWControl.InverseLerp(boltClosedPosition, boltOpenPosition, transform.localPosition);
-            i.SetLerpValue(lerpValue);
+            i.boltLerpVal = lerpValue;
         }
         else if (hasMoved)
         {
@@ -63,7 +63,7 @@ public class Bolt_TrackObjectGrabAttach : VRTK_InteractableObject
         }
         else
         {
-            lerpValue = i.GetLerpValue();
+            lerpValue = i.boltLerpVal;
         }
         
         if (lerpValue != oldLerpValue)

@@ -96,10 +96,11 @@ namespace VRWeapons
 
         private void Start()
         {
-            Muzzle = GetComponentInChildren<IMuzzleActions>();  // TEMPORARY, to be assigned in-editor later
+            Muzzle = GetComponentInChildren<IMuzzleActions>();
             Bolt = GetComponentInChildren<IBoltActions>();
             Ejector = GetComponentInChildren<IEjectorActions>();
             Kick = GetComponent<IKickActions>();
+            shellPool = GetComponent<IObjectPool>();
             Bolt.SetEjector(Ejector);
             audioSource = GetComponent<AudioSource>();
         }
@@ -216,14 +217,18 @@ namespace VRWeapons
 
         void DoOnFireActions()
         {
-            if (Bolt != null && boltMovesOnFiring)
+            if (Bolt != null)
             {
-                Bolt.BoltBack();
+                Bolt.ReplaceRoundWithEmptyShell(shellPool.GetNewObj());
+                if (boltMovesOnFiring)
+                {
+                    Bolt.BoltBack();
+                }
             }
             if (Kick != null)
             {
                 Kick.Kick();
-            }
+            }            
         }
 
         public bool IsWeaponFiring()

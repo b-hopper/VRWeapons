@@ -10,8 +10,10 @@ namespace VRWeapons
 
         Weapon thisWeap;
         IEjectorActions Ejector;
+        IObjectPool spentShellPool;
 
-        float boltLerpPos, boltMoveSpeed, lastBoltLerpPos;
+        public float boltLerpVal { set; get; }
+        float boltMoveSpeed, lastboltLerpVal;
         bool movingBack, movingForward, isManip, canChamberNewRound, justPlayedSoundForward = true,
             justPlayedSoundBack, doNotPlaySound, justEjected;
 
@@ -34,6 +36,8 @@ namespace VRWeapons
         private void Start()
         {
             thisWeap = GetComponentInParent<Weapon>();
+            spentShellPool = GetComponent<IObjectPool>();
+
             boltMoveSpeed = 1 / (float)slideTimeInFrames;
         }
 
@@ -77,12 +81,12 @@ namespace VRWeapons
             if (movingBack)
             {
                 doNotPlaySound = true;
-                boltLerpPos += boltMoveSpeed;
+                boltLerpVal += boltMoveSpeed;
 
 
-                if (boltLerpPos >= 1)
+                if (boltLerpVal >= 1)
                 {
-                    boltLerpPos = 1;
+                    boltLerpVal = 1;
                     movingBack = false;
                     if (thisWeap.autoRackForward)
                     {
@@ -93,23 +97,26 @@ namespace VRWeapons
 
             else if (movingForward)
             {
-                boltLerpPos -= boltMoveSpeed;
-                if (boltLerpPos <= 0)
+                boltLerpVal -= boltMoveSpeed;
+                if (boltLerpVal <= 0)
                 {
-                    doNotPlaySound = false;
-                    boltLerpPos = 0;
+                    boltLerpVal = 0;
                     movingForward = false;
-                    if (canChamberNewRound)
-                    {
-                        thisWeap.chamberedRound = ChamberNewRound();
-                        justEjected = false;
-                        canChamberNewRound = false;
-                    }
                 }
-
             }
-            
-            if (boltLerpPos >= 0.9f)
+
+            if (boltLerpVal <= 0.05f)
+            {
+                doNotPlaySound = false;
+                if (canChamberNewRound)
+                {
+                    thisWeap.chamberedRound = ChamberNewRound();
+                    justEjected = false;
+                    canChamberNewRound = false;
+                }
+            }
+
+            if (boltLerpVal >= 0.9f)
             {
                 if (!justEjected)
                 {
@@ -124,28 +131,28 @@ namespace VRWeapons
             }
             
 
-            if (!isManip && boltLerpPos > 0 && thisWeap.autoRackForward && !movingBack)
+            if (!isManip && boltLerpVal > 0 && thisWeap.autoRackForward && !movingBack)
             {
                 movingForward = true;
             }
 
-            if (lastBoltLerpPos != boltLerpPos)
+            if (lastboltLerpVal != boltLerpVal)
             {
                 if (boltMovesSeparate)
                 {
-                    bolt.transform.localPosition = Vector3.Lerp(BoltStartPosition, BoltEndPosition, boltLerpPos);
+                    bolt.transform.localPosition = Vector3.Lerp(BoltStartPosition, BoltEndPosition, boltLerpVal);
                 }
                 else
                 {
-                    boltGroup.transform.localPosition = Vector3.Lerp(GroupStartPosition, GroupEndPosition, boltLerpPos);
+                    boltGroup.transform.localPosition = Vector3.Lerp(GroupStartPosition, GroupEndPosition, boltLerpVal);
                 }
-                if (!doNotPlaySound && !justPlayedSoundBack && boltLerpPos > 0.9f)
+                if (!doNotPlaySound && !justPlayedSoundBack && boltLerpVal > 0.9f)
                 {
                     thisWeap.PlaySound(Weapon.AudioClips.SlideBack);
                     justPlayedSoundBack = true;
                     justPlayedSoundForward = false;
                 }
-                else if (!doNotPlaySound && !justPlayedSoundForward && boltLerpPos < 0.1f )
+                else if (!doNotPlaySound && !justPlayedSoundForward && boltLerpVal < 0.1f )
                 {
                     thisWeap.PlaySound(Weapon.AudioClips.SlideForward);
                     justPlayedSoundForward = true;
@@ -153,16 +160,23 @@ namespace VRWeapons
                 }
             }
 
-            lastBoltLerpPos = boltLerpPos;
+            lastboltLerpVal = boltLerpVal;
         }
 
-        public void SetLerpValue(float val)
+
+        public void ReplaceRoundWithEmptyShell(GameObject go)
         {
-            boltLerpPos = val;
+            go.transform.parent = chamberedRoundT.parent;
+            go.transform.localPosition = chamberedRoundT.localPosition;
+            go.transform.localEulerAngles = chamberedRoundT.localEulerAngles;
+            DestroyImmediate(chamberedRoundT.gameObject);
+            chamberedRoundT = go.transform;
+            chamberedRoundRB = go.GetComponent<Rigidbody>();
+            chamberedRoundRB.isKinematic = true;
         }
+
 
         public void IsCurrentlyBeingManipulated(bool val) { isManip = val; }
-        public float GetLerpValue() { return boltLerpPos; }
         public Vector3 GetMinValue() { return GroupStartPosition; }
         public Vector3 GetMaxValue() { return GroupEndPosition; }
     }

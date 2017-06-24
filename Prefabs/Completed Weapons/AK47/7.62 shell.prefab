@@ -23,9 +23,9 @@ GameObject:
   - component: {fileID: 23592103514884664}
   - component: {fileID: 65269646557189066}
   - component: {fileID: 54403866566476102}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: 7.62 shell
-  m_TagString: Untagged
+  m_TagString: 762Round
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -38,7 +38,7 @@ Transform:
   m_GameObject: {fileID: 1534735323711206}
   m_LocalRotation: {x: 0.000000081460335, y: 0, z: -0, w: 1}
   m_LocalPosition: {x: 0.8391364, y: 0.61284435, z: 1.8361433}
-  m_LocalScale: {x: 100, y: 100, z: 100}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -80,7 +80,7 @@ MeshFilter:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1534735323711206}
-  m_Mesh: {fileID: 4300008, guid: 2b5d044abbc7457488eb173b87b712aa, type: 3}
+  m_Mesh: {fileID: 4300008, guid: df7d9e7cd0e78564884965273b5bd9b2, type: 3}
 --- !u!54 &54403866566476102
 Rigidbody:
   m_ObjectHideFlags: 1
@@ -92,7 +92,7 @@ Rigidbody:
   m_Drag: 0
   m_AngularDrag: 0.05
   m_UseGravity: 1
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
@@ -106,5 +106,5 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.00012932926, y: 0.00012608673, z: 0.0005351547}
-  m_Center: {x: 7.275958e-12, y: 0.0000035349258, z: 0.000037387188}
+  m_Size: {x: 0.011638903, y: 0.011192441, z: 0.048435085}
+  m_Center: {x: 0.000011742115, y: 0.0002943879, z: 0.0034017563}

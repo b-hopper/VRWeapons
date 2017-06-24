@@ -17,10 +17,11 @@ namespace VRWeapons
 
         public void Eject(Transform t, Rigidbody rb)
         {
-            t.parent = null;
             rb.isKinematic = false;
-            rb.AddForce((Vector3.forward + (Random.insideUnitSphere * ejectorRandomness)) * ejectForce, ForceMode.Impulse);
+            Vector3 forward = (transform.forward + (Random.insideUnitSphere * ejectorRandomness)).normalized;
+            rb.AddForce(forward * ejectForce, ForceMode.Impulse);
             rb.AddTorque(Random.insideUnitSphere * ejectorRotationalRandomness, ForceMode.Impulse);
+            t.parent = null;
         }
     }
 }
