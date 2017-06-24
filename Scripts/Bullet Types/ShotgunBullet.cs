@@ -8,6 +8,9 @@ namespace VRWeapons {
     [System.Serializable]
     public class ShotgunBullet : MonoBehaviour, IBulletBehavior{
 
+        [SerializeField]
+        float shotForce;
+
         [Tooltip("Shotgun pellets per shell.")]
         [SerializeField]
         int shotgunPellets = 10;
@@ -22,32 +25,20 @@ namespace VRWeapons {
                 if (Physics.Raycast(muzzleDir.position, shotLocation, out hit, range, shotMask))
                 {
                     ExecuteEvents.Execute<IAttackReceiver>(hit.collider.gameObject, null, ((handler, eventData) => handler.ReceiveAttack(thisWeapon.NewAttack(damage, transform.position, hit))));
-                }
 
-                /*RaycastHit hit;
-                Debug.DrawRay(muzzle.position, (muzzleDirection.position - muzzle.position).normalized, Color.red, Mathf.Infinity);
-                if (Physics.Raycast(muzzle.transform.position, (muzzleDirection.position - muzzle.position).normalized + (Random.insideUnitSphere * bulletSpreadRange), out hit, range, shotMask))
-                {
-                    if (impactProfile != null)
+                    if (thisWeapon.impactProfile != null)
                     {
-                        ImpactInfo impact = impactProfile.GetImpactInfo(hit);
-                        GameObject cloneImpact = Instantiate(impact.GetRandomPrefab(), hit.point, Quaternion.LookRotation(hit.normal)) as GameObject;
+                        ImpactInfo impact = thisWeapon.impactProfile.GetImpactInfo(hit);
+                        GameObject cloneImpact = Instantiate(impact.GetRandomPrefab(), hit.point, Quaternion.LookRotation(hit.normal)) as GameObject;   // Need to decide where Object Pool goes, here
                         cloneImpact.transform.parent = hit.transform;
                     }
-                    if (hit.rigidbody != null)
+                    Rigidbody rb = hit.transform.GetComponent<Rigidbody>();
+                    if (rb)
                     {
-                        hit.rigidbody.AddForceAtPosition(force * (muzzleDirection.position - muzzle.position).normalized, hit.point);
+                        rb.AddForceAtPosition(shotForce * (muzzleDir.forward).normalized, hit.point);
                     }
-
-                    var attack = new Attack
-                    {
-                        damage = damage,
-                        headshotMultiplier = headshotMultiplier,
-                        origin = muzzle.position,
-                        hitInfo = hit
-                    };
-                    //ExecuteEvents.Execute<IAttackReceiver>(hit.collider.gameObject, null, ((handler, eventData) => handler.ReceiveAttack(attack)));
-                }*/
+                }
+                
             }
         }
     }

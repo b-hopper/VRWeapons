@@ -27,9 +27,8 @@ GameObject:
   - component: {fileID: 114751337764210486}
   - component: {fileID: 114245921687287004}
   - component: {fileID: 114093166552842028}
-  - component: {fileID: 114810259373988110}
   m_Layer: 12
-  m_Name: bullet
+  m_Name: 7.62 Round
   m_TagString: 762Round
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -147,12 +146,12 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1812905901179042}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a3abaf4521bf2344ea21ed3020b98eb2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  disableWhenIdle: 1
+  disableWhenIdle: 0
   touchHighlightColor: {r: 1, g: 0, b: 0, a: 0}
   allowedTouchControllers: 0
   isGrabbable: 1
@@ -181,23 +180,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b1870e4ffcdcc0488a8936893e815e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &114810259373988110
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1812905901179042}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dc2315305343a584e8758755b54117c5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  strengthOnTouch: 0
-  durationOnTouch: 0
-  intervalOnTouch: 0.05
-  strengthOnGrab: 0
-  durationOnGrab: 0
-  intervalOnGrab: 0.05
-  strengthOnUse: 0
-  durationOnUse: 0
-  intervalOnUse: 0.05
+  shotForce: 0

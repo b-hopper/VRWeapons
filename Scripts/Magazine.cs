@@ -30,6 +30,7 @@ namespace VRWeapons
             {
                 RoundsInMag.Insert(index, newRound);
                 val = true;
+                rounds[index].GetComponent<Collider>().enabled = false;
                 index++;
             }
             return val;
@@ -42,6 +43,7 @@ namespace VRWeapons
             {
                 val = true;
                 index--;
+                rounds[index].GetComponent<Collider>().enabled = true;
             }
             return val;
         }
@@ -132,7 +134,12 @@ namespace VRWeapons
                 {
                     list[i] = list[i + offset];
                 }
+                if (list[i].GetComponent<Collider>() != null)
+                {
+                    list[i].GetComponent<Collider>().enabled = false;   // Colliders are causing problems with ejection. Disable them...
+                }
             }
+            list[list.Length - 1].GetComponent<Collider>().enabled = true;  // ...except for the last one, which is the top round in the magazine.
         }
 
         void ReportRoundsInMag()
