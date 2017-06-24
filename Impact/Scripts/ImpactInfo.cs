@@ -6,7 +6,8 @@ public struct ImpactInfo
 	public enum Type
 	{
 		Material,
-		Terrain
+		Terrain,
+        Tag
 	}
 
 	[SerializeField]
@@ -16,26 +17,39 @@ public struct ImpactInfo
 	Material material;
 	[SerializeField]
 	Texture texture;
+    [SerializeField]
+    string tag;
 	[SerializeField]
 	GameObject[] impactPrefabs;
 
 	public Type ImpactType {
-		get {
+		get
+        {
 			return impactType;
 		}
 	}
 
 	public Material Material {
-		get {
+		get
+        {
 			return material;
 		}
 	}
 
 	public Texture Texture {
-		get {
+		get
+        {
 			return texture;
 		}
 	}
+
+    public string Tag
+    {
+        get
+        {
+            return tag;
+        }
+    }
     
 	public GameObject GetRandomPrefab ()
 	{

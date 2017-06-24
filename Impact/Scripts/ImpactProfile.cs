@@ -6,6 +6,7 @@ public class ImpactProfile : ScriptableObject
 {
 	Dictionary<Material, ImpactInfo> materialLookup;
 	Dictionary<Texture, ImpactInfo> textureLookup;
+    Dictionary<string, ImpactInfo> tagLookup;
 
 	[SerializeField]
 	public ImpactInfo defaultImpact;
@@ -17,14 +18,21 @@ public class ImpactProfile : ScriptableObject
 	{
 		materialLookup = new Dictionary<Material, ImpactInfo> ();
 		textureLookup = new Dictionary<Texture, ImpactInfo> ();
+        tagLookup = new Dictionary<string, ImpactInfo> ();
 
 		for (int i = 0; i < impacts.Length; i++) {
 			var impact = impacts [i];
-			if (impact.ImpactType == ImpactInfo.Type.Material) {
+			if (impact.ImpactType == ImpactInfo.Type.Material)
+            {
 				materialLookup [impact.Material] = impact;
-			} else if (impact.ImpactType == ImpactInfo.Type.Terrain) {
+			} else if (impact.ImpactType == ImpactInfo.Type.Terrain)
+            {
 				textureLookup [impact.Texture] = impact;
-			}
+			} else if (impact.ImpactType == ImpactInfo.Type.Tag)
+            {
+                tagLookup[impact.Tag] = impact;
+            }
+
 		}
 	}
 
@@ -40,13 +48,13 @@ public class ImpactProfile : ScriptableObject
 
 	public ImpactInfo GetImpactInfo (RaycastHit hitInfo)
 	{
-		var collider = hitInfo.transform.GetComponent<Collider> ();
+        ImpactInfo impact;
+        var collider = hitInfo.transform.GetComponent<Collider> ();
         var ImpProfileOverride = hitInfo.transform.GetComponent<ImpactProfileOverride>();
 		if (collider is TerrainCollider) {
 			var terrain = collider.GetComponent<Terrain> ();
 			if (terrain != null) {
 				var tex = GetTerrainTextureAt (terrain, hitInfo.point);
-				ImpactInfo impact;
 				if (textureLookup.TryGetValue (tex, out impact)) {
 					return textureLookup [tex];
 				}
@@ -58,14 +66,31 @@ public class ImpactProfile : ScriptableObject
         {
             return GetImpactInfo(ImpProfileOverride.materialOverride);
         }
+        
+        if (tagLookup.TryGetValue(hitInfo.transform.tag, out impact))
+        {
+            return tagLookup[hitInfo.transform.tag];
+        }
 
-		var renderer = hitInfo.transform.GetComponent<Renderer> ();
+            var renderer = hitInfo.transform.GetComponent<Renderer> ();
 		if (renderer == null || renderer.sharedMaterial == null) {
 			return defaultImpact;
 		}
 
+
 		return GetImpactInfo (renderer.sharedMaterial);
 	}
+
+    public ImpactInfo GetImpactInfo (string tagName)
+    {
+        ImpactInfo impact;
+        if (tagLookup.TryGetValue(tagName, out impact))
+        {
+            return impact;
+        }
+
+        return defaultImpact;
+    }
 
 	Texture GetTerrainTextureAt (Terrain terrain, Vector3 position)
 	{
