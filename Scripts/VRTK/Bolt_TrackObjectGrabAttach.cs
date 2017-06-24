@@ -69,10 +69,6 @@ public class Bolt_TrackObjectGrabAttach : VRTK_InteractableObject
         if (lerpValue != oldLerpValue)
         {
             transform.localPosition = Vector3.Lerp(boltClosedPosition, boltOpenPosition, lerpValue);
-        }
-
-
-        
-    }
-    
+        }        
+    }    
 }

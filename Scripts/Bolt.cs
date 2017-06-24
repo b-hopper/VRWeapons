@@ -17,20 +17,43 @@ namespace VRWeapons
         bool movingBack, movingForward, isManip, canChamberNewRound, justPlayedSoundForward = true,
             justPlayedSoundBack, doNotPlaySound, justEjected;
 
-        public bool boltMovesSeparate;
-        public int slideTimeInFrames;
-
         Rigidbody chamberedRoundRB;
         Transform chamberedRoundT;
+
+        [HideInInspector]
+        public bool justManip;
+        
+        [Tooltip("Used for cases where the bolt object is separate from the charging handle, and only the bolt should move when weapon" +
+            " is fired."), SerializeField]
+        bool boltMovesSeparate;
+
+        [Tooltip("How many frames it takes for bolt to move from fully closed to fully open, and vice versa."), SerializeField]
+        int slideTimeInFrames;
 
         [Tooltip("Location of round on bolt face. Should be child of bolt. Align round with desired location, then set it inactive."), SerializeField]
         Transform chamberedRoundSnapT;
 
-        public Transform boltGroup, bolt;
+        [Tooltip("Used when charging handle is separate from actual bolt. Bolt should be a child of the charging handle, in this case."), SerializeField]
+        Transform boltGroup;
+
+        [Tooltip("Bolt's transform. Assign only this, if charging handle does not move separately from bolt."), SerializeField]
+        Transform bolt;
+
+        [Tooltip("Position of bolt group when bolt is fully closed. This should be the position value of the parent charging handle, if " +
+            "bolt moves separately."), SerializeField]
         public Vector3 GroupStartPosition;
+
+        [Tooltip("Position of bolt group when bolt is fully open. This should be the position value of the parent charging handle, if " +
+            "bolt moves separately."), SerializeField]
         public Vector3 GroupEndPosition;
-        Vector3 BoltStartPosition { set; get; }
-        Vector3 BoltEndPosition { set; get; }
+
+        [Tooltip("Position of bolt when fully closed. If bolt moves separate from charging handle, this is the position value of the child " +
+            "bolt object."), SerializeField]
+        Vector3 BoltStartPosition;
+
+        [Tooltip("Position of bolt when fully open. If bolt moves separate from charging handle, this is the position value of the child " +
+            "bolt object."), SerializeField]
+        Vector3 BoltEndPosition;
 
 
         private void Start()
@@ -104,10 +127,12 @@ namespace VRWeapons
                     movingForward = false;
                 }
             }
-
+            
             if (boltLerpVal <= 0.05f)
             {
                 doNotPlaySound = false;
+                justManip = false;
+                boltLerpVal = 0;
                 if (canChamberNewRound)
                 {
                     thisWeap.chamberedRound = ChamberNewRound();
@@ -116,7 +141,7 @@ namespace VRWeapons
                 }
             }
 
-            if (boltLerpVal >= 0.9f)
+            else if (boltLerpVal >= 0.9f)
             {
                 if (!justEjected)
                 {
@@ -138,13 +163,18 @@ namespace VRWeapons
 
             if (lastboltLerpVal != boltLerpVal)
             {
-                if (boltMovesSeparate)
+                if (boltMovesSeparate && justManip)
                 {
+                    boltGroup.transform.localPosition = Vector3.Lerp(GroupStartPosition, GroupEndPosition, boltLerpVal);
+                }
+                else if (boltMovesSeparate && !justManip)
+                {
+                    boltGroup.transform.localPosition = GroupStartPosition;
                     bolt.transform.localPosition = Vector3.Lerp(BoltStartPosition, BoltEndPosition, boltLerpVal);
                 }
                 else
                 {
-                    boltGroup.transform.localPosition = Vector3.Lerp(GroupStartPosition, GroupEndPosition, boltLerpVal);
+                    bolt.transform.localPosition = Vector3.Lerp(BoltStartPosition, BoltEndPosition, boltLerpVal);
                 }
                 if (!doNotPlaySound && !justPlayedSoundBack && boltLerpVal > 0.9f)
                 {
@@ -176,7 +206,11 @@ namespace VRWeapons
         }
 
 
-        public void IsCurrentlyBeingManipulated(bool val) { isManip = val; }
+        public void IsCurrentlyBeingManipulated(bool val)
+        {
+            justManip = true;
+            isManip = val;
+        }
         public Vector3 GetMinValue() { return GroupStartPosition; }
         public Vector3 GetMaxValue() { return GroupEndPosition; }
     }

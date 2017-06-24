@@ -3,6 +3,12 @@ NOTES:
 	Empty bullet shell object must be on a layer that does NOT interact with weapon, else ejector does not function correctly.
 
 
+	TODO:
+		Rotational bolts
+		Separate bolt movement - DONE
+		New bolt script for revolvers
+		Editor/converter
+
 
 
 
