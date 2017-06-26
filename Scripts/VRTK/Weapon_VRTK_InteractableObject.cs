@@ -21,13 +21,27 @@ public class Weapon_VRTK_InteractableObject : VRTK_InteractableObject
 
     public override void OnInteractableObjectGrabbed(InteractableObjectEventArgs e)
     {
+        VRW_ControllerActions_VRTK f;
+        f = e.interactingObject.GetComponent<VRW_ControllerActions_VRTK>();
+        if (f != null)
+        {
+            f.CurrentHeldWeapon = thisWeap;             // Setting up for touchpad input
+        }
+
         base.OnInteractableObjectGrabbed(e);
         col.enabled = false;
     }
 
     public override void OnInteractableObjectUngrabbed(InteractableObjectEventArgs e)
     {
-        base.OnInteractableObjectUngrabbed(e);
+        VRW_ControllerActions_VRTK f;
+        f = e.interactingObject.GetComponent<VRW_ControllerActions_VRTK>();
+        if (f != null)
+        {
+            f.CurrentHeldWeapon = null;
+        }
+
+        base.OnInteractableObjectUngrabbed(e);        
         col.enabled = true;
     }
 

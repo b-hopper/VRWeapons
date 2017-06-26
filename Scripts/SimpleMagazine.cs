@@ -9,6 +9,8 @@ namespace VRWeapons
     {
         IBulletBehavior roundType;
 
+        Rigidbody rb;
+
         [SerializeField]
         int maxRounds;
 
@@ -17,6 +19,7 @@ namespace VRWeapons
         private void Start()
         {
             roundType = GetComponent<IBulletBehavior>();
+            rb = GetComponent<Rigidbody>();
             currentRoundCount = maxRounds;
         }
 
@@ -52,15 +55,22 @@ namespace VRWeapons
         {
             return null;
         }
-        
+
         public void MagIn(Weapon weap)
         {
             weap.Magazine = this;
+            weap.PlaySound(Weapon.AudioClips.MagIn);
+            transform.parent = weap.transform;
+            rb.isKinematic = true;
         }
 
         public void MagOut(Weapon weap)
         {
             weap.Magazine = null;
-        }        
+            weap.PlaySound(Weapon.AudioClips.MagOut);
+            transform.parent = null;
+            rb.isKinematic = false;            
+        }
+
     }
 }

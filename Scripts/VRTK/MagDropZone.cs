@@ -21,17 +21,16 @@ public class MagDropZone : VRTK_SnapDropZone {
 
     public override void OnObjectSnappedToDropZone(SnapDropZoneEventArgs e)
     {
-        IMagazine mag = e.snappedObject.GetComponent<IMagazine>();
-        base.OnObjectSnappedToDropZone(e);
-        
+        IMagazine mag = e.snappedObject.GetComponent<IMagazine>();        
         mag.MagIn(thisWeap);
+        base.OnObjectSnappedToDropZone(e);
     }
 
     public override void OnObjectUnsnappedFromDropZone(SnapDropZoneEventArgs e)
-    {
+    {       
+        IMagazine mag = e.snappedObject.GetComponent<IMagazine>();
+        mag.MagOut(thisWeap);
         base.OnObjectUnsnappedFromDropZone(e);
-
-        thisWeap.Magazine = null;
     }
 
 }

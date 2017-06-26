@@ -30,6 +30,8 @@ namespace VRWeapons
 
         float nextFire;
 
+        Vector3 triggerAngleStart;
+
         //// Shown in inspector ////
         [Tooltip("Weapon will never run out of ammo."), SerializeField]
         bool infiniteAmmo;
@@ -51,6 +53,12 @@ namespace VRWeapons
 
         [Tooltip("Only applies to burst fire mode."), SerializeField]
         int burstAmount;
+
+        [Tooltip("Trigger GameObject. Used to accurately rotate weapon's trigger on controller trigger pull."), SerializeField]
+        Transform trigger;
+
+        [Tooltip("End rotation of trigger, when fully pressed down."), SerializeField]
+        Vector3 triggerEndRotation;
 
         [Tooltip("Sound effect played when magazine is inserted."), SerializeField]
         AudioClip MagIn;
@@ -101,8 +109,17 @@ namespace VRWeapons
             Ejector = GetComponentInChildren<IEjectorActions>();
             Kick = GetComponent<IKickActions>();
             shellPool = GetComponent<IObjectPool>();
+            Magazine = GetComponentInChildren<IMagazine>();
             Bolt.SetEjector(Ejector);
             audioSource = GetComponent<AudioSource>();
+            if (trigger != null) {
+                triggerAngleStart = trigger.localEulerAngles;
+            }
+
+            if (Magazine != null)
+            {
+                Magazine.MagIn(this);       // Required for internal magazines
+            }
         }
 
         public void StartFiring(GameObject usingObject)
@@ -148,6 +165,14 @@ namespace VRWeapons
                 audioSource.Play();
             }
 
+        }
+
+        public void DropMagazine()
+        {
+            if (Magazine != null)
+            {
+                Magazine.MagOut(this);
+            }
         }
 
         public Attack NewAttack(float newDamage, Vector3 newOrigin, RaycastHit newHit)
@@ -232,6 +257,14 @@ namespace VRWeapons
             {
                 Kick.Kick();
             }            
+        }
+
+        public void SetTriggerAngle(float angle)
+        {
+            if (trigger != null)
+            {
+                trigger.localRotation = Quaternion.Lerp(Quaternion.Euler(triggerAngleStart), Quaternion.Euler(triggerEndRotation), angle);
+            }
         }
 
         public bool IsWeaponFiring()

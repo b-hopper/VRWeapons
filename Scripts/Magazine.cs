@@ -7,9 +7,11 @@ namespace VRWeapons
     [System.Serializable]
     public class Magazine : MonoBehaviour, IMagazine
     {
+        Rigidbody rb;
 
         [SerializeField]
         List<IBulletBehavior> RoundsInMag;
+
         int index;
 
         [SerializeField]
@@ -18,6 +20,7 @@ namespace VRWeapons
         private void Start()
         {
             RoundsInMag = new List<IBulletBehavior>(rounds.Length);
+            rb = GetComponent<Rigidbody>();
 
             PopulateAllSlotsInList();   // This method is pretty expensive depending on how many rounds there are,
         }                               // but happens on loading the scene so it should be fine.
@@ -81,11 +84,19 @@ namespace VRWeapons
         public void MagIn(Weapon weap)
         {
             weap.Magazine = this;
+            weap.PlaySound(Weapon.AudioClips.MagIn);
+            transform.parent = weap.transform;
+            rb.isKinematic = true;
+            Debug.Log("Mag In: " + weap);
         }
 
         public void MagOut(Weapon weap)
         {
             weap.Magazine = null;
+            weap.PlaySound(Weapon.AudioClips.MagOut);
+            transform.parent = null;
+            rb.isKinematic = false;
+            Debug.Log("Mag out: " + weap);
         }
 
         public GameObject FindRoundAtIndex(int idx)

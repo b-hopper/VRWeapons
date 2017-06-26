@@ -30,6 +30,9 @@ namespace VRWeapons
         [Tooltip("How many frames it takes for bolt to move from fully closed to fully open, and vice versa."), SerializeField]
         int slideTimeInFrames;
 
+        [Tooltip("Weapon will start chambered if this is toggled."), SerializeField]
+        bool startChambered;
+
         [Tooltip("Location of round on bolt face. Should be child of bolt. Align round with desired location, then set it inactive."), SerializeField]
         Transform chamberedRoundSnapT;
 
@@ -56,10 +59,16 @@ namespace VRWeapons
         Vector3 BoltEndPosition;
 
 
+
         private void Start()
         {
             thisWeap = GetComponentInParent<Weapon>();
             spentShellPool = GetComponent<IObjectPool>();
+
+            if (startChambered)
+            {
+                movingBack = true;
+            }
 
             boltMoveSpeed = 1 / (float)slideTimeInFrames;
         }
