@@ -98,6 +98,22 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &1319472555866224
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4180888968567524}
+  - component: {fileID: 114257198015259510}
+  m_Layer: 0
+  m_Name: Ejector
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &1394442792304412
 GameObject:
   m_ObjectHideFlags: 0
@@ -425,6 +441,19 @@ Transform:
   m_Father: {fileID: 4209878539446062}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &4180888968567524
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1319472555866224}
+  m_LocalRotation: {x: -0.15304585, y: 0.6903456, z: 0.15304585, w: 0.6903456}
+  m_LocalPosition: {x: 0, y: 0.1465, z: 0.076}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4209878539446062}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: -25, y: 90, z: 0}
 --- !u!4 &4209878539446062
 Transform:
   m_ObjectHideFlags: 1
@@ -443,6 +472,7 @@ Transform:
   - {fileID: 4717455301657030}
   - {fileID: 4607829220654138}
   - {fileID: 4168650315964552}
+  - {fileID: 4180888968567524}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -583,14 +613,14 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1261649891778558}
-  m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
+  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: -0.007891417, y: 0.144327, z: 0.02965233}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4682987133044910}
   m_Father: {fileID: 4209878539446062}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -90, y: -90, z: 90}
 --- !u!4 &4921609834637106
 Transform:
   m_ObjectHideFlags: 1
@@ -1564,6 +1594,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18055ba762aa3994f9c10208cd088bc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &114257198015259510
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1319472555866224}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c0ad4fecc790bf499fa0199666ddd85, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ejectForce: 0.15
+  ejectorRandomness: 0.2
+  ejectorRotationalRandomness: 45
 --- !u!114 &114299563763009604
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1719,7 +1763,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ObjectsPerElement: 30
-  ObjectsInPool: []
+  ObjectsInPool:
+  - {fileID: 1534735323711206, guid: e8a083383e8c46d41a9663e03adeaefd, type: 2}
 --- !u!114 &114504639353500018
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1866,6 +1911,9 @@ MonoBehaviour:
   GroupEndPosition: {x: 0, y: 0, z: 0}
   BoltStartPosition: {x: -0.007891417, y: 0.144327, z: 0.02965233}
   BoltEndPosition: {x: -0.007891417, y: 0.144327, z: -0.058}
+  BoltRotatesUntil: 0.25
+  BoltRotationStart: {x: -90, y: -90, z: 90}
+  BoltRotationEnd: {x: -30, y: -90, z: 90}
 --- !u!114 &114735365824071850
 MonoBehaviour:
   m_ObjectHideFlags: 1

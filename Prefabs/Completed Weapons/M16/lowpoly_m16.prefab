@@ -255,7 +255,6 @@ GameObject:
   - component: {fileID: 33129415135425568}
   - component: {fileID: 135078162158849308}
   - component: {fileID: 23099970665749378}
-  - component: {fileID: 114940951178833528}
   m_Layer: 0
   m_Name: Sphere
   m_TagString: Untagged
@@ -1332,20 +1331,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shotForce: 0
---- !u!114 &114940951178833528
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1878995126674672}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8bb776a73cf1df14bb517a26bfc98c6d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  followCamera: {fileID: 0}
-  lerpChange: 0.005
-  offset: {x: 0.5, y: 0, z: 0}
 --- !u!114 &114950588038030872
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1368,6 +1353,9 @@ MonoBehaviour:
   GroupEndPosition: {x: -0.002331765, y: 0.1417672, z: -0.1032}
   BoltStartPosition: {x: 0.0901566, y: 0.006522296, z: -0.0278}
   BoltEndPosition: {x: 0.0194, y: 0.006522296, z: -0.0278}
+  BoltRotatesUntil: 0
+  BoltRotationStart: {x: 0, y: 0, z: 0}
+  BoltRotationEnd: {x: 0, y: 0, z: 0}
 --- !u!114 &114970266601586902
 MonoBehaviour:
   m_ObjectHideFlags: 1

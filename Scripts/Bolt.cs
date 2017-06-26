@@ -58,6 +58,15 @@ namespace VRWeapons
             "bolt object."), SerializeField]
         Vector3 BoltEndPosition;
 
+        [Tooltip("Bolt will rotate from 0 to this value, when pulling bolt back. If 0, bolt will not rotate. If 1, bolt will only rotate."), SerializeField]
+        float BoltRotatesUntil;
+
+        [Tooltip("Rotation of bolt when fully closed."), SerializeField]
+        Vector3 BoltRotationStart;
+        
+        [Tooltip("Rotation of bolt when fully open."), SerializeField]
+        Vector3 BoltRotationEnd;
+
 
 
         private void Start()
@@ -68,6 +77,12 @@ namespace VRWeapons
             if (startChambered)
             {
                 movingBack = true;
+            }
+
+            if (BoltRotatesUntil == 0)
+            {
+                BoltRotationStart = bolt.transform.localEulerAngles;
+                BoltRotationEnd = bolt.transform.localEulerAngles;
             }
 
             boltMoveSpeed = 1 / (float)slideTimeInFrames;
@@ -174,26 +189,14 @@ namespace VRWeapons
 
             if (lastboltLerpVal != boltLerpVal)
             {
-                if (boltMovesSeparate && justManip)
-                {
-                    boltGroup.transform.localPosition = Vector3.Lerp(GroupStartPosition, GroupEndPosition, boltLerpVal);
-                }
-                else if (boltMovesSeparate && !justManip)
-                {
-                    boltGroup.transform.localPosition = GroupStartPosition;
-                    bolt.transform.localPosition = Vector3.Lerp(BoltStartPosition, BoltEndPosition, boltLerpVal);
-                }
-                else
-                {
-                    bolt.transform.localPosition = Vector3.Lerp(BoltStartPosition, BoltEndPosition, boltLerpVal);
-                }
+                DoBoltMovement(boltLerpVal);
                 if (!doNotPlaySound && !justPlayedSoundBack && boltLerpVal > 0.9f)
                 {
                     thisWeap.PlaySound(Weapon.AudioClips.SlideBack);
                     justPlayedSoundBack = true;
                     justPlayedSoundForward = false;
                 }
-                else if (!doNotPlaySound && !justPlayedSoundForward && boltLerpVal < 0.1f )
+                else if (!doNotPlaySound && !justPlayedSoundForward && boltLerpVal < 0.1f)
                 {
                     thisWeap.PlaySound(Weapon.AudioClips.SlideForward);
                     justPlayedSoundForward = true;
@@ -202,6 +205,38 @@ namespace VRWeapons
             }
 
             lastboltLerpVal = boltLerpVal;
+        }
+
+        void DoBoltMovement(float lerpVal)
+        {
+            if (lerpVal <= BoltRotatesUntil)
+            {
+                bolt.transform.localPosition = BoltStartPosition;
+                if (boltGroup != null)
+                {
+                    boltGroup.transform.localPosition = GroupStartPosition;
+                }
+                float val = Mathf.InverseLerp(0, BoltRotatesUntil, lerpVal);
+                bolt.transform.localRotation = Quaternion.Lerp(Quaternion.Euler(BoltRotationStart), Quaternion.Euler(BoltRotationEnd), val);
+            }
+            else
+            {
+                float val = Mathf.InverseLerp(BoltRotatesUntil, 1, lerpVal);
+                bolt.transform.localRotation = Quaternion.Euler(BoltRotationEnd);
+                if (boltMovesSeparate && justManip)
+                {
+                    boltGroup.transform.localPosition = Vector3.Lerp(GroupStartPosition, GroupEndPosition, val);
+                }
+                else if (boltMovesSeparate && !justManip)
+                {
+                    boltGroup.transform.localPosition = GroupStartPosition;
+                    bolt.transform.localPosition = Vector3.Lerp(BoltStartPosition, BoltEndPosition, val);
+                }
+                else
+                {
+                    bolt.transform.localPosition = Vector3.Lerp(BoltStartPosition, BoltEndPosition, val);
+                }
+            }
         }
 
 
