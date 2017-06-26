@@ -39,17 +39,19 @@ namespace VRWeapons
         public GameObject GetNewObj()
         {
             GameObject[] objArray;
-            GameObject obj;
+            GameObject obj = null;
+            if (ObjPool.Count > 0)
+            {
+                int selectedIndex = Random.Range(0, poolIndex);
 
-            int selectedIndex = Random.Range(0, poolIndex);
+                objArray = ObjPool[selectedIndex];
 
-            objArray = ObjPool[selectedIndex];
+                obj = objArray[objIndex[selectedIndex]];
 
-            obj = objArray[objIndex[selectedIndex]];
+                objIndex[selectedIndex] = (objIndex[selectedIndex] + 1) % (ObjectsPerElement);
 
-            objIndex[selectedIndex] = (objIndex[selectedIndex] + 1) % (ObjectsPerElement);
-
-            obj.SetActive(true);
+                obj.SetActive(true);
+            }
             return obj;
         }
     }

@@ -246,7 +246,11 @@ namespace VRWeapons
             {
                 if (shellPool != null)
                 {
-                    Bolt.ReplaceRoundWithEmptyShell(shellPool.GetNewObj());
+                    GameObject go = shellPool.GetNewObj();
+                    if (go != null)
+                    {
+                        Bolt.ReplaceRoundWithEmptyShell(go);
+                    }
                 }
                 if (boltMovesOnFiring)
                 {

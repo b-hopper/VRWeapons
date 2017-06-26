@@ -94,6 +94,7 @@ namespace VRWeapons
                 // Setting round in correct position on bolt face
                 if (chamberedRoundT != null)
                 {
+                    chamberedRoundT.gameObject.SetActive(true);
                     chamberedRoundT.parent = transform;
                     chamberedRoundT.localEulerAngles = chamberedRoundSnapT.localEulerAngles;
                     chamberedRoundT.localPosition = chamberedRoundSnapT.localPosition;
@@ -110,7 +111,7 @@ namespace VRWeapons
 
         private void FixedUpdate()
         {
-            if (movingBack)
+            if (movingBack || startChambered)
             {
                 doNotPlaySound = true;
                 boltLerpVal += boltMoveSpeed;
@@ -118,6 +119,7 @@ namespace VRWeapons
 
                 if (boltLerpVal >= 1)
                 {
+                    startChambered = false;
                     boltLerpVal = 1;
                     movingBack = false;
                     if (thisWeap.autoRackForward)

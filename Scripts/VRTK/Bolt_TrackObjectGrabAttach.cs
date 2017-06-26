@@ -30,6 +30,11 @@ public class Bolt_TrackObjectGrabAttach : VRTK_InteractableObject
         boltMax = i.GetMaxValue();
         startPos = transform.localPosition;
         currentPos = transform.localPosition;
+
+        if (GetComponent<Rigidbody>() != null)
+        {
+            GetComponent<Rigidbody>().isKinematic = true;
+        }
     }
 
     protected override void Update()

@@ -27,6 +27,7 @@ namespace VRWeapons
                             mag.rounds[i].transform.parent = mag.transform;
                             mag.rounds[i].transform.localPosition = mag.rounds[0].transform.localPosition;
                             mag.rounds[i].transform.localEulerAngles = mag.rounds[0].transform.localEulerAngles;
+                            mag.rounds[i].SetActive(false);
                         }
                     }
                 }
