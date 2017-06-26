@@ -12,6 +12,7 @@ public class BulletDropZone : VRTK_SnapDropZone {
     {
         thisMagGO = (MonoBehaviour)GetComponentInParent<IMagazine>();
         thisMag = GetComponentInParent<IMagazine>();
+        Debug.Log(this + " mag: " + thisMagGO);
     }
 
     public override void OnObjectSnappedToDropZone(SnapDropZoneEventArgs e)
