@@ -61,7 +61,10 @@ namespace VRWeapons
             weap.Magazine = this;
             weap.PlaySound(Weapon.AudioClips.MagIn);
             transform.parent = weap.transform;
-            rb.isKinematic = true;
+            if (rb != null)
+            {
+                rb.isKinematic = true;
+            }
         }
 
         public void MagOut(Weapon weap)
@@ -69,7 +72,10 @@ namespace VRWeapons
             weap.Magazine = null;
             weap.PlaySound(Weapon.AudioClips.MagOut);
             transform.parent = null;
-            rb.isKinematic = false;            
+            if (rb != null)
+            {
+                rb.isKinematic = false;
+            }
         }
 
     }

@@ -57,7 +57,7 @@ public class Bolt_TrackObjectGrabAttach : VRTK_InteractableObject
                 currentPos = new Vector3(transform.localPosition.x, transform.localPosition.y, boltClosedPosition.z);
                 transform.localPosition = currentPos;
             }
-            lerpValue = VRWControl.InverseLerp(boltClosedPosition, boltOpenPosition, transform.localPosition);
+            lerpValue = VRWControl.V3InverseLerp(boltClosedPosition, boltOpenPosition, transform.localPosition);
             i.boltLerpVal = lerpValue;
         }
         else if (hasMoved)
