@@ -22,7 +22,8 @@ namespace VRWeapons
 
         public float range, bulletSpreadRange, damage;
 
-        [Tooltip("Muzzle flash objects. If the object contains a Particle System, use empty parent GameObject and set particle system GameObjects as children."), SerializeField]
+        [Tooltip("Muzzle flash objects. If the object contains a Particle System, use empty parent GameObject and set particle system GameObjects as children. Flash objects should " +
+            "be children of muzzle, and set inactive."), SerializeField]
         GameObject[] muzzleFlashes;
 
         void Start()
@@ -138,20 +139,23 @@ namespace VRWeapons
 
         void DoMuzzleFlash()
         {
-            currentFlash = muzzleFlashes[Random.Range(0, muzzleFlashes.Length)];
-
-            currentFlash.SetActive(true);
-
-            currentFlash.transform.localPosition = Vector3.zero;
-
-            List<ParticleSystem> tmp;
-            if (flashPool.TryGetValue(currentFlash, out tmp))
+            if (muzzleFlashes.Length > 0)
             {
-                tmp = flashPool[currentFlash];
-                foreach(ParticleSystem a in tmp)
+                currentFlash = muzzleFlashes[Random.Range(0, muzzleFlashes.Length)];
+
+                currentFlash.SetActive(true);
+
+                currentFlash.transform.localPosition = Vector3.zero;
+
+                List<ParticleSystem> tmp;
+                if (flashPool.TryGetValue(currentFlash, out tmp))
                 {
-                    a.Clear();
-                    a.Play();
+                    tmp = flashPool[currentFlash];
+                    foreach (ParticleSystem a in tmp)
+                    {
+                        a.Clear();
+                        a.Play();
+                    }
                 }
             }
         }

@@ -14,5 +14,6 @@ namespace VRWeapons
         bool PopBullet();
         Rigidbody GetRoundRigidBody();
         Transform GetRoundTransform();
+        bool CanMagBeDetached { get; set; }
     }
 }

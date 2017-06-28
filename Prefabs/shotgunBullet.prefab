@@ -21,16 +21,16 @@ GameObject:
   - component: {fileID: 4498068755039872}
   - component: {fileID: 33339102132312842}
   - component: {fileID: 23472270924619134}
-  - component: {fileID: 65797929307020228}
   - component: {fileID: 54458944575492594}
   - component: {fileID: 114629146114318824}
   - component: {fileID: 114716941084099936}
   - component: {fileID: 114447878793827934}
   - component: {fileID: 114394023239760300}
   - component: {fileID: 114074447626722210}
+  - component: {fileID: 65481910187458558}
   m_Layer: 0
   m_Name: shotgunBullet
-  m_TagString: 762Round
+  m_TagString: ShotgunShell
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -85,7 +85,7 @@ MeshFilter:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1961235278393196}
-  m_Mesh: {fileID: 4300010, guid: df7d9e7cd0e78564884965273b5bd9b2, type: 3}
+  m_Mesh: {fileID: 4300002, guid: 36feaa7cb1a445c4e9453907f08b1ea2, type: 3}
 --- !u!54 &54458944575492594
 Rigidbody:
   m_ObjectHideFlags: 1
@@ -101,7 +101,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!65 &65797929307020228
+--- !u!65 &65481910187458558
 BoxCollider:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -111,8 +111,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.011758063, y: 0.011552026, z: 0.062920816}
-  m_Center: {x: 0.000000059604645, y: 0.0003135217, z: 0.010624826}
+  m_Size: {x: 0.020388167, y: 0.01987699, z: 0.06270048}
+  m_Center: {x: -0.000016257633, y: 0.00056082336, z: 0.0019008005}
 --- !u!114 &114074447626722210
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -124,12 +124,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc2315305343a584e8758755b54117c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  clipOnTouch: {fileID: 0}
   strengthOnTouch: 0
   durationOnTouch: 0
   intervalOnTouch: 0.05
+  clipOnGrab: {fileID: 0}
   strengthOnGrab: 0
   durationOnGrab: 0
   intervalOnGrab: 0.05
+  clipOnUse: {fileID: 0}
   strengthOnUse: 0
   durationOnUse: 0
   intervalOnUse: 0.05
@@ -172,6 +175,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22d5f7b19043262469c5def00b2c8465, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shotForce: 0
   shotgunPellets: 10
 --- !u!114 &114716941084099936
 MonoBehaviour:
@@ -187,6 +191,7 @@ MonoBehaviour:
   disableWhenIdle: 1
   touchHighlightColor: {r: 1, g: 0, b: 0, a: 0}
   allowedTouchControllers: 0
+  ignoredColliders: []
   isGrabbable: 1
   holdButtonToGrab: 1
   stayGrabbedOnTeleport: 1

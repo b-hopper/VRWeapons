@@ -17,6 +17,8 @@ namespace VRWeapons
         bool movingBack, movingForward, isManip, canChamberNewRound, justPlayedSoundForward = true,
             justPlayedSoundBack, doNotPlaySound, justEjected;
 
+        int startChamberedTimer;
+
         Rigidbody chamberedRoundRB;
         Transform chamberedRoundT;
 
@@ -67,18 +69,11 @@ namespace VRWeapons
         [Tooltip("Rotation of bolt when fully open."), SerializeField]
         Vector3 BoltRotationEnd;
 
-
-
         private void Start()
         {
             thisWeap = GetComponentInParent<Weapon>();
             spentShellPool = GetComponent<IObjectPool>();
-
-            if (startChambered)
-            {
-                movingBack = true;
-            }
-
+            
             if (BoltRotatesUntil == 0)
             {
                 BoltRotationStart = bolt.transform.localEulerAngles;
@@ -86,6 +81,11 @@ namespace VRWeapons
             }
 
             boltMoveSpeed = 1 / (float)slideTimeInFrames;
+
+            if (startChambered)
+            {
+                thisWeap.chamberedRound = ChamberNewRound();
+            }
         }
 
         public void SetEjector(IEjectorActions newEjector)
@@ -126,7 +126,17 @@ namespace VRWeapons
 
         private void FixedUpdate()
         {
-            if (movingBack || startChambered)
+            if (startChambered)
+            {
+                startChamberedTimer++;
+                if (startChamberedTimer > 5)
+                {
+                    thisWeap.chamberedRound = ChamberNewRound();
+                    startChambered = false;
+                }
+            }
+
+            if (movingBack)
             {
                 doNotPlaySound = true;
                 boltLerpVal += boltMoveSpeed;
@@ -134,7 +144,6 @@ namespace VRWeapons
 
                 if (boltLerpVal >= 1)
                 {
-                    startChambered = false;
                     boltLerpVal = 1;
                     movingBack = false;
                     if (thisWeap.autoRackForward)
@@ -153,6 +162,7 @@ namespace VRWeapons
                     movingForward = false;
                 }
             }
+            
             
             if (boltLerpVal <= 0.05f)
             {

@@ -16,7 +16,7 @@ public class Bolt_TrackObjectGrabAttach : VRTK_InteractableObject
 
     bool hasMoved;
 
-    Vector3 boltMin, boltMax, startPos, currentPos;
+    Vector3 boltMin, boltMax, startPos, currentPos, startRot;
     [SerializeField]
     Vector3 boltClosedPosition, boltOpenPosition;
 
@@ -30,6 +30,7 @@ public class Bolt_TrackObjectGrabAttach : VRTK_InteractableObject
         boltMax = i.GetMaxValue();
         startPos = transform.localPosition;
         currentPos = transform.localPosition;
+        startRot = transform.localEulerAngles;
 
         if (GetComponent<Rigidbody>() != null)
         {
@@ -74,6 +75,7 @@ public class Bolt_TrackObjectGrabAttach : VRTK_InteractableObject
         if (lerpValue != oldLerpValue)
         {
             transform.localPosition = Vector3.Lerp(boltClosedPosition, boltOpenPosition, lerpValue);
-        }        
+        }
+        transform.localEulerAngles = startRot;
     }    
 }

@@ -33,9 +33,6 @@ namespace VRWeapons
         Vector3 triggerAngleStart;
 
         //// Shown in inspector ////
-        [Tooltip("Weapon will never run out of ammo."), SerializeField]
-        bool infiniteAmmo;
-
         [Tooltip("Bolt will rack forward after racking backward, unless magazine is inserted and empty."), SerializeField]
         public bool autoRackForward;
 
@@ -49,10 +46,10 @@ namespace VRWeapons
         FireMode fireMode;
 
         [Tooltip("Fire rate in seconds"), SerializeField]        
-        float fireRate;
+        float fireRate = 0.1f;
 
         [Tooltip("Only applies to burst fire mode."), SerializeField]
-        int burstAmount;
+        int burstAmount = 3;
 
         [Tooltip("Trigger GameObject. Used to accurately rotate weapon's trigger on controller trigger pull."), SerializeField]
         Transform trigger;
@@ -80,9 +77,9 @@ namespace VRWeapons
         [System.Serializable]
         public enum FireMode
         {
-            SemiAuto = 1,
-            Automatic = 2,
-            Burst = 3
+            SemiAuto = 0,
+            Automatic = 1,
+            Burst = 2
         }
 
         public enum AudioClips
@@ -167,6 +164,11 @@ namespace VRWeapons
 
         }
 
+        public void ChangeFireMode(FireMode newMode)
+        {
+            fireMode = newMode;
+        }
+        
         public void DropMagazine()
         {
             if (Magazine != null)

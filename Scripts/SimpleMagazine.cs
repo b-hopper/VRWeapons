@@ -14,6 +14,11 @@ namespace VRWeapons
         [SerializeField]
         int maxRounds;
 
+        [Tooltip("If toggled, magazine is able to be removed from the weapon. Turn off if weapon is using an internal magazine."), SerializeField]
+        bool canBeDetached = true;
+        
+        public bool CanMagBeDetached { get { return canBeDetached; } set { canBeDetached = value; } }
+
         int currentRoundCount;
 
         private void Start()
@@ -69,12 +74,15 @@ namespace VRWeapons
 
         public void MagOut(Weapon weap)
         {
-            weap.Magazine = null;
-            weap.PlaySound(Weapon.AudioClips.MagOut);
-            transform.parent = null;
-            if (rb != null)
+            if (canBeDetached)
             {
-                rb.isKinematic = false;
+                weap.Magazine = null;
+                weap.PlaySound(Weapon.AudioClips.MagOut);
+                transform.parent = null;
+                if (rb != null)
+                {
+                    rb.isKinematic = false;
+                }
             }
         }
 
