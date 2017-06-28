@@ -45,15 +45,15 @@ public class Weapon_VRTK_InteractableObject : VRTK_InteractableObject
         col.enabled = true;
     }
 
-    public override void StartUsing(GameObject usingObject)
+    public override void StartUsing(VRTK_InteractUse usingObject)
     {
         base.StartUsing(usingObject);
-        thisWeap.StartFiring(usingObject);
+        thisWeap.StartFiring(usingObject.gameObject);
     }
 
-    public override void StopUsing(GameObject previousUsingObject)
+    public override void StopUsing(VRTK_InteractUse previousUsingObject)
     {
         base.StopUsing(previousUsingObject);
-        thisWeap.StopFiring(previousUsingObject);
+        thisWeap.StopFiring(previousUsingObject.gameObject);
     }
 }
