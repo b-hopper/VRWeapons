@@ -88,6 +88,11 @@ namespace VRWeapons
             }
         }
 
+        public void OnTriggerPullActions(float angle)
+        {
+            // Nothing to do here, for this bolt style
+        }
+
         public void SetEjector(IEjectorActions newEjector)
         {
             Ejector = newEjector;

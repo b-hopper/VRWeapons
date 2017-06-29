@@ -271,6 +271,10 @@ namespace VRWeapons
             {
                 trigger.localRotation = Quaternion.Lerp(Quaternion.Euler(triggerAngleStart), Quaternion.Euler(triggerEndRotation), angle);
             }
+            if (Bolt != null)
+            {
+                Bolt.OnTriggerPullActions(angle);
+            }
         }
 
         public bool IsWeaponFiring()

@@ -10,6 +10,7 @@ namespace VRWeapons
         IBulletBehavior ChamberNewRound();
 
         void BoltBack();
+        void OnTriggerPullActions(float angle);
         void SetEjector(IEjectorActions newEjector);
 
         void IsCurrentlyBeingManipulated(bool val);
