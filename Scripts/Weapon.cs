@@ -28,6 +28,9 @@ namespace VRWeapons
         [HideInInspector]
         public bool secondHandGripped;
 
+        [HideInInspector]
+        public GameObject holdingDevice;
+
         float nextFire;
 
         Vector3 triggerAngleStart;
@@ -97,6 +100,7 @@ namespace VRWeapons
             public float damage;
             public Vector3 origin;
             public RaycastHit hitInfo;
+            public Weapon originWeapon;
         }
 
         private void Start()
@@ -135,7 +139,7 @@ namespace VRWeapons
             chamberedRound = round;
         }
 
-        public void PlaySound(Weapon.AudioClips clip)
+        public void PlaySound(AudioClips clip)
         {
             switch (clip)
             {

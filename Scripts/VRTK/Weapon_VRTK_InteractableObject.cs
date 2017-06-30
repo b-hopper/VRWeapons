@@ -28,6 +28,8 @@ public class Weapon_VRTK_InteractableObject : VRTK_InteractableObject
             f.CurrentHeldWeapon = thisWeap;             // Setting up for touchpad input
         }
 
+        thisWeap.holdingDevice = e.interactingObject;
+
         base.OnInteractableObjectGrabbed(e);
         col.enabled = false;
     }
@@ -40,6 +42,8 @@ public class Weapon_VRTK_InteractableObject : VRTK_InteractableObject
         {
             f.CurrentHeldWeapon = null;
         }
+
+        thisWeap.holdingDevice = null;
 
         base.OnInteractableObjectUngrabbed(e);        
         col.enabled = true;
