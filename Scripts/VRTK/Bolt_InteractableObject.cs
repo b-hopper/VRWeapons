@@ -6,9 +6,7 @@ using VRWeapons;
 
 public class Bolt_InteractableObject : VRTK_InteractableObject
 {
-    IBoltActions bolt;
-
-    MonoBehaviour boltGO;    
+    IBoltActions bolt; 
 
     Vector3 controllerLocation, offset;
 
@@ -18,7 +16,7 @@ public class Bolt_InteractableObject : VRTK_InteractableObject
 
     bool hasMoved, thisObjectIsGrabbed, needsOffset = true;
 
-    Vector3 boltMin, boltMax, startPos, currentPos, startRot;
+    Vector3 startPos, startRot;
     [SerializeField]
     Vector3 boltClosedPosition, boltOpenPosition;
 
@@ -30,16 +28,12 @@ public class Bolt_InteractableObject : VRTK_InteractableObject
     {
         thisWeapIntObj = GetComponentInParent<Weapon_VRTK_InteractableObject>();
         bolt = transform.parent.GetComponentInChildren<IBoltActions>();
-        boltGO = bolt as MonoBehaviour;
-        boltMin = bolt.GetMinValue();
-        boltMax = bolt.GetMaxValue();
         startPos = transform.localPosition;
-        currentPos = transform.localPosition;
         startRot = transform.localEulerAngles;
 
         if (GetComponent<Rigidbody>() != null)
         {
-            GetComponent<Rigidbody>().isKinematic = true;
+            GetComponent<Rigidbody>().isKinematic = true;                                                                   // Don't want the manipulator to fall down off the bolt!
         }
     }
 
@@ -48,26 +42,18 @@ public class Bolt_InteractableObject : VRTK_InteractableObject
         float oldLerpValue = lerpValue;
         base.Update();
 
-        if (isSecondHandGrip && thisWeapIntObj.GetSecondaryGrabbingObject() != null)
-        {
-            if (needsOffset)
-            {
-                offset = thisWeapIntObj.GetSecondaryGrabbingObject().transform.position - transform.position;
-                needsOffset = false;
-            }
-            controllerLocation = transform.InverseTransformPoint(thisWeapIntObj.GetSecondaryGrabbingObject().transform.position) - offset;
+        if (isSecondHandGrip && thisWeapIntObj.GetSecondaryGrabbingObject() != null)                                        // Used for weapons where grip point is also slide manipulator
+        {                                                                                                                   // Manually moves position of slide manipulator to match grabbing object
+            transform.position = thisWeapIntObj.GetSecondaryGrabbingObject().transform.position;
             thisObjectIsGrabbed = true;
         }
         else if (IsGrabbed())
         {
-            thisObjectIsGrabbed = true;
-            controllerLocation = transform.localPosition;
-        }
-        else
+            thisObjectIsGrabbed = true;                                                                                     // Have to set a flag, because can't rely on VRTK's grab mechanisms if the 
+        }                                                                                                                   // bolt manipulator is also the second grab point. VRTK only allows one
+        else                                                                                                                // object to be grabbed at a time, far as I know.
         {
-            controllerLocation = transform.localPosition;
             thisObjectIsGrabbed = false;
-            needsOffset = true;
         }
 
         if (thisObjectIsGrabbed)
@@ -75,38 +61,29 @@ public class Bolt_InteractableObject : VRTK_InteractableObject
             bolt.IsCurrentlyBeingManipulated(true);
             hasMoved = true;
 
-            controllerLocation = V3Clamp(controllerLocation, boltOpenPosition, boltClosedPosition);
+            transform.localPosition = VRWControl.V3Clamp(transform.localPosition, boltOpenPosition, boltClosedPosition);    // Clamps to make sure it stays on the tracks it has been assigned in inspector
 
-            transform.localPosition = controllerLocation;
-
-
-            lerpValue = VRWControl.V3InverseLerp(boltClosedPosition, boltOpenPosition, controllerLocation);
+            lerpValue = VRWControl.V3InverseLerp(boltClosedPosition, boltOpenPosition, transform.localPosition);            // Final lerp value of bolt, which is then passed...
             
-            bolt.boltLerpVal = lerpValue;
-            Debug.Log(lerpValue);
+            bolt.boltLerpVal = lerpValue;                                                                                   // ... to the bolt itself.
         }
+
         else if (hasMoved)
         {
             bolt.IsCurrentlyBeingManipulated(false);
-            transform.localPosition = currentPos;
             hasMoved = false;
         }
+
         else
         {
             lerpValue = bolt.boltLerpVal;
         }
         
-        if (lerpValue != oldLerpValue)
-        {
+        if (lerpValue != oldLerpValue)                                                                                      // Moves the manipulator to be in the correct position (with the bolt object). Only 
+        {                                                                                                                   // moves it if the lerp value has changed - doesn't need adjustment otherwise.
             transform.localPosition = Vector3.Lerp(boltClosedPosition, boltOpenPosition, lerpValue);
         }
-        transform.localEulerAngles = startRot;
-    }    
 
-    Vector3 V3Clamp(Vector3 value, Vector3 min, Vector3 max)
-    {
-        Vector3 tmp = value;
-        tmp = new Vector3(Mathf.Clamp(tmp.x, min.x, max.x), Mathf.Clamp(tmp.y, min.y, max.y), Mathf.Clamp(tmp.z, min.z, max.z));
-        return tmp;
-    }
-}
+        transform.localEulerAngles = startRot;                                                                              // Rotation isn't an issue, but to avoid making the collider feel like it's in a 
+    }                                                                                                                       // weird position, make sure the rotation is set back to how it originally was.
+}                                                                                                                           // Before this, the bolt manipulator was rotated with the controller.

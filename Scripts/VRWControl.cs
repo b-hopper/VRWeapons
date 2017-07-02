@@ -16,7 +16,14 @@ namespace VRWeapons
         {
             Vector3 AB = b - a;
             Vector3 AV = value - a;
-            return Vector3.Dot(AV, AB) / Vector3.Dot(AB, AB);
+            return Mathf.Clamp(Vector3.Dot(AV, AB) / Vector3.Dot(AB, AB), 0, 1);
+        }
+
+        public static Vector3 V3Clamp(Vector3 value, Vector3 min, Vector3 max)
+        {
+            Vector3 tmp = value;
+            tmp = new Vector3(Mathf.Clamp(tmp.x, min.x, max.x), Mathf.Clamp(tmp.y, min.y, max.y), Mathf.Clamp(tmp.z, min.z, max.z));
+            return tmp;
         }
     }
 }

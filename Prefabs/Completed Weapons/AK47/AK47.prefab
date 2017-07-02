@@ -4586,7 +4586,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   active: 1
   unhighlightOnDisable: 1
-  thickness: 1
+  thickness: 0.1
   customOutlineModels: []
   customOutlineModelPaths: []
   enableSubmeshHighlight: 0
@@ -5202,10 +5202,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   secondHandGripped: 0
+  holdingDevice: {fileID: 0}
   autoRackForward: 1
   boltMovesOnFiring: 1
   impactProfile: {fileID: 0}
-  fireMode: 3
+  fireMode: 1
   fireRate: 0.1
   burstAmount: 3
   trigger: {fileID: 4037909526603614}
@@ -6468,6 +6469,7 @@ MonoBehaviour:
   usingState: 0
   boltClosedPosition: {x: 0.168, y: 0.163, z: 0.153}
   boltOpenPosition: {x: 0.168, y: 0.163, z: 0.0698}
+  isSecondHandGrip: 0
 --- !u!114 &114791931857937614
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -6712,7 +6714,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   disableWhenIdle: 1
-  touchHighlightColor: {r: 0, g: 1, b: 0.42068958, a: 0}
+  touchHighlightColor: {r: 1, g: 0, b: 0, a: 0}
   allowedTouchControllers: 0
   ignoredColliders: []
   isGrabbable: 1
@@ -6730,6 +6732,8 @@ MonoBehaviour:
   useOverrideButton: 0
   allowedUseControllers: 0
   usingState: 0
+  weaponBodyCollider: {fileID: 64121048488184436}
+  secondHandGripCollider: {fileID: 0}
 --- !u!114 &114876014034169804
 MonoBehaviour:
   m_ObjectHideFlags: 1

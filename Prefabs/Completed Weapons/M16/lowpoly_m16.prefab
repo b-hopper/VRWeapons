@@ -55,6 +55,7 @@ GameObject:
   - component: {fileID: 4759269193977192}
   - component: {fileID: 114293438035243554}
   - component: {fileID: 54517356722041478}
+  - component: {fileID: 114130002924182626}
   m_Layer: 8
   m_Name: BoltController
   m_TagString: Untagged
@@ -1088,6 +1089,26 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
+--- !u!114 &114130002924182626
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1288454684195536}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a1ebaa51525b734287157cb3f53f958, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  precisionGrab: 1
+  rightSnapHandle: {fileID: 0}
+  leftSnapHandle: {fileID: 0}
+  throwVelocityWithAttachDistance: 0
+  throwMultiplier: 1
+  onGrabCollisionDelay: 0
+  detachDistance: 1
+  velocityLimit: Infinity
+  angularVelocityLimit: Infinity
 --- !u!114 &114163175048068764
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1140,7 +1161,7 @@ MonoBehaviour:
   validDrop: 1
   grabOverrideButton: 0
   allowedGrabControllers: 0
-  grabAttachMechanicScript: {fileID: 0}
+  grabAttachMechanicScript: {fileID: 114130002924182626}
   secondaryGrabActionScript: {fileID: 0}
   isUsable: 0
   holdButtonToUse: 1
@@ -1151,6 +1172,7 @@ MonoBehaviour:
   usingState: 0
   boltClosedPosition: {x: 0, y: 0.155, z: -0.088}
   boltOpenPosition: {x: 0, y: 0.155, z: -0.19}
+  isSecondHandGrip: 0
 --- !u!114 &114328933950877118
 MonoBehaviour:
   m_ObjectHideFlags: 1
