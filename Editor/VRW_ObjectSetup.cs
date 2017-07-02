@@ -74,6 +74,10 @@
                             tmp.isGrabbable = true;
                             tmp.holdButtonToGrab = false;
                             tmp.holdButtonToUse = true;
+                            if (target.GetComponentInChildren<Collider>() != null)
+                            {
+                                tmp.weaponBodyCollider = target.GetComponentInChildren<Collider>();
+                            }
                         }
                         else
                         {
@@ -170,7 +174,7 @@
                         }
                         if (interactionSystem == InteractionSystems.VRTK)
                         {
-                            if (target.GetComponentInChildren<Bolt_TrackObjectGrabAttach>() == null)
+                            if (target.GetComponentInChildren<Bolt_InteractableObject>() == null)
                             {
                                 GameObject slideControl = GameObject.CreatePrimitive(PrimitiveType.Cube);
                                 slideControl.name = "Bolt Grab Point";
@@ -180,7 +184,7 @@
                                 slideControl.transform.localPosition = Vector3.zero;
                                 Rigidbody rb = slideControl.AddComponent<Rigidbody>();
                                 rb.isKinematic = true;
-                                Bolt_TrackObjectGrabAttach tmp = slideControl.AddComponent<Bolt_TrackObjectGrabAttach>();
+                                Bolt_InteractableObject tmp = slideControl.AddComponent<Bolt_InteractableObject>();
                                 tmp.isGrabbable = true;
                                 tmp.holdButtonToGrab = true;
                                 tmp.isUsable = false;

@@ -7,15 +7,19 @@ using VRWeapons;
 public class Weapon_VRTK_InteractableObject : VRTK_InteractableObject
 {
     Weapon thisWeap;
-    Collider col;
+    [Tooltip("Main collider of the weapon, used for grabbing. Assign collider to disable it on pickup.\n\nIf this collider is not assigned, bolt manipulation " +
+        "may not function correctly."), SerializeField]
+    public Collider weaponBodyCollider;
+
+    [Tooltip("Second hand grip collider is used for 2-handed weapons. This collider will NOT be turned off when weapon is picked up."), SerializeField]
+    Collider secondHandGripCollider;
 
     private void Start()
     {
         thisWeap = GetComponent<Weapon>();
-        col = thisWeap.GetComponentInChildren<Collider>();
-        if (col == null)
+        if (weaponBodyCollider == null)
         {
-            Debug.Log("No collider found");
+            Debug.LogWarning("No main collider found, please assign Weapon Body Collider in inspector.");
         }
     }
 
@@ -31,7 +35,7 @@ public class Weapon_VRTK_InteractableObject : VRTK_InteractableObject
         thisWeap.holdingDevice = e.interactingObject;
 
         base.OnInteractableObjectGrabbed(e);
-        col.enabled = false;
+        weaponBodyCollider.enabled = false;
     }
 
     public override void OnInteractableObjectUngrabbed(InteractableObjectEventArgs e)
@@ -46,7 +50,7 @@ public class Weapon_VRTK_InteractableObject : VRTK_InteractableObject
         thisWeap.holdingDevice = null;
 
         base.OnInteractableObjectUngrabbed(e);        
-        col.enabled = true;
+        weaponBodyCollider.enabled = true;
     }
 
     public override void StartUsing(VRTK_InteractUse usingObject)

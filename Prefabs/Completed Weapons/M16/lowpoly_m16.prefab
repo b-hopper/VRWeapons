@@ -103,7 +103,6 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4555620153243148}
-  - component: {fileID: 54477507837962156}
   - component: {fileID: 114468212650992092}
   - component: {fileID: 135459045260474434}
   - component: {fileID: 114869470958653200}
@@ -129,6 +128,8 @@ GameObject:
   - component: {fileID: 114604626355965400}
   - component: {fileID: 114844948865461278}
   - component: {fileID: 114370785969672452}
+  - component: {fileID: 65231432577511724}
+  - component: {fileID: 114163175048068764}
   m_Layer: 0
   m_Name: lowpoly_m16
   m_TagString: Untagged
@@ -830,21 +831,6 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1998361547959110}
   m_Mesh: {fileID: 4300000, guid: 6e47184f6e5317a4fbfc40c03e69b50d, type: 3}
---- !u!54 &54477507837962156
-Rigidbody:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1451853111010102}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 1
-  m_IsKinematic: 1
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
 --- !u!54 &54510052212784670
 Rigidbody:
   m_ObjectHideFlags: 1
@@ -930,6 +916,18 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!65 &65231432577511724
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1531862883176102}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.04999996, y: 0.05693376, z: 0.21434039}
+  m_Center: {x: -0.0028538704, y: 0.11969113, z: 0.23333877}
 --- !u!82 &82513323636687820
 AudioSource:
   m_ObjectHideFlags: 1
@@ -1090,6 +1088,20 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
+--- !u!114 &114163175048068764
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1531862883176102}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d18bb2e694611647a225f82760814a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ungrabDistance: 1
+  releaseSnapSpeed: 0.1
+  lockZRotation: 1
 --- !u!114 &114290844284503198
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1151,6 +1163,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxRounds: 30
+  canBeDetached: 1
 --- !u!114 &114370785969672452
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1254,11 +1267,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   secondHandGripped: 0
-  infiniteAmmo: 0
+  holdingDevice: {fileID: 0}
   autoRackForward: 1
   boltMovesOnFiring: 1
   impactProfile: {fileID: 11400000, guid: 14d8f1f1efda64048a0d9c7e8e17b778, type: 2}
-  fireMode: 1
+  fireMode: 0
   fireRate: 0.1
   burstAmount: 0
   trigger: {fileID: 0}
@@ -1289,7 +1302,7 @@ MonoBehaviour:
   validDrop: 1
   grabOverrideButton: 0
   allowedGrabControllers: 0
-  grabAttachMechanicScript: {fileID: 0}
+  grabAttachMechanicScript: {fileID: 114604626355965400}
   secondaryGrabActionScript: {fileID: 0}
   isUsable: 1
   holdButtonToUse: 1
@@ -1298,6 +1311,8 @@ MonoBehaviour:
   useOverrideButton: 0
   allowedUseControllers: 0
   usingState: 0
+  weaponBodyCollider: {fileID: 64257401980108784}
+  secondHandGripCollider: {fileID: 0}
 --- !u!114 &114844948865461278
 MonoBehaviour:
   m_ObjectHideFlags: 1
