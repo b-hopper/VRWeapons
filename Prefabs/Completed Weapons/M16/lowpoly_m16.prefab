@@ -1151,7 +1151,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac3ea66211747cd4481d2e7d94631a27, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  disableWhenIdle: 1
+  disableWhenIdle: 0
   touchHighlightColor: {r: 0, g: 0.91724133, b: 1, a: 0}
   allowedTouchControllers: 0
   ignoredColliders: []
@@ -1335,6 +1335,9 @@ MonoBehaviour:
   usingState: 0
   weaponBodyCollider: {fileID: 64257401980108784}
   secondHandGripCollider: {fileID: 0}
+  hapticStrength: 1
+  hapticDuration: 0.2
+  hapticPulseInterval: 0.01
 --- !u!114 &114844948865461278
 MonoBehaviour:
   m_ObjectHideFlags: 1

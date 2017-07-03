@@ -12,6 +12,8 @@ namespace VRWeapons
         [Header("VRWControl will be completed soon. Will handle events.")]
         public LayerMask shotMask;
 
+        public delegate void TriggerHaptics();
+
         public static float V3InverseLerp(Vector3 a, Vector3 b, Vector3 value)
         {
             Vector3 AB = b - a;

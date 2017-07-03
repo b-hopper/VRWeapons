@@ -108,6 +108,15 @@
                             Debug.LogWarning("ObjectPool already found on " + target + ". No ObjectPool added.");
                         }
 
+                        if (target.GetComponent<VRTK.VRTK_InteractHaptics>() == null)
+                        {
+                            target.AddComponent<VRTK.VRTK_InteractHaptics>();
+                        }
+                        else
+                        {
+                            Debug.LogWarning("VRTK_InteractHaptics already found on " + target + " . No VRTK_InteractHaptics added.");
+                        }
+
                         if (twoHanded)
                         {
                             if (target.GetComponent<Weapon_VRTK_ControlDirectionGrabAction>() == null)

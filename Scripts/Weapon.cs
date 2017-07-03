@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using VRTK;
 
 namespace VRWeapons
@@ -18,6 +19,8 @@ namespace VRWeapons
         IObjectPool shellPool;
         public IBulletBehavior chamberedRound;
         public IMagazine Magazine;
+                
+        public event VRWControl.TriggerHaptics shotHaptics;
 
         AudioSource audioSource;
         AudioClip soundToPlay;
@@ -122,7 +125,7 @@ namespace VRWeapons
                 Magazine.MagIn(this);       // Required for internal magazines
             }
         }
-
+        
         public void StartFiring(GameObject usingObject)
         {
             isFiring = true;
@@ -205,6 +208,7 @@ namespace VRWeapons
                         nextFire = Time.time;
                         justFired = true;
                         burstCount++;
+                        shotHaptics.Invoke();
                     }
                     else if (Time.time - nextFire >= fireRate)
                     {
