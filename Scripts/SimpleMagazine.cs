@@ -43,7 +43,13 @@ namespace VRWeapons
 
         public bool PushBullet(IBulletBehavior newRound)
         {
-            return false;
+            bool val = false;            
+            if (currentRoundCount < maxRounds)
+            {
+                currentRoundCount++;
+                val = true;                
+            }
+            return val;
         }
 
         public bool PopBullet()

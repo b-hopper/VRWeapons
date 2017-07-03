@@ -26,6 +26,10 @@ public class BulletDropZone : VRTK_SnapDropZone {
         {
             e.snappedObject.transform.parent = thisMagGO.transform;
         }
+        else
+        {
+            Debug.Log("Whelp");
+        }
         //e.snappedObject.SetActive(false);
     }
 

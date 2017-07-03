@@ -39,7 +39,7 @@
         {
             VRW_ObjectSetup window = (VRW_ObjectSetup)GetWindow(typeof(VRW_ObjectSetup));
             window.minSize = new Vector2(300f, 250f);
-            window.maxSize = new Vector2(300f, 251f);
+            window.maxSize = new Vector2(300f, 500f);
 
             window.autoRepaintOnSceneChange = true;
             window.titleContent.text = "Weapon setup";
@@ -182,12 +182,18 @@
                                 slideControl.GetComponent<MeshRenderer>().enabled = false;
                                 slideControl.transform.parent = target.transform;
                                 slideControl.transform.localPosition = Vector3.zero;
+
                                 Rigidbody rb = slideControl.AddComponent<Rigidbody>();
                                 rb.isKinematic = true;
+
                                 Bolt_InteractableObject tmp = slideControl.AddComponent<Bolt_InteractableObject>();
                                 tmp.isGrabbable = true;
                                 tmp.holdButtonToGrab = true;
                                 tmp.isUsable = false;
+
+                                VRTK.GrabAttachMechanics.VRTK_TrackObjectGrabAttach tmpTrack = slideControl.AddComponent<VRTK.GrabAttachMechanics.VRTK_TrackObjectGrabAttach>();
+                                tmpTrack.precisionGrab = true;
+                                tmp.grabAttachMechanicScript = tmpTrack;
                                 Selection.activeGameObject = slideControl;
                             }
                         }
