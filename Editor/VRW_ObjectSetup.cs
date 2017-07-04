@@ -378,7 +378,7 @@
                     }
                 }
 
-                if (newMag.GetComponent<Collider>() == null)
+                if (newMag.GetComponent<Collider>() == null && newMag.GetComponent<Weapon>() == null)
                 {
                     newMag.AddComponent<BoxCollider>();
                 }
@@ -390,7 +390,7 @@
 
                 if (interactionSystem == InteractionSystems.VRTK)
                 {
-                    if (newMag.GetComponent<Magazine_VRTK_InteractableObject>() == null)
+                    if (newMag.GetComponent<Magazine_VRTK_InteractableObject>() == null && newMag.GetComponent<Weapon>() == null)
                     {
                         newMag.AddComponent<Magazine_VRTK_InteractableObject>();
                         newMag.GetComponent<Magazine_VRTK_InteractableObject>().isGrabbable = true;
