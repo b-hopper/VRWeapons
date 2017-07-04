@@ -22,7 +22,6 @@ public class FollowCam : MonoBehaviour {
         {
             currentPos = 1;
         }
-        Debug.Log("Check");
         followCamera.transform.parent = null;
         followCamera.transform.position = Vector3.Lerp(followCamera.transform.position, transform.position + offset, currentPos);
         followCamera.transform.LookAt(transform);

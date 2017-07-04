@@ -74,6 +74,7 @@
                             tmp.isGrabbable = true;
                             tmp.holdButtonToGrab = false;
                             tmp.holdButtonToUse = true;
+                            tmp.useOnlyIfGrabbed = true;
                             if (target.GetComponentInChildren<Collider>() != null)
                             {
                                 tmp.weaponBodyCollider = target.GetComponentInChildren<Collider>();
@@ -108,15 +109,6 @@
                             Debug.LogWarning("ObjectPool already found on " + target + ". No ObjectPool added.");
                         }
 
-                        if (target.GetComponent<VRTK.VRTK_InteractHaptics>() == null)
-                        {
-                            target.AddComponent<VRTK.VRTK_InteractHaptics>();
-                        }
-                        else
-                        {
-                            Debug.LogWarning("VRTK_InteractHaptics already found on " + target + " . No VRTK_InteractHaptics added.");
-                        }
-
                         if (twoHanded)
                         {
                             if (target.GetComponent<Weapon_VRTK_ControlDirectionGrabAction>() == null)
@@ -128,7 +120,89 @@
                                 Debug.LogWarning("Weapon_VRTK_ControlDirectionGrabAction already found on " + target + ". No Weapon_VRTK_ControlDirectionGrabAction added.");
                             }
                         }
+                        if (FindObjectOfType<VRTK.VRTK_SDKManager>() != null)
+                        {
+                            VRTK.VRTK_SDKManager tmp = FindObjectOfType<VRTK.VRTK_SDKManager>();
+                            if (tmp.scriptAliasLeftController != null)
+                            {
+                                if (tmp.scriptAliasLeftController.GetComponent<VRW_ControllerActions_VRTK>() == null)
+                                {
+                                    tmp.scriptAliasLeftController.AddComponent<VRW_ControllerActions_VRTK>();
+                                }
+                                if (tmp.scriptAliasLeftController.GetComponent<VRTK.VRTK_ControllerEvents>() == null)
+                                {
+                                    tmp.scriptAliasLeftController.AddComponent<VRTK.VRTK_ControllerEvents>();
+                                }
+                                if (tmp.scriptAliasLeftController.GetComponent<VRTK.VRTK_InteractTouch>() == null)
+                                {
+                                    tmp.scriptAliasLeftController.AddComponent<VRTK.VRTK_InteractTouch>();
+                                }
+                                if (tmp.scriptAliasLeftController.GetComponent<VRTK.VRTK_InteractGrab>() == null)
+                                {
+                                    tmp.scriptAliasLeftController.AddComponent<VRTK.VRTK_InteractGrab>();
+                                    tmp.scriptAliasLeftController.GetComponent<VRTK.VRTK_InteractGrab>().controllerEvents = tmp.scriptAliasLeftController.GetComponent<VRTK.VRTK_ControllerEvents>();
+                                }
+                                if (tmp.scriptAliasLeftController.GetComponent<VRTK.VRTK_InteractUse>() == null)
+                                {
+                                    tmp.scriptAliasLeftController.AddComponent<VRTK.VRTK_InteractUse>();
+                                    tmp.scriptAliasLeftController.GetComponent<VRTK.VRTK_InteractUse>().controllerEvents = tmp.scriptAliasLeftController.GetComponent<VRTK.VRTK_ControllerEvents>();
+                                    tmp.scriptAliasLeftController.GetComponent<VRTK.VRTK_InteractUse>().interactGrab = tmp.scriptAliasLeftController.GetComponent<VRTK.VRTK_InteractGrab>();
+                                }
+                            }
+                            else
+                            {
+                                Debug.LogError("No VRTK left controller alias found. Please add a controller alias for the left controller.");
+                            }
+                            if (tmp.scriptAliasRightController != null)
+                            {
+                                if (tmp.scriptAliasRightController.GetComponent<VRW_ControllerActions_VRTK>() == null)
+                                {
+                                    tmp.scriptAliasRightController.AddComponent<VRW_ControllerActions_VRTK>();
+                                }
+                                if (tmp.scriptAliasRightController.GetComponent<VRTK.VRTK_ControllerEvents>() == null)
+                                {
+                                    tmp.scriptAliasRightController.AddComponent<VRTK.VRTK_ControllerEvents>();
+                                }
+                                if (tmp.scriptAliasRightController.GetComponent<VRTK.VRTK_InteractTouch>() == null)
+                                {
+                                    tmp.scriptAliasRightController.AddComponent<VRTK.VRTK_InteractTouch>();
+                                }
+                                if (tmp.scriptAliasRightController.GetComponent<VRTK.VRTK_InteractGrab>() == null)
+                                {
+                                    tmp.scriptAliasRightController.AddComponent<VRTK.VRTK_InteractGrab>();
+                                    tmp.scriptAliasRightController.GetComponent<VRTK.VRTK_InteractGrab>().controllerEvents = tmp.scriptAliasRightController.GetComponent<VRTK.VRTK_ControllerEvents>();
+                                }
+                                if (tmp.scriptAliasRightController.GetComponent<VRTK.VRTK_InteractUse>() == null)
+                                {
+                                    tmp.scriptAliasRightController.AddComponent<VRTK.VRTK_InteractUse>();
+                                    tmp.scriptAliasRightController.GetComponent<VRTK.VRTK_InteractUse>().controllerEvents = tmp.scriptAliasRightController.GetComponent<VRTK.VRTK_ControllerEvents>();
+                                    tmp.scriptAliasRightController.GetComponent<VRTK.VRTK_InteractUse>().interactGrab = tmp.scriptAliasRightController.GetComponent<VRTK.VRTK_InteractGrab>();
+                                }
+                            }
+                            else
+                            {
+                                Debug.LogError("No VRTK right controller alias found. Please add a controller alias for the right controller.");
+                            }
+                        }
+                        GameObject grabPoint;
+                        if (target.transform.FindChild("Grab Point") == null)
+                        {
+                            grabPoint = new GameObject("Grab Point");
+                        }
+                        else
+                        {
+                            grabPoint = target.transform.FindChild("Grab Point").gameObject;
+                        }
+                        grabPoint.transform.parent = target.transform;
+                        grabPoint.transform.localPosition = Vector3.zero;
+                        target.GetComponent<VRTK.GrabAttachMechanics.VRTK_ChildOfControllerGrabAttach>().rightSnapHandle = grabPoint.transform;
                     }
+                }
+                if (FindObjectOfType<VRWControl>() == null)
+                {
+                    Debug.Log("No VRWControl found. Adding new VRWControl object to scene.");
+                    GameObject tmp = new GameObject("VRWControl");
+                    tmp.AddComponent<VRWControl>();
                 }
             }
             if (GUILayout.Button(new GUIContent("Create new Muzzle object", "Align muzzle with weapon as desired, with the muzzle object's forward direction pointing " +
@@ -145,6 +219,11 @@
                     muzzle.transform.localPosition = Vector3.zero;
                     muzzle.AddComponent<Muzzle>();
                     muzzle.name = "Muzzle";
+                    if (muzzle.GetComponent<AudioSource>() == null)
+                    {
+                        muzzle.AddComponent<AudioSource>();
+                    }
+                    muzzle.GetComponent<AudioSource>().playOnAwake = false;
                     Selection.activeGameObject = muzzle;
                 }
                 else
@@ -154,6 +233,11 @@
             }
 
             boltType = (BoltType)EditorGUILayout.EnumPopup("Bolt Type", boltType);
+            if (boltType == BoltType.RevolverStyle)
+            {
+                EditorGUILayout.LabelField("Revolver functionality not complete.");
+                EditorGUILayout.LabelField("Check back later.");
+            }
 
             if (GUILayout.Button(new GUIContent("Assign bolt to selected object", "Bolt should be a separate object - the part that moves when the weapon fires, " +
                 "that the player is able to pull back to charge the weapon. \n\nIf no bolt exists on your model, then assign to an empty GameObject and adjust slide time " +
@@ -169,13 +253,22 @@
                 {
                     Debug.LogError("No Weapon script found on " + slide + "'s parent objects. Please select an object that is a child of a valid Weapon script.");
                 }
-                else if (slide != null)
+                else if (slide == target)
+                {
+                    Debug.LogError("Attempted to set up the weapon object as the bolt object. Please select desired bolt, instead of the weapon itself.");
+                }
+                else 
                 {
                     if (boltType == BoltType.StraightBack)
                     {
                         if (slide.GetComponent<IBoltActions>() == null)
                         {
-                            slide.AddComponent<Bolt>();
+                            Bolt tmp = slide.AddComponent<Bolt>();
+                            tmp.BoltEndPosition = tmp.transform.localPosition;
+                            tmp.BoltStartPosition = tmp.transform.localPosition;
+                            tmp.BoltRotationStart = tmp.transform.localEulerAngles;
+                            tmp.BoltRotationEnd = tmp.transform.localEulerAngles;
+                            tmp.bolt = slide.transform;
                         }
                         else
                         {
@@ -188,7 +281,7 @@
                                 GameObject slideControl = GameObject.CreatePrimitive(PrimitiveType.Cube);
                                 slideControl.name = "Bolt Grab Point";
                                 slideControl.transform.localScale = new Vector3(0.05f, 0.05f, 0.05f);
-                                slideControl.GetComponent<MeshRenderer>().enabled = false;
+                                DestroyImmediate(slideControl.GetComponent<Renderer>());
                                 slideControl.transform.parent = target.transform;
                                 slideControl.transform.localPosition = Vector3.zero;
 
@@ -223,27 +316,30 @@
             if (GUILayout.Button(new GUIContent("Create new Ejector", "Location of the ejector does not matter, but face ejector so that forward is ejection direction.")))
             {
                 MonoBehaviour slide = (MonoBehaviour)target.GetComponentInChildren<IBoltActions>();
-                if (target.GetComponent<Weapon>() == null)
+                if (slide != null)
                 {
-                    Debug.LogError("No Weapon script found on " + target + ". Please select an object with a valid Weapon script.");
-                }
-                else if (slide == null)
-                {
-                    Debug.LogError("No IBoltActions script found on " + target + ". Please assign a bolt before adding an ejector.");                    
-                }
-                else if (target.GetComponentInChildren<IEjectorActions>() == null)
-                {
-                    GameObject ejector = new GameObject();
-                    ejector.name = "Ejector";
-                    ejector.transform.parent = target.transform;
-                    ejector.transform.localPosition = Vector3.zero;
-                    ejector.AddComponent<Ejector>();
-                    ejector.transform.localEulerAngles = new Vector3(-15, 90, 0);
-                    Selection.activeGameObject = ejector;
-                }
-                else
-                {
-                    Debug.LogWarning("Class implementing IEjectorActions already found on children of " + target + ". No ejector added.");
+                    if (target.GetComponent<Weapon>() == null)
+                    {
+                        Debug.LogError("No Weapon script found on " + target + ". Please select an object with a valid Weapon script.");
+                    }
+                    else if (slide == null)
+                    {
+                        Debug.LogError("No IBoltActions script found on " + target + ". Please assign a bolt before adding an ejector.");
+                    }
+                    else if (target.GetComponentInChildren<IEjectorActions>() == null)
+                    {
+                        GameObject ejector = new GameObject();
+                        ejector.name = "Ejector";
+                        ejector.transform.parent = target.transform;
+                        ejector.transform.localPosition = Vector3.zero;
+                        ejector.AddComponent<Ejector>();
+                        ejector.transform.localEulerAngles = new Vector3(-15, 90, 0);
+                        Selection.activeGameObject = ejector;
+                    }
+                    else
+                    {
+                        Debug.LogWarning("Class implementing IEjectorActions already found on children of " + target + ". No ejector added.");
+                    }
                 }
             }
             magType = (MagazineType)EditorGUILayout.EnumPopup("Magazine Type", magType);
@@ -279,6 +375,26 @@
                     else
                     {
                         Debug.LogWarning("Class implementing IMagazine already found on " + newMag + ". No magazine added.");
+                    }
+                }
+
+                if (newMag.GetComponent<Collider>() == null)
+                {
+                    newMag.AddComponent<BoxCollider>();
+                }
+
+                if (newMag.GetComponent<Rigidbody>() == null)
+                {
+                    newMag.AddComponent<Rigidbody>();
+                }
+
+                if (interactionSystem == InteractionSystems.VRTK)
+                {
+                    if (newMag.GetComponent<Magazine_VRTK_InteractableObject>() == null)
+                    {
+                        newMag.AddComponent<Magazine_VRTK_InteractableObject>();
+                        newMag.GetComponent<Magazine_VRTK_InteractableObject>().isGrabbable = true;
+                        newMag.GetComponent<Magazine_VRTK_InteractableObject>().holdButtonToGrab = false;
                     }
                 }
             }
@@ -323,6 +439,17 @@
                         {
                             dz.AddComponent<SphereCollider>();
                             dz.GetComponent<SphereCollider>().radius = 0.05f;
+                            dz.GetComponent<SphereCollider>().isTrigger = true;
+                        }
+                        if (dz.GetComponent<Rigidbody>() == null)
+                        {
+                            dz.AddComponent<Rigidbody>();
+                        }
+                        dz.GetComponent<Rigidbody>().isKinematic = true;
+                        if (target.GetComponentInChildren<IMagazine>() != null)
+                        {
+                            MonoBehaviour e = target.GetComponentInChildren<IMagazine>() as MonoBehaviour;
+                            dz.transform.localPosition = e.transform.localPosition;
                         }
                         Selection.activeGameObject = dz;
                     }
@@ -347,6 +474,7 @@
                         dz.GetComponent<BulletDropZone>().validObjectListPolicy = dz.AddComponent<VRTK.VRTK_PolicyList>();
                         dz.AddComponent<BoxCollider>();
                         dz.GetComponent<BoxCollider>().size = new Vector3(0.025f, 0.035f, 0.065f);
+                        dz.GetComponent<BoxCollider>().isTrigger = true;
                         dz.transform.parent = mag.transform;
                         dz.transform.localPosition = Vector3.zero;
                         Selection.activeGameObject = dz;

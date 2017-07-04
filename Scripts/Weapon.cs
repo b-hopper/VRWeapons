@@ -114,7 +114,10 @@ namespace VRWeapons
             Kick = GetComponent<IKickActions>();
             shellPool = GetComponent<IObjectPool>();
             Magazine = GetComponentInChildren<IMagazine>();
-            Bolt.SetEjector(Ejector);
+            if (Bolt != null && Ejector != null)
+            {
+                Bolt.SetEjector(Ejector);
+            }
             audioSource = GetComponent<AudioSource>();
             if (trigger != null) {
                 triggerAngleStart = trigger.localEulerAngles;
@@ -210,7 +213,7 @@ namespace VRWeapons
                         burstCount++;
                         shotHaptics.Invoke();
                     }
-                    else if (Time.time - nextFire >= fireRate)
+                    else if (!justFired && Time.time - nextFire >= fireRate)
                     {
                         PlaySound(AudioClips.DryFire);
                         nextFire = Time.time;

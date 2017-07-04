@@ -12,5 +12,9 @@ namespace VRWeapons
             base.OnInteractableObjectGrabbed(e);
         }
 
+        public override void OnInteractableObjectUngrabbed(InteractableObjectEventArgs e)
+        {
+            base.OnInteractableObjectUngrabbed(e);
+        }
     }
 }

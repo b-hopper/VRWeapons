@@ -32,12 +32,10 @@ namespace VRWeapons
         {
             IBulletBehavior tmp = null;
 
-            if (currentRoundCount > 0)
+            if (PopBullet())
             {
-                tmp = roundType;
-                currentRoundCount--;
+                tmp = roundType;                
             }
-
             return tmp;
         }
 
@@ -54,7 +52,13 @@ namespace VRWeapons
 
         public bool PopBullet()
         {
-            return false;
+            bool tmp = false;
+            if (currentRoundCount > 0)
+            {
+                tmp = true;
+                currentRoundCount--;
+            }
+            return tmp;
         }
 
         public Rigidbody GetRoundRigidBody()

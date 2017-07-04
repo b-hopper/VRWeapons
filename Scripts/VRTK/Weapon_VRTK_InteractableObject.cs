@@ -36,6 +36,8 @@ public class Weapon_VRTK_InteractableObject : VRTK_InteractableObject
         }
 
         thisWeap.shotHaptics += ThisWeap_shotHaptics;
+
+        CheckForControllerAliases();
     }
 
     private void ThisWeap_shotHaptics()
@@ -47,7 +49,10 @@ public class Weapon_VRTK_InteractableObject : VRTK_InteractableObject
     {
         VRW_ControllerActions_VRTK f;
         f = e.interactingObject.GetComponent<VRW_ControllerActions_VRTK>();
-        currentController = VRTK_ControllerReference.GetControllerReference(e.interactingObject);        
+        if (e.interactingObject != GetSecondaryGrabbingObject())
+        {
+            currentController = VRTK_ControllerReference.GetControllerReference(e.interactingObject);
+        }
         
         if (f != null)
         {
@@ -55,16 +60,19 @@ public class Weapon_VRTK_InteractableObject : VRTK_InteractableObject
         }
 
         thisWeap.holdingDevice = e.interactingObject;
-        
-        base.OnInteractableObjectGrabbed(e);
+
         weaponBodyCollider.enabled = false;
+        base.OnInteractableObjectGrabbed(e);
     }
 
     public override void OnInteractableObjectUngrabbed(InteractableObjectEventArgs e)
     {
         VRW_ControllerActions_VRTK f;
         f = e.interactingObject.GetComponent<VRW_ControllerActions_VRTK>();
-        currentController = null;
+        if (e.interactingObject == GetGrabbingObject())
+        {
+            currentController = null;
+        }
         if (f != null)
         {
             f.CurrentHeldWeapon = null;
@@ -86,5 +94,37 @@ public class Weapon_VRTK_InteractableObject : VRTK_InteractableObject
     {
         base.StopUsing(previousUsingObject);
         thisWeap.StopFiring(previousUsingObject.gameObject);
+    }
+
+    void CheckForControllerAliases()
+    {
+        VRTK_SDKManager tmp = FindObjectOfType<VRTK_SDKManager>();
+        if (tmp != null)
+        {
+            if (tmp.scriptAliasLeftController != null)
+            {
+                if (tmp.scriptAliasLeftController.GetComponent<VRW_ControllerActions_VRTK>() == null)
+                {
+                    tmp.scriptAliasLeftController.AddComponent<VRW_ControllerActions_VRTK>();
+                    Debug.LogWarning("No VRW_ControllerActions_VRTK found on " + tmp.scriptAliasLeftController + ". Adding component. Please add component in editor.");
+                }
+            }
+            else
+            {
+                Debug.LogError("No left controller alias found. Please assign one in the VRTK SDK Manager.");
+            }
+            if (tmp.scriptAliasRightController != null)
+            {
+                if (tmp.scriptAliasRightController.GetComponent<VRW_ControllerActions_VRTK>() == null)
+                {
+                    tmp.scriptAliasRightController.AddComponent<VRW_ControllerActions_VRTK>();
+                    Debug.LogWarning("No VRW_ControllerActions_VRTK found on " + tmp.scriptAliasRightController + ". Adding component. Please add component in editor.");
+                }
+            }
+            else
+            {
+                Debug.LogError("No right controller alias found. Please assign one in the VRTK SDK Manager.");
+            }
+        }
     }
 }
