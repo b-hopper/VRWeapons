@@ -27,7 +27,6 @@ public class BulletDropZone : VRTK_SnapDropZone {
     public override void OnObjectSnappedToDropZone(SnapDropZoneEventArgs e)
     {
         bool tmp = thisMag.PushBullet(e.snappedObject);
-        Debug.Log(tmp);
         ForceUnsnap();
         if (tmp)
         {
