@@ -39,7 +39,7 @@ namespace VRWeapons
             return tmp;
         }
 
-        public bool PushBullet(IBulletBehavior newRound)
+        public bool PushBullet(GameObject newRound)
         {
             bool val = false;            
             if (currentRoundCount < maxRounds)

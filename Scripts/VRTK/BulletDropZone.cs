@@ -5,28 +5,37 @@ using VRTK;
 using VRWeapons;
 
 public class BulletDropZone : VRTK_SnapDropZone {
+    
     MonoBehaviour thisMagGO;
     IMagazine thisMag;
+    IBoltActions bolt;
+        
+    Collider thisCol;
+
+    [Tooltip("Used for internal magazines - If checked, will disable this bullet drop zone unless bolt is back."), SerializeField]
+    bool chamberMustBeOpenToReload;
 
     private void Start()
     {
         thisMagGO = (MonoBehaviour)GetComponentInParent<IMagazine>();
         thisMag = GetComponentInParent<IMagazine>();
-        Debug.Log(this + " mag: " + thisMagGO);
+        bolt = transform.parent.GetComponentInChildren<IBoltActions>();
+        thisCol = GetComponent<Collider>();
+        snapType = SnapTypes.UseParenting;                                  // Required to function. Otherwise round just falls off
     }
 
     public override void OnObjectSnappedToDropZone(SnapDropZoneEventArgs e)
     {
         base.OnObjectSnappedToDropZone(e);
 
-        IBulletBehavior newRound = e.snappedObject.GetComponent<IBulletBehavior>();
-        bool tmp = thisMag.PushBullet(newRound);
+        bool tmp = thisMag.PushBullet(e.snappedObject);
         ForceUnsnap();
+        Debug.Log(tmp);
         if (tmp)
         {
             e.snappedObject.transform.parent = thisMagGO.transform;
+            e.snappedObject.SetActive(false);
         }
-        //e.snappedObject.SetActive(false);
     }
 
     public override void OnObjectUnsnappedFromDropZone(SnapDropZoneEventArgs e)
@@ -34,6 +43,25 @@ public class BulletDropZone : VRTK_SnapDropZone {
         base.OnObjectUnsnappedFromDropZone(e);
 
         //thisMag.PopBullet();
+    }
+
+    protected override void Update()
+    {
+        base.Update();
+        if (chamberMustBeOpenToReload)
+        {
+            if (bolt != null)
+            {
+                if (bolt.boltLerpVal <= 0.9f)
+                {
+                    thisCol.enabled = false;
+                }
+                else
+                {
+                    thisCol.enabled = true;
+                }
+            }
+        }
     }
 
 }

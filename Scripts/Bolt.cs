@@ -39,7 +39,7 @@ namespace VRWeapons
         Transform chamberedRoundSnapT;
 
         [Tooltip("Used when charging handle is separate from actual bolt. Bolt should be a child of the charging handle, in this case."), SerializeField]
-        Transform boltGroup;
+        public Transform boltGroup;
 
         [Tooltip("Bolt's transform. Assign only this, if charging handle does not move separately from bolt."), SerializeField]
         public Transform bolt;
