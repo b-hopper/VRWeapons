@@ -5,11 +5,11 @@ using VRTK;
 using VRWeapons;
 
 public class BulletDropZone : VRTK_SnapDropZone {
-    
-    MonoBehaviour thisMagGO;
-    IMagazine thisMag;
     IBoltActions bolt;
-        
+    IMagazine thisMag;
+
+    MonoBehaviour thisMagGO;
+
     Collider thisCol;
 
     [Tooltip("Used for internal magazines - If checked, will disable this bullet drop zone unless bolt is back."), SerializeField]
@@ -17,39 +17,30 @@ public class BulletDropZone : VRTK_SnapDropZone {
 
     private void Start()
     {
-        thisMagGO = (MonoBehaviour)GetComponentInParent<IMagazine>();
-        thisMag = GetComponentInParent<IMagazine>();
         bolt = transform.parent.GetComponentInChildren<IBoltActions>();
+        thisMag = GetComponentInParent<IMagazine>();
+        thisMagGO = (MonoBehaviour)GetComponentInParent<IMagazine>();
         thisCol = GetComponent<Collider>();
-        snapType = SnapTypes.UseParenting;                                  // Required to function. Otherwise round just falls off
+        thisCol.enabled = true;
     }
 
     public override void OnObjectSnappedToDropZone(SnapDropZoneEventArgs e)
     {
-        base.OnObjectSnappedToDropZone(e);
-
         bool tmp = thisMag.PushBullet(e.snappedObject);
-        ForceUnsnap();
         Debug.Log(tmp);
+        ForceUnsnap();
         if (tmp)
         {
             e.snappedObject.transform.parent = thisMagGO.transform;
             e.snappedObject.SetActive(false);
         }
-    }
-
-    public override void OnObjectUnsnappedFromDropZone(SnapDropZoneEventArgs e)
-    {
-        base.OnObjectUnsnappedFromDropZone(e);
-
-        //thisMag.PopBullet();
+        base.OnObjectSnappedToDropZone(e);
     }
 
     protected override void Update()
     {
-        base.Update();
-        if (chamberMustBeOpenToReload)
-        {
+        if (chamberMustBeOpenToReload && Time.time > 1)             // This was causing some problems, something in VRTK's snap drop zone stopped it from working if the 
+        {                                                           // collider wasn't enabled on start. So, this makes sure it's not disabled on start.
             if (bolt != null)
             {
                 if (bolt.boltLerpVal <= 0.9f)
@@ -64,4 +55,5 @@ public class BulletDropZone : VRTK_SnapDropZone {
         }
     }
 
+    
 }

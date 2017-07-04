@@ -425,15 +425,16 @@
 
                         dz.transform.parent = target.transform;
                         dz.transform.localPosition = Vector3.zero;
-
+                        
+                        if (dz.GetComponent<VRTK.VRTK_SnapDropZone>() == null)
+                        {
+                            dz.AddComponent<VRTK.VRTK_SnapDropZone>();
+                        }
                         if (dz.GetComponent<VRTK.VRTK_PolicyList>() == null)
                         {
-                            dz.GetComponent<MagDropZone>().validObjectListPolicy = dz.AddComponent<VRTK.VRTK_PolicyList>();
+                            dz.AddComponent<VRTK.VRTK_PolicyList>();
                         }
-                        else
-                        {
-                            dz.GetComponent<MagDropZone>().validObjectListPolicy = dz.GetComponent<VRTK.VRTK_PolicyList>();
-                        }
+                        dz.GetComponent<VRTK.VRTK_SnapDropZone>().validObjectListPolicy = dz.GetComponent<VRTK.VRTK_PolicyList>();
 
                         if (dz.GetComponent<Collider>() == null)
                         {
@@ -471,10 +472,21 @@
                         Undo.RecordObject(dz, "Set up Bullet Drop Zone");
                         dz.name = "Bullet Drop Zone";
                         dz.AddComponent<BulletDropZone>();
-                        dz.GetComponent<BulletDropZone>().validObjectListPolicy = dz.AddComponent<VRTK.VRTK_PolicyList>();
-                        dz.AddComponent<BoxCollider>();
-                        dz.GetComponent<BoxCollider>().size = new Vector3(0.025f, 0.035f, 0.065f);
-                        dz.GetComponent<BoxCollider>().isTrigger = true;
+                        if (dz.GetComponent<VRTK.VRTK_SnapDropZone>() == null)
+                        {
+                            dz.AddComponent<VRTK.VRTK_SnapDropZone>();
+                        }
+                        if (dz.GetComponent<VRTK.VRTK_PolicyList>() == null)
+                        {
+                            dz.AddComponent<VRTK.VRTK_PolicyList>();
+                        }
+                        dz.GetComponent<VRTK.VRTK_SnapDropZone>().validObjectListPolicy = dz.GetComponent<VRTK.VRTK_PolicyList>();
+                        if (dz.GetComponent<Collider>() == null)
+                        {
+                            dz.AddComponent<BoxCollider>();
+                            dz.GetComponent<BoxCollider>().size = new Vector3(0.025f, 0.035f, 0.065f);
+                        }
+                        dz.GetComponent<Collider>().isTrigger = true;
                         dz.transform.parent = mag.transform;
                         dz.transform.localPosition = Vector3.zero;
                         Selection.activeGameObject = dz;
