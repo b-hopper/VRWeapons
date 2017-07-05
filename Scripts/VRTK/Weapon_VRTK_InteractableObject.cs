@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using VRTK;
@@ -9,10 +10,10 @@ public class Weapon_VRTK_InteractableObject : VRTK_InteractableObject
     Weapon thisWeap;
 
     VRTK_ControllerReference currentController;
-    
+
     [Tooltip("Main collider of the weapon, used for grabbing. Assign collider to disable it on pickup.\n\nIf this collider is not assigned, bolt manipulation " +
         "may not function correctly."), SerializeField]
-    public Collider weaponBodyCollider;
+    private Collider weaponBodyCollider;
 
     [Tooltip("Second hand grip collider is used for 2-handed weapons. This collider will NOT be turned off when weapon is picked up."), SerializeField]
     Collider secondHandGripCollider;
@@ -40,24 +41,31 @@ public class Weapon_VRTK_InteractableObject : VRTK_InteractableObject
 
     private void ThisWeap_shotHaptics()
     {
-        VRTK_ControllerHaptics.TriggerHapticPulse(currentController, hapticStrength, hapticDuration, hapticPulseInterval);
+        if(currentController != null)
+        { 
+            VRTK_ControllerHaptics.TriggerHapticPulse(currentController, hapticStrength, hapticDuration, hapticPulseInterval);
+        }
+        else
+        {
+            Debug.LogError("Failed to trigger haptics, current controller not found");
+        }
     }
-    
+
     public override void OnInteractableObjectGrabbed(InteractableObjectEventArgs e)
     {
         VRW_ControllerActions_VRTK f;
         f = e.interactingObject.GetComponent<VRW_ControllerActions_VRTK>();
-        currentController = VRTK_ControllerReference.GetControllerReference(e.interactingObject);        
-        
+        currentController = VRTK_ControllerReference.GetControllerReference(e.interactingObject);
+
         if (f != null)
         {
             f.CurrentHeldWeapon = thisWeap;             // Setting up for touchpad input
         }
 
         thisWeap.holdingDevice = e.interactingObject;
-        
+
         base.OnInteractableObjectGrabbed(e);
-        weaponBodyCollider.enabled = false;
+        SetColliderEnabled(false);
     }
 
     public override void OnInteractableObjectUngrabbed(InteractableObjectEventArgs e)
@@ -72,8 +80,8 @@ public class Weapon_VRTK_InteractableObject : VRTK_InteractableObject
 
         thisWeap.holdingDevice = null;
 
-        base.OnInteractableObjectUngrabbed(e);        
-        weaponBodyCollider.enabled = true;
+        base.OnInteractableObjectUngrabbed(e);
+        SetColliderEnabled(true);
     }
 
     public override void StartUsing(VRTK_InteractUse usingObject)
@@ -86,5 +94,18 @@ public class Weapon_VRTK_InteractableObject : VRTK_InteractableObject
     {
         base.StopUsing(previousUsingObject);
         thisWeap.StopFiring(previousUsingObject.gameObject);
+    }
+
+    public void SetWeaponBodyCollider(Collider collider)
+    {
+        weaponBodyCollider = collider;
+    }
+
+    public void SetColliderEnabled(bool isEnabled)
+    {
+        if (weaponBodyCollider != null)
+        {
+            weaponBodyCollider.enabled = isEnabled;
+        }
     }
 }

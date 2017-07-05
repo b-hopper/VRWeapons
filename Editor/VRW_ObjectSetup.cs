@@ -76,7 +76,7 @@
                             tmp.holdButtonToUse = true;
                             if (target.GetComponentInChildren<Collider>() != null)
                             {
-                                tmp.weaponBodyCollider = target.GetComponentInChildren<Collider>();
+                                tmp.SetWeaponBodyCollider(target.GetComponentInChildren<Collider>());
                             }
                         }
                         else

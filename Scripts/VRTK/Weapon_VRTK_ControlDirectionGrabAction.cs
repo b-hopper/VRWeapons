@@ -27,7 +27,7 @@ namespace VRWeapons
             if (isGripped && secondaryGrabbingObject == null)
             {
                 thisWeap.secondHandGripped = false;
-                intObj.weaponBodyCollider.enabled = false;
+                intObj.SetColliderEnabled(false);
                 isGripped = false;
             }
         }
