@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,6 +8,8 @@ namespace VRWeapons
     [System.Serializable]
     public class SimpleMagazine : MonoBehaviour, IMagazine
     {
+        public event EventHandler MagDropped;
+
         IBulletBehavior roundType;
 
         Rigidbody rb;
@@ -43,11 +46,11 @@ namespace VRWeapons
 
         public bool PushBullet(IBulletBehavior newRound)
         {
-            bool val = false;            
+            bool val = false;
             if (currentRoundCount < maxRounds)
             {
                 currentRoundCount++;
-                val = true;                
+                val = true;
             }
             return val;
         }
@@ -89,8 +92,16 @@ namespace VRWeapons
                 {
                     rb.isKinematic = false;
                 }
+                OnMagDropped();
             }
         }
 
+        private void OnMagDropped()
+        {
+            if (MagDropped != null)
+            {
+                MagDropped(this, EventArgs.Empty);
+            }
+        }
     }
 }

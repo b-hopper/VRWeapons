@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,6 +8,8 @@ namespace VRWeapons
     [System.Serializable]
     public class Magazine : MonoBehaviour, IMagazine
     {
+        public event EventHandler MagDropped;
+
         Rigidbody rb;
 
         [SerializeField]
@@ -108,6 +111,7 @@ namespace VRWeapons
                 {
                     rb.isKinematic = false;
                 }
+                OnMagDropped();
             }
         }
 
@@ -172,6 +176,14 @@ namespace VRWeapons
             {
                 Debug.Log("Round in position " + j + ": " + RoundsInMag[j]);
                 j++;
+            }
+        }
+
+        private void OnMagDropped()
+        {
+            if(MagDropped != null)
+            {
+                MagDropped(this, EventArgs.Empty);
             }
         }
     }
