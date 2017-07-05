@@ -164,6 +164,10 @@ namespace VRWeapons
         {
             for (int i = 0; i < muzzleFlashes.Length; i++)
             {
+                if (!muzzleFlashes[i].transform.parent)             // Checks to see if object is prefab or in-scene... Not foolproof, but I don't know of a better way.
+                {
+                    muzzleFlashes[i] = Instantiate(muzzleFlashes[i]);
+                }
                 List<ParticleSystem> tmp = new List<ParticleSystem>(muzzleFlashes[i].GetComponentsInChildren<ParticleSystem>());
 
                 if (tmp.Count > 0)

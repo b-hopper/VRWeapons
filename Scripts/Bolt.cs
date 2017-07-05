@@ -39,10 +39,10 @@ namespace VRWeapons
         Transform chamberedRoundSnapT;
 
         [Tooltip("Used when charging handle is separate from actual bolt. Bolt should be a child of the charging handle, in this case."), SerializeField]
-        Transform boltGroup;
+        public Transform boltGroup;
 
         [Tooltip("Bolt's transform. Assign only this, if charging handle does not move separately from bolt."), SerializeField]
-        Transform bolt;
+        public Transform bolt;
 
         [Tooltip("Position of bolt group when bolt is fully closed. This should be the position value of the parent charging handle, if " +
             "bolt moves separately."), SerializeField]
@@ -54,20 +54,20 @@ namespace VRWeapons
 
         [Tooltip("Position of bolt when fully closed. If bolt moves separate from charging handle, this is the position value of the child " +
             "bolt object."), SerializeField]
-        Vector3 BoltStartPosition;
+        public Vector3 BoltStartPosition;
 
         [Tooltip("Position of bolt when fully open. If bolt moves separate from charging handle, this is the position value of the child " +
             "bolt object."), SerializeField]
-        Vector3 BoltEndPosition;
+        public Vector3 BoltEndPosition;
 
         [Tooltip("Bolt will rotate from 0 to this value, when pulling bolt back. If 0, bolt will not rotate. If 1, bolt will only rotate."), SerializeField]
         float BoltRotatesUntil;
 
         [Tooltip("Rotation of bolt when fully closed."), SerializeField]
-        Vector3 BoltRotationStart;
+        public Vector3 BoltRotationStart;
         
         [Tooltip("Rotation of bolt when fully open."), SerializeField]
-        Vector3 BoltRotationEnd;
+        public Vector3 BoltRotationEnd;
 
         private void Start()
         {
@@ -144,7 +144,7 @@ namespace VRWeapons
             if (movingBack)
             {
                 doNotPlaySound = true;
-                boltLerpVal += boltMoveSpeed;
+                boltLerpVal += boltMoveSpeed * Time.timeScale;
 
 
                 if (boltLerpVal >= 1)
@@ -160,7 +160,7 @@ namespace VRWeapons
 
             else if (movingForward)
             {
-                boltLerpVal -= boltMoveSpeed;
+                boltLerpVal -= boltMoveSpeed * Time.timeScale;
                 if (boltLerpVal <= 0)
                 {
                     boltLerpVal = 0;
@@ -257,10 +257,13 @@ namespace VRWeapons
 
         public void ReplaceRoundWithEmptyShell(GameObject go)
         {
-            go.transform.parent = chamberedRoundT.parent;
-            go.transform.localPosition = chamberedRoundT.localPosition;
-            go.transform.localEulerAngles = chamberedRoundT.localEulerAngles;
-            DestroyImmediate(chamberedRoundT.gameObject);
+            go.transform.parent = chamberedRoundSnapT.parent;
+            go.transform.localPosition = chamberedRoundSnapT.localPosition;
+            go.transform.localEulerAngles = chamberedRoundSnapT.localEulerAngles;
+            if (chamberedRoundT != null)
+            {
+                DestroyImmediate(chamberedRoundT.gameObject);
+            }
             chamberedRoundT = go.transform;
             chamberedRoundRB = go.GetComponent<Rigidbody>();
             chamberedRoundRB.isKinematic = true;

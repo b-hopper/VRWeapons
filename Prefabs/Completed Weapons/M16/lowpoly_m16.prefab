@@ -184,7 +184,6 @@ GameObject:
   - component: {fileID: 114882490628439338}
   - component: {fileID: 114328933950877118}
   - component: {fileID: 54613267979158658}
-  - component: {fileID: 114290844284503198}
   - component: {fileID: 114377786214123570}
   m_Layer: 0
   m_Name: magazine
@@ -1123,23 +1122,6 @@ MonoBehaviour:
   ungrabDistance: 1
   releaseSnapSpeed: 0.1
   lockZRotation: 1
---- !u!114 &114290844284503198
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1694962560972916}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c08517e04830d6d44a13c5ea5f574181, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  active: 1
-  unhighlightOnDisable: 1
-  thickness: 1
-  customOutlineModels: []
-  customOutlineModelPaths: []
-  enableSubmeshHighlight: 0
 --- !u!114 &114293438035243554
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1218,8 +1200,8 @@ MonoBehaviour:
   touchHighlightColor: {r: 0, g: 0.95862055, b: 1, a: 0}
   allowedTouchControllers: 0
   ignoredColliders: []
-  isGrabbable: 0
-  holdButtonToGrab: 1
+  isGrabbable: 1
+  holdButtonToGrab: 0
   stayGrabbedOnTeleport: 1
   validDrop: 1
   grabOverrideButton: 0
@@ -1375,7 +1357,7 @@ MonoBehaviour:
   validObjectListPolicy: {fileID: 114468212650992092}
   displayDropZoneInEditor: 1
   defaultSnappedObject: {fileID: 0}
-  startingMag: {fileID: 1694962560972916}
+  startingMag: {fileID: 0}
 --- !u!114 &114882490628439338
 MonoBehaviour:
   m_ObjectHideFlags: 1

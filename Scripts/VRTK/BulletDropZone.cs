@@ -5,39 +5,54 @@ using VRTK;
 using VRWeapons;
 
 public class BulletDropZone : VRTK_SnapDropZone {
-    MonoBehaviour thisMagGO;
+    IBoltActions bolt;
     IMagazine thisMag;
+
+    MonoBehaviour thisMagGO;
+
+    Collider thisCol;
+
+    [Tooltip("Used for internal magazines - If checked, will disable this bullet drop zone unless bolt is back."), SerializeField]
+    bool chamberMustBeOpenToReload;
 
     private void Start()
     {
-        thisMagGO = (MonoBehaviour)GetComponentInParent<IMagazine>();
+        bolt = transform.parent.GetComponentInChildren<IBoltActions>();
         thisMag = GetComponentInParent<IMagazine>();
-        Debug.Log(this + " mag: " + thisMagGO);
+        thisMagGO = (MonoBehaviour)GetComponentInParent<IMagazine>();
+        thisCol = GetComponent<Collider>();
+        thisCol.enabled = true;
     }
 
     public override void OnObjectSnappedToDropZone(SnapDropZoneEventArgs e)
     {
-        base.OnObjectSnappedToDropZone(e);
-
-        IBulletBehavior newRound = e.snappedObject.GetComponent<IBulletBehavior>();
-        bool tmp = thisMag.PushBullet(newRound);
+        bool tmp = thisMag.PushBullet(e.snappedObject);
         ForceUnsnap();
         if (tmp)
         {
             e.snappedObject.transform.parent = thisMagGO.transform;
+            e.snappedObject.SetActive(false);
         }
-        else
-        {
-            Debug.Log("Whelp");
-        }
-        //e.snappedObject.SetActive(false);
+        base.OnObjectSnappedToDropZone(e);
     }
 
-    public override void OnObjectUnsnappedFromDropZone(SnapDropZoneEventArgs e)
+    protected override void Update()
     {
-        base.OnObjectUnsnappedFromDropZone(e);
-
-        //thisMag.PopBullet();
+        if (chamberMustBeOpenToReload && Time.time > 1)             // This was causing some problems, something in VRTK's snap drop zone stopped it from working if the 
+        {                                                           // collider wasn't enabled on start. So, this makes sure it's not disabled on start.
+            if (bolt != null)
+            {
+                if (bolt.boltLerpVal <= 0.9f)
+                {
+                    thisCol.enabled = false;
+                }
+                else
+                {
+                    thisCol.enabled = true;
+                }
+            }
+        }
     }
 
+    
 }
