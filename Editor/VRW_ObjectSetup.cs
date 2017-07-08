@@ -63,6 +63,7 @@
                     {
                         Debug.LogWarning("Weapon already found on " + target + ". No Weapon added.");
                     }
+                    target.GetComponent<AudioSource>().playOnAwake = false;
 
                     //// Interaction systems, more to come ////
                     if (interactionSystem == InteractionSystems.VRTK)

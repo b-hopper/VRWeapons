@@ -5,24 +5,29 @@ using UnityEngine;
 using VRTK;
 using VRWeapons;
 
-public class MagDropZone : VRTK_SnapDropZone
+[RequireComponent(typeof(VRTK_SnapDropZone))]
+
+public class MagDropZone : MonoBehaviour
 {
     Weapon thisWeap;
+    VRTK_SnapDropZone dropZone;
 
     private void Start()
     {
+        dropZone = GetComponent<VRTK_SnapDropZone>();
+        dropZone.ObjectSnappedToDropZone += new SnapDropZoneEventHandler(ObjectSnapped);
+        dropZone.ObjectUnsnappedFromDropZone += new SnapDropZoneEventHandler(ObjectUnsnapped);
         thisWeap = GetComponentInParent<Weapon>();
     }
 
-    public override void OnObjectSnappedToDropZone(SnapDropZoneEventArgs e)
+    void ObjectSnapped(object sender, SnapDropZoneEventArgs e)
     {
         IMagazine mag = e.snappedObject.GetComponent<IMagazine>();
         mag.MagIn(thisWeap);
         mag.MagDropped += Mag_MagDropped;
-        base.OnObjectSnappedToDropZone(e);
     }
 
-    public override void OnObjectUnsnappedFromDropZone(SnapDropZoneEventArgs e)
+    void ObjectUnsnapped(object sender, SnapDropZoneEventArgs e)
     {
         IMagazine mag = e.snappedObject.GetComponent<IMagazine>();
         //Stop listening for mag drop event so we won't redundantly unsnap
@@ -35,8 +40,7 @@ public class MagDropZone : VRTK_SnapDropZone
         { 
             interactable.SaveCurrentState();
         }
-
-        base.OnObjectUnsnappedFromDropZone(e);
+        
     }
 
     private void Mag_MagDropped(object sender, System.EventArgs e)
@@ -45,7 +49,6 @@ public class MagDropZone : VRTK_SnapDropZone
         {
             (sender as IMagazine).MagDropped -= Mag_MagDropped;
         }
-        ForceUnsnap();
     }
 
 }
