@@ -49,6 +49,7 @@ public class MagDropZone : MonoBehaviour
         {
             (sender as IMagazine).MagDropped -= Mag_MagDropped;
         }
+        dropZone.ForceUnsnap();
     }
 
 }
