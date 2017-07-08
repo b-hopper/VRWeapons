@@ -4,9 +4,13 @@ using UnityEngine;
 using VRTK;
 using VRWeapons;
 
-public class BulletDropZone : VRTK_SnapDropZone {
+[RequireComponent(typeof(VRTK_SnapDropZone))]
+
+public class BulletDropZone : MonoBehaviour {
     IBoltActions bolt;
     IMagazine thisMag;
+
+    VRTK_SnapDropZone dropZone;
 
     MonoBehaviour thisMagGO;
 
@@ -17,6 +21,8 @@ public class BulletDropZone : VRTK_SnapDropZone {
 
     private void Start()
     {
+        dropZone = GetComponent<VRTK_SnapDropZone>();
+        dropZone.ObjectSnappedToDropZone += new SnapDropZoneEventHandler(ObjectSnapped);
         bolt = transform.parent.GetComponentInChildren<IBoltActions>();
         thisMag = GetComponentInParent<IMagazine>();
         thisMagGO = (MonoBehaviour)GetComponentInParent<IMagazine>();
@@ -24,22 +30,22 @@ public class BulletDropZone : VRTK_SnapDropZone {
         thisCol.enabled = true;
     }
 
-    public override void OnObjectSnappedToDropZone(SnapDropZoneEventArgs e)
+    void ObjectSnapped(object sender, SnapDropZoneEventArgs e)
     {
         bool tmp = thisMag.PushBullet(e.snappedObject);
-        ForceUnsnap();
+        dropZone.ForceUnsnap();
+        Debug.Log("Check");
         if (tmp)
         {
             e.snappedObject.transform.parent = thisMagGO.transform;
             e.snappedObject.SetActive(false);
         }
-        base.OnObjectSnappedToDropZone(e);
     }
 
-    protected override void Update()
+    private void Update()
     {
-        if (chamberMustBeOpenToReload && Time.time > 1)             // This was causing some problems, something in VRTK's snap drop zone stopped it from working if the 
-        {                                                           // collider wasn't enabled on start. So, this makes sure it's not disabled on start.
+        if (chamberMustBeOpenToReload)
+        {
             if (bolt != null)
             {
                 if (bolt.boltLerpVal <= 0.9f)
