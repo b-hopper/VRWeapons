@@ -22,7 +22,7 @@ namespace VRWeapons
 
         [Tooltip("If toggled, magazine is able to be removed from the weapon. Turn off if weapon is using an internal magazine."), SerializeField]
         bool canBeDetached = true;
-
+        
         public bool CanMagBeDetached { get { return canBeDetached; } set { canBeDetached = value; } }
 
         private void Start()
