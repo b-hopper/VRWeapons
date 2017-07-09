@@ -186,13 +186,13 @@
                             }
                         }
                         GameObject grabPoint;
-                        if (target.transform.FindChild("Grab Point") == null)
+                        if (target.transform.Find("Grab Point") == null)
                         {
                             grabPoint = new GameObject("Grab Point");
                         }
                         else
                         {
-                            grabPoint = target.transform.FindChild("Grab Point").gameObject;
+                            grabPoint = target.transform.Find("Grab Point").gameObject;
                         }
                         grabPoint.transform.parent = target.transform;
                         grabPoint.transform.localPosition = Vector3.zero;
