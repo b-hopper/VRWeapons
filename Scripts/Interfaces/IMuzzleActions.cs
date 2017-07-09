@@ -9,5 +9,6 @@ namespace VRWeapons
     {
         void StartFiring(IBulletBehavior round);
         void StopFiring();
+        void SetNewWeapon(Weapon newWeap);
     }
 }
