@@ -21,12 +21,14 @@ namespace VRWeapons
                 {
                     for (int i = 0; i < mag.rounds.Length; i++)
                     {
-                        if (mag.rounds[i] == null)
+                        if (mag.rounds[i] == null || !mag.rounds[i].transform.parent)
                         {
+                            string name = mag.rounds[0].name;
                             mag.rounds[i] = Instantiate(mag.rounds[0]);
                             mag.rounds[i].transform.parent = mag.transform;
                             mag.rounds[i].transform.localPosition = mag.rounds[0].transform.localPosition;
                             mag.rounds[i].transform.localEulerAngles = mag.rounds[0].transform.localEulerAngles;
+                            mag.rounds[i].name = name;
                             mag.rounds[i].SetActive(false);
                         }
                     }
@@ -38,6 +40,7 @@ namespace VRWeapons
             }
             EditorGUILayout.LabelField("Rounds are fed in reverse order - ");
             EditorGUILayout.LabelField("Element 0 is the last round in the mag.");
+            
             base.OnInspectorGUI();            
         } 
     }

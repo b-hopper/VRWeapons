@@ -36,7 +36,7 @@ namespace VRWeapons
 
         float nextFire;
 
-        Vector3 triggerAngleStart;
+        Vector3 triggerAngleStart, triggerPositionStart;
 
         //// Shown in inspector ////
         [Tooltip("Bolt will rack forward after racking backward, unless magazine is inserted and empty."), SerializeField]
@@ -60,8 +60,11 @@ namespace VRWeapons
         [Tooltip("Trigger GameObject. Used to accurately rotate weapon's trigger on controller trigger pull."), SerializeField]
         Transform trigger;
 
-        [Tooltip("End rotation of trigger, when fully pressed down."), SerializeField]
+        [Tooltip("End rotation of trigger, when fully pressed down.\n\nIf trigger does not rotate, leave this at (0, 0, 0)."), SerializeField]
         Vector3 triggerEndRotation;
+
+        [Tooltip("End position of trigger, when fully pressed down.\n\nIf trigger does not change position, leave this at (0, 0, 0)."), SerializeField]
+        Vector3 triggerEndPosition;
 
         [Tooltip("Sound effect played when magazine is inserted."), SerializeField]
         AudioClip MagIn;
@@ -121,6 +124,15 @@ namespace VRWeapons
             audioSource = GetComponent<AudioSource>();
             if (trigger != null) {
                 triggerAngleStart = trigger.localEulerAngles;
+                triggerPositionStart = trigger.localPosition;
+                if (triggerEndPosition == Vector3.zero)
+                {
+                    triggerEndPosition = triggerPositionStart;
+                }
+                if (triggerEndRotation == Vector3.zero)
+                {
+                    triggerEndRotation = triggerAngleStart;
+                }
             }
 
             if (Magazine != null)
@@ -281,6 +293,7 @@ namespace VRWeapons
             if (trigger != null)
             {
                 trigger.localRotation = Quaternion.Lerp(Quaternion.Euler(triggerAngleStart), Quaternion.Euler(triggerEndRotation), angle);
+                trigger.localPosition = Vector3.Lerp(triggerPositionStart, triggerEndPosition, angle);
             }
             if (Bolt != null)
             {

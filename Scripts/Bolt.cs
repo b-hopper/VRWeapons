@@ -115,9 +115,10 @@ namespace VRWeapons
                 if (chamberedRoundT != null)
                 {
                     chamberedRoundT.gameObject.SetActive(true);
-                    chamberedRoundT.parent = transform;
+                    chamberedRoundT.parent = chamberedRoundSnapT.parent;
                     chamberedRoundT.localEulerAngles = chamberedRoundSnapT.localEulerAngles;
                     chamberedRoundT.localPosition = chamberedRoundSnapT.localPosition;
+                    chamberedRoundRB.isKinematic = true;
                 }
 
                 // Setting up the chambered round to prepare for firing
@@ -184,12 +185,9 @@ namespace VRWeapons
 
             else if (boltLerpVal >= 0.9f)
             {
-                if (!justEjected)
+                if (!justEjected && Ejector != null && chamberedRoundT != null && chamberedRoundRB != null)
                 {
-                    if (Ejector != null && chamberedRoundT != null && chamberedRoundRB != null)
-                    {
-                        Ejector.Eject(chamberedRoundT, chamberedRoundRB);
-                    }
+                    Ejector.Eject(chamberedRoundT, chamberedRoundRB);
                 }
 
                 justEjected = true;
