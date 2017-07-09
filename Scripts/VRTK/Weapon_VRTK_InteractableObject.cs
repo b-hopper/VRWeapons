@@ -14,11 +14,8 @@ public class Weapon_VRTK_InteractableObject : VRTK_InteractableObject
     [Tooltip("Main collider of the weapon, used for grabbing. Assign collider to disable it on pickup.\n\nIf this collider is not assigned, bolt manipulation " +
         "may not function correctly."), SerializeField]
     private Collider weaponBodyCollider;
-
-    [Tooltip("Second hand grip collider is used for 2-handed weapons. This collider will NOT be turned off when weapon is picked up."), SerializeField]
-    Collider secondHandGripCollider;
-
-    [Tooltip("Strength of haptics on weapon fire, 0 to 1."), SerializeField]
+    
+    [Tooltip("Strength of haptics on weapon fire, 0 to 1."), SerializeField, Range(0f, 1f)]
     float hapticStrength = 1;
 
     [Tooltip("Duration of haptic effects per shot, in seconds."), SerializeField]

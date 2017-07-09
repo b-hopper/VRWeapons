@@ -18,13 +18,13 @@ namespace VRWeapons
         [Tooltip("Amount (and direction) the weapon rotates when fired. Logarithmically tapers down with each shot."), SerializeField]
         Vector3 amountToRotate = new Vector3(-5, 0, 0);
 
-        [Tooltip("How quickly the weapon recoils. 1 is instant, 0 is no movement."), SerializeField]
+        [Tooltip("How quickly the weapon recoils. 1 is instant, 0 is no movement."), SerializeField, Range(0f, 1f)]
         float recoilLerpSpeed = 0.334f;
 
-        [Tooltip("How quickly the weapon recovers. 1 is instant, 0 is no movement."), SerializeField]
+        [Tooltip("How quickly the weapon recovers. 1 is instant, 0 is no movement."), SerializeField, Range(0f, 1f)]
         float recoverLerpSpeed = 0.05f;
 
-        [Tooltip("Decreases the amount of kick when 2-hand gripped by multiplication. 0 = no kick, 1 = full kick."), SerializeField]
+        [Tooltip("Decreases the amount of kick when 2-hand gripped by multiplication. 0 = no kick, 1 = full kick."), SerializeField, Range(0f, 1f)]
         float twoHandGripKickReduction = 0.5f;
 
         private void Start()
