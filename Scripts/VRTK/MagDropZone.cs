@@ -10,6 +10,7 @@ using VRWeapons;
 public class MagDropZone : MonoBehaviour
 {
     Weapon thisWeap;
+    Weapon_VRTK_InteractableObject thisWeapInteractable;
     VRTK_SnapDropZone dropZone;
 
     private void Start()
@@ -17,13 +18,16 @@ public class MagDropZone : MonoBehaviour
         dropZone = GetComponent<VRTK_SnapDropZone>();
         dropZone.ObjectSnappedToDropZone += new SnapDropZoneEventHandler(ObjectSnapped);
         dropZone.ObjectUnsnappedFromDropZone += new SnapDropZoneEventHandler(ObjectUnsnapped);
+
         thisWeap = GetComponentInParent<Weapon>();
+        thisWeapInteractable = GetComponentInParent<Weapon_VRTK_InteractableObject>();
     }
 
     void ObjectSnapped(object sender, SnapDropZoneEventArgs e)
     {
         IMagazine mag = e.snappedObject.GetComponent<IMagazine>();
         mag.MagIn(thisWeap);
+        Physics.IgnoreCollision(e.snappedObject.GetComponent<Collider>(), thisWeapInteractable.weaponBodyCollider, true);
         mag.MagDropped += Mag_MagDropped;
     }
 
@@ -33,6 +37,8 @@ public class MagDropZone : MonoBehaviour
         //Stop listening for mag drop event so we won't redundantly unsnap
         mag.MagDropped -= Mag_MagDropped;
         mag.MagOut(thisWeap);
+
+        Physics.IgnoreCollision(e.snappedObject.GetComponent<Collider>(), thisWeapInteractable.weaponBodyCollider, false);
 
         //This is necessary for the initial mag so it won't revert to child of weapon
         var interactable = e.snappedObject.GetComponent<VRTK_InteractableObject>();

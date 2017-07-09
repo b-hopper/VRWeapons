@@ -13,8 +13,12 @@ public class Weapon_VRTK_InteractableObject : VRTK_InteractableObject
     
     [Tooltip("Main collider of the weapon, used for grabbing. Assign collider to disable it on pickup.\n\nIf this collider is not assigned, bolt manipulation " +
         "may not function correctly."), SerializeField]
-    private Collider weaponBodyCollider;
-    
+    public Collider weaponBodyCollider;
+
+    [Tooltip("Secondary collider of the weapon, used for second-hand grabbing. Collider will be disabled until weapon is picked up, then it will enable.\n\nIf " +
+        "this collider is not assigned, physics may act strangely."), SerializeField]
+    public Collider secondHandGripCollider;
+
     [Tooltip("Strength of haptics on weapon fire, 0 to 1."), SerializeField, Range(0f, 1f)]
     float hapticStrength = 1;
 
@@ -35,6 +39,9 @@ public class Weapon_VRTK_InteractableObject : VRTK_InteractableObject
 
         thisWeap.shotHaptics += ThisWeap_shotHaptics;
 
+        Physics.IgnoreCollision(weaponBodyCollider, secondHandGripCollider);
+
+        SetColliderEnabled(secondHandGripCollider, false);
         CheckForControllerAliases();
     }
 
@@ -67,7 +74,8 @@ public class Weapon_VRTK_InteractableObject : VRTK_InteractableObject
         thisWeap.holdingDevice = e.interactingObject;
 
         base.OnInteractableObjectGrabbed(e);
-        SetColliderEnabled(false);
+        SetColliderEnabled(weaponBodyCollider, false);
+        SetColliderEnabled(secondHandGripCollider, true);
     }
 
     public override void OnInteractableObjectUngrabbed(InteractableObjectEventArgs e)
@@ -85,7 +93,8 @@ public class Weapon_VRTK_InteractableObject : VRTK_InteractableObject
 
         thisWeap.holdingDevice = null;
 
-        SetColliderEnabled(true);
+        SetColliderEnabled(weaponBodyCollider, true);
+        SetColliderEnabled(secondHandGripCollider, false);
         base.OnInteractableObjectUngrabbed(e);
     }
 
@@ -138,11 +147,11 @@ public class Weapon_VRTK_InteractableObject : VRTK_InteractableObject
         weaponBodyCollider = collider;
     }
 
-    public void SetColliderEnabled(bool isEnabled)
+    public void SetColliderEnabled(Collider col, bool isEnabled)
     {
-        if (weaponBodyCollider != null)
+        if (col != null)
         {
-            weaponBodyCollider.enabled = isEnabled;
+            col.enabled = isEnabled;
         }
     }
 }

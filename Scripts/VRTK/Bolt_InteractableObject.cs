@@ -31,6 +31,8 @@ public class Bolt_InteractableObject : VRTK_InteractableObject
         startPos = transform.localPosition;
         startRot = transform.localEulerAngles;
 
+        Physics.IgnoreCollision(GetComponent<Collider>(), thisWeapIntObj.weaponBodyCollider, true);
+
         if (GetComponent<Rigidbody>() != null)
         {
             GetComponent<Rigidbody>().isKinematic = true;                                                                   // Don't want the manipulator to fall down off the bolt!
