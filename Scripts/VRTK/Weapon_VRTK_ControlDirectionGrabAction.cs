@@ -9,12 +9,10 @@ namespace VRWeapons
     {
         Weapon thisWeap;
         bool isGripped;
-        Weapon_VRTK_InteractableObject intObj;
         
         private void Start()
         {
             thisWeap = GetComponent<Weapon>();
-            intObj = thisWeap.GetComponent<Weapon_VRTK_InteractableObject>();
         }
 
         private void Update()
@@ -27,7 +25,7 @@ namespace VRWeapons
             if (isGripped && secondaryGrabbingObject == null)
             {
                 thisWeap.secondHandGripped = false;
-                intObj.SetColliderEnabled(intObj.secondHandGripCollider, true);
+                thisWeap.SetColliderEnabled(thisWeap.secondHandGripCollider, true);
                 isGripped = false;
             }
         }        

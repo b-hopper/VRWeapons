@@ -27,7 +27,7 @@ public class MagDropZone : MonoBehaviour
     {
         IMagazine mag = e.snappedObject.GetComponent<IMagazine>();
         mag.MagIn(thisWeap);
-        Physics.IgnoreCollision(e.snappedObject.GetComponent<Collider>(), thisWeapInteractable.weaponBodyCollider, true);
+        Physics.IgnoreCollision(e.snappedObject.GetComponent<Collider>(), thisWeap.weaponBodyCollider, true);
         mag.MagDropped += Mag_MagDropped;
     }
 
@@ -38,7 +38,7 @@ public class MagDropZone : MonoBehaviour
         mag.MagDropped -= Mag_MagDropped;
         mag.MagOut(thisWeap);
 
-        Physics.IgnoreCollision(e.snappedObject.GetComponent<Collider>(), thisWeapInteractable.weaponBodyCollider, false);
+        Physics.IgnoreCollision(e.snappedObject.GetComponent<Collider>(), thisWeap.weaponBodyCollider, false);
 
         //This is necessary for the initial mag so it won't revert to child of weapon
         var interactable = e.snappedObject.GetComponent<VRTK_InteractableObject>();

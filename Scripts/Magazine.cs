@@ -47,6 +47,7 @@ namespace VRWeapons
                 {
                     RoundsInMag.Insert(index, newBulletBehavior);
                     val = true;
+                                       
                     rounds[index].GetComponent<Collider>().enabled = false; 
                     index++;
                 }
@@ -91,6 +92,7 @@ namespace VRWeapons
             {
                 tmp = RoundsInMag[index];
                 RoundsInMag.Remove(tmp);
+
                 index--;
             }
             return tmp;

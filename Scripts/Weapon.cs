@@ -66,6 +66,14 @@ namespace VRWeapons
         [Tooltip("End position of trigger, when fully pressed down.\n\nIf trigger does not change position, leave this at (0, 0, 0)."), SerializeField]
         Vector3 triggerEndPosition;
 
+        [Tooltip("Main collider of the weapon, used for grabbing. Assign collider to disable it on pickup.\n\nIf this collider is not assigned, bolt manipulation " +
+            "may not function correctly."), SerializeField]
+        public Collider weaponBodyCollider;
+
+        [Tooltip("Secondary collider of the weapon, used for second-hand grabbing. Collider will be disabled until weapon is picked up, then it will enable.\n\nIf " +
+            "this collider is not assigned, physics may act strangely."), SerializeField]
+        public Collider secondHandGripCollider;
+
         [Tooltip("Sound effect played when magazine is inserted."), SerializeField]
         AudioClip MagIn;
 
@@ -304,6 +312,14 @@ namespace VRWeapons
         public bool IsWeaponFiring()
         {
             return isFiring;
+        }
+
+        public void SetColliderEnabled(Collider col, bool isEnabled)
+        {
+            if (col != null)
+            {
+                col.enabled = isEnabled;
+            }
         }
     }
 }

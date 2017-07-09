@@ -13,6 +13,7 @@ public class Bolt_InteractableObject : VRTK_InteractableObject
     float boltLerpValue, lerpValue;
 
     Weapon_VRTK_InteractableObject thisWeapIntObj;
+    Weapon thisWeap;
 
     bool hasMoved, thisObjectIsGrabbed, needsOffset = true;
 
@@ -30,8 +31,9 @@ public class Bolt_InteractableObject : VRTK_InteractableObject
         bolt = transform.parent.GetComponentInChildren<IBoltActions>();
         startPos = transform.localPosition;
         startRot = transform.localEulerAngles;
+        thisWeap = GetComponentInParent<Weapon>();
 
-        Physics.IgnoreCollision(GetComponent<Collider>(), thisWeapIntObj.weaponBodyCollider, true);
+        Physics.IgnoreCollision(GetComponent<Collider>(), thisWeap.weaponBodyCollider, true);
 
         if (GetComponent<Rigidbody>() != null)
         {

@@ -10,14 +10,6 @@ public class Weapon_VRTK_InteractableObject : VRTK_InteractableObject
     Weapon thisWeap;
 
     VRTK_ControllerReference currentController;
-    
-    [Tooltip("Main collider of the weapon, used for grabbing. Assign collider to disable it on pickup.\n\nIf this collider is not assigned, bolt manipulation " +
-        "may not function correctly."), SerializeField]
-    public Collider weaponBodyCollider;
-
-    [Tooltip("Secondary collider of the weapon, used for second-hand grabbing. Collider will be disabled until weapon is picked up, then it will enable.\n\nIf " +
-        "this collider is not assigned, physics may act strangely."), SerializeField]
-    public Collider secondHandGripCollider;
 
     [Tooltip("Strength of haptics on weapon fire, 0 to 1."), SerializeField, Range(0f, 1f)]
     float hapticStrength = 1;
@@ -32,16 +24,16 @@ public class Weapon_VRTK_InteractableObject : VRTK_InteractableObject
     private void Start()
     {
         thisWeap = GetComponent<Weapon>();
-        if (weaponBodyCollider == null)
+        if (thisWeap.weaponBodyCollider == null)
         {
             Debug.LogWarning("No main collider found, please assign Weapon Body Collider in inspector.");
         }
 
         thisWeap.shotHaptics += ThisWeap_shotHaptics;
 
-        Physics.IgnoreCollision(weaponBodyCollider, secondHandGripCollider);
+        Physics.IgnoreCollision(thisWeap.weaponBodyCollider, thisWeap.secondHandGripCollider);
 
-        SetColliderEnabled(secondHandGripCollider, false);
+        thisWeap.SetColliderEnabled(thisWeap.secondHandGripCollider, false);
         CheckForControllerAliases();
     }
 
@@ -74,8 +66,8 @@ public class Weapon_VRTK_InteractableObject : VRTK_InteractableObject
         thisWeap.holdingDevice = e.interactingObject;
 
         base.OnInteractableObjectGrabbed(e);
-        SetColliderEnabled(weaponBodyCollider, false);
-        SetColliderEnabled(secondHandGripCollider, true);
+        thisWeap.SetColliderEnabled(thisWeap.weaponBodyCollider, false);
+        thisWeap.SetColliderEnabled(thisWeap.secondHandGripCollider, true);
     }
 
     public override void OnInteractableObjectUngrabbed(InteractableObjectEventArgs e)
@@ -93,8 +85,8 @@ public class Weapon_VRTK_InteractableObject : VRTK_InteractableObject
 
         thisWeap.holdingDevice = null;
 
-        SetColliderEnabled(weaponBodyCollider, true);
-        SetColliderEnabled(secondHandGripCollider, false);
+        thisWeap.SetColliderEnabled(thisWeap.weaponBodyCollider, true);
+        thisWeap.SetColliderEnabled(thisWeap.secondHandGripCollider, false);
         base.OnInteractableObjectUngrabbed(e);
     }
 
@@ -144,14 +136,6 @@ public class Weapon_VRTK_InteractableObject : VRTK_InteractableObject
 
     public void SetWeaponBodyCollider(Collider collider)
     {
-        weaponBodyCollider = collider;
-    }
-
-    public void SetColliderEnabled(Collider col, bool isEnabled)
-    {
-        if (col != null)
-        {
-            col.enabled = isEnabled;
-        }
+        thisWeap.weaponBodyCollider = collider;
     }
 }
