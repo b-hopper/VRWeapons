@@ -29,6 +29,10 @@ namespace VRWeapons
         {
             RoundsInMag = new List<IBulletBehavior>(rounds.Length);
             rb = GetComponent<Rigidbody>();
+            if (rb == null)
+            {
+                Debug.LogWarning("Rigidbody not found", this);
+            }
 
             PopulateAllSlotsInList();   // This method is pretty expensive depending on how many rounds there are,
         }                               // but happens on loading the scene so it should be fine.

@@ -29,6 +29,15 @@ namespace VRWeapons
             roundType = GetComponent<IBulletBehavior>();
             rb = GetComponent<Rigidbody>();
             currentRoundCount = maxRounds;
+
+            if (roundType == null)
+            {
+                Debug.LogWarning("IBulletBehaviour not found", this);
+            }
+            if(rb == null)
+            {
+                Debug.LogWarning("Rigidbody not found", this);
+            }
         }
 
         public IBulletBehavior FeedRound()
