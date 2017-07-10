@@ -110,10 +110,6 @@ namespace VRWeapons
                 // Getting Rigidbody and Transform to snap into position and eject correctly
                 chamberedRoundRB = thisWeap.Magazine.GetRoundRigidBody();
                 chamberedRoundT = thisWeap.Magazine.GetRoundTransform();
-                Collider chamberedRoundCol = chamberedRoundRB.GetComponent<Collider>();
-
-                Physics.IgnoreCollision(chamberedRoundCol, thisWeap.weaponBodyCollider);
-                Physics.IgnoreCollision(chamberedRoundCol, thisWeap.secondHandGripCollider);
 
                 // Setting round in correct position on bolt face
                 if (chamberedRoundT != null)

@@ -15,6 +15,10 @@ namespace VRWeapons
         [SerializeField]
         List<IBulletBehavior> RoundsInMag;
 
+        Collider[] roundColliders;
+
+        Weapon currentWeap;
+
         int index;
 
         [SerializeField]
@@ -27,6 +31,7 @@ namespace VRWeapons
 
         private void Start()
         {
+            roundColliders = new Collider[rounds.Length];
             RoundsInMag = new List<IBulletBehavior>(rounds.Length);
             rb = GetComponent<Rigidbody>();
             if (rb == null)
@@ -92,8 +97,14 @@ namespace VRWeapons
             {
                 tmp = RoundsInMag[index];
                 RoundsInMag.Remove(tmp);
-
+                if (roundColliders[index] != null && currentWeap != null)
+                {
+                    Physics.IgnoreCollision(roundColliders[index], currentWeap.weaponBodyCollider);
+                    Physics.IgnoreCollision(roundColliders[index], currentWeap.secondHandGripCollider);
+                }
                 index--;
+
+                
             }
             return tmp;
         }
@@ -103,6 +114,7 @@ namespace VRWeapons
             weap.Magazine = this;
             weap.PlaySound(Weapon.AudioClips.MagIn);
             transform.parent = weap.transform;
+            currentWeap = weap;
             if (rb != null)
             {
                 rb.isKinematic = true;
@@ -113,6 +125,7 @@ namespace VRWeapons
         {
             if (canBeDetached)
             {
+                currentWeap = null;
                 weap.Magazine = null;
                 weap.PlaySound(Weapon.AudioClips.MagOut);
                 transform.parent = null;
@@ -147,6 +160,11 @@ namespace VRWeapons
                 else
                 {
                     RoundsInMag.Insert(j - offset, rounds[j].GetComponent<IBulletBehavior>());
+                    if (rounds[j].GetComponent<Collider>() != null)
+                    {
+                        roundColliders[j - offset] = rounds[j].GetComponent<Collider>();
+                    }
+                    
                     index = j - offset;
                 }
             }
