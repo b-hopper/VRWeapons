@@ -31,9 +31,12 @@ public class Weapon_VRTK_InteractableObject : VRTK_InteractableObject
 
         thisWeap.shotHaptics += ThisWeap_shotHaptics;
 
-        Physics.IgnoreCollision(thisWeap.weaponBodyCollider, thisWeap.secondHandGripCollider);
+        if (thisWeap.secondHandGripCollider != null)
+        {
+            Physics.IgnoreCollision(thisWeap.weaponBodyCollider, thisWeap.secondHandGripCollider);
+            thisWeap.SetColliderEnabled(thisWeap.secondHandGripCollider, false);
+        }
 
-        thisWeap.SetColliderEnabled(thisWeap.secondHandGripCollider, false);
         CheckForControllerAliases();
     }
 

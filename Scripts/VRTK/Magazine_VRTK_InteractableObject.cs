@@ -8,7 +8,7 @@ namespace VRWeapons
     public class Magazine_VRTK_InteractableObject : VRTK_InteractableObject
     {
         public override void OnInteractableObjectGrabbed(InteractableObjectEventArgs e)
-        {
+        {            
             base.OnInteractableObjectGrabbed(e);
         }
 

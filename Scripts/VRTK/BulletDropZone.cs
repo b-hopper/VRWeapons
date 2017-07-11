@@ -10,6 +10,8 @@ public class BulletDropZone : MonoBehaviour {
     IBoltActions bolt;
     IMagazine thisMag;
 
+    Weapon thisWeapIfInternal;      // Only used if magazine is an internal magazine
+
     VRTK_SnapDropZone dropZone;
 
     MonoBehaviour thisMagGO;
@@ -21,6 +23,10 @@ public class BulletDropZone : MonoBehaviour {
 
     private void Start()
     {
+        if (GetComponentInParent<Weapon>() != null)
+        {
+            thisWeapIfInternal = GetComponentInParent<Weapon>();
+        }
         dropZone = GetComponent<VRTK_SnapDropZone>();
         dropZone.ObjectSnappedToDropZone += new SnapDropZoneEventHandler(ObjectSnapped);
         bolt = transform.parent.GetComponentInChildren<IBoltActions>();
@@ -31,7 +37,7 @@ public class BulletDropZone : MonoBehaviour {
     }
 
     void ObjectSnapped(object sender, SnapDropZoneEventArgs e)
-    {
+    {        
         bool tmp = thisMag.PushBullet(e.snappedObject);
         dropZone.ForceUnsnap();
         Debug.Log("Check");
@@ -39,6 +45,10 @@ public class BulletDropZone : MonoBehaviour {
         {
             e.snappedObject.transform.parent = thisMagGO.transform;
             e.snappedObject.SetActive(false);
+            if (thisWeapIfInternal != null)
+            {
+                thisWeapIfInternal.PlaySound(Weapon.AudioClips.MagIn);
+            }
         }
     }
 

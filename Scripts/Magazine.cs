@@ -8,6 +8,8 @@ namespace VRWeapons
     [System.Serializable]
     public class Magazine : MonoBehaviour, IMagazine
     {
+        VRWControl control;
+
         public event EventHandler MagDropped;
 
         Rigidbody rb;
@@ -31,6 +33,7 @@ namespace VRWeapons
 
         private void Start()
         {
+            control = FindObjectOfType<VRWControl>();
             roundColliders = new Collider[rounds.Length];
             RoundsInMag = new List<IBulletBehavior>(rounds.Length);
             rb = GetComponent<Rigidbody>();
@@ -40,8 +43,10 @@ namespace VRWeapons
             }
 
             PopulateAllSlotsInList();   // This method is pretty expensive depending on how many rounds there are,
-        }                               // but happens on loading the scene so it should be fine.
-        
+                                        // but happens on loading the scene so it should be fine.
+            DisablePhysicsCollisions();
+        }
+
         public bool PushBullet(GameObject newRound)
         {
             IBulletBehavior newBulletBehavior = newRound.GetComponent<IBulletBehavior>();
@@ -211,6 +216,20 @@ namespace VRWeapons
             if(MagDropped != null)
             {
                 MagDropped(this, EventArgs.Empty);
+            }
+        }
+
+        void DisablePhysicsCollisions()                                     // Disable collisions on main weapon body colliders. Will still interact with reload point colliders.
+        {
+            Collider tmp = GetComponentInChildren<Collider>();
+            if (tmp != null) {
+                foreach (Collider col in control.weaponMainColliders)
+                {
+                    if (col != null)
+                    {
+                        Physics.IgnoreCollision(tmp, col);
+                    }
+                }
             }
         }
     }
