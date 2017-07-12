@@ -105,7 +105,10 @@ namespace VRWeapons
                 if (roundColliders[index] != null && currentWeap != null)
                 {
                     Physics.IgnoreCollision(roundColliders[index], currentWeap.weaponBodyCollider);
-                    Physics.IgnoreCollision(roundColliders[index], currentWeap.secondHandGripCollider);
+                    if (currentWeap.secondHandGripCollider != null)
+                    {
+                        Physics.IgnoreCollision(roundColliders[index], currentWeap.secondHandGripCollider);
+                    }
                 }
                 index--;
 

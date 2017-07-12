@@ -8,8 +8,10 @@ using VRWeapons;
 public class Weapon_VRTK_InteractableObject : VRTK_InteractableObject
 {
     Weapon thisWeap;
-
+    
     VRTK_ControllerReference currentController;
+
+    VRWControl control;
 
     [Tooltip("Strength of haptics on weapon fire, 0 to 1."), SerializeField, Range(0f, 1f)]
     float hapticStrength = 1;
@@ -23,6 +25,7 @@ public class Weapon_VRTK_InteractableObject : VRTK_InteractableObject
 
     private void Start()
     {
+        control = FindObjectOfType<VRWControl>();
         thisWeap = GetComponent<Weapon>();
         if (thisWeap.weaponBodyCollider == null)
         {
@@ -61,6 +64,12 @@ public class Weapon_VRTK_InteractableObject : VRTK_InteractableObject
             currentController = VRTK_ControllerReference.GetControllerReference(e.interactingObject);
         }
         
+
+        if (control.disableControllersOnPickup)
+        {
+            VRTK_ControllerReference.GetControllerReference(e.interactingObject).model.SetActive(false);
+        }
+
         if (f != null)
         {
             f.CurrentHeldWeapon = thisWeap;             // Setting up for touchpad input
@@ -84,6 +93,11 @@ public class Weapon_VRTK_InteractableObject : VRTK_InteractableObject
         if (f != null)
         {
             f.CurrentHeldWeapon = null;
+        }
+
+        if (control.disableControllersOnPickup)
+        {
+            VRTK_ControllerReference.GetControllerReference(e.interactingObject).model.SetActive(true);
         }
 
         thisWeap.holdingDevice = null;

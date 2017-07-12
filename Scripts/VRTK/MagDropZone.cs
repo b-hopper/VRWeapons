@@ -9,9 +9,13 @@ using VRWeapons;
 
 public class MagDropZone : MonoBehaviour
 {
+    Collider magCollider;
     Weapon thisWeap;
     Weapon_VRTK_InteractableObject thisWeapInteractable;
     VRTK_SnapDropZone dropZone;
+
+    [Tooltip("If checked, this will disable the magazine's collider when it is inserted. Solves issues with grabbing magazines instead of the gun, in cases like pistols."), SerializeField]
+    bool disableColliderOnMagIn;
 
     private void Start()
     {
@@ -25,9 +29,20 @@ public class MagDropZone : MonoBehaviour
 
     void ObjectSnapped(object sender, SnapDropZoneEventArgs e)
     {
+        magCollider = e.snappedObject.GetComponent<Collider>();
         IMagazine mag = e.snappedObject.GetComponent<IMagazine>();
         mag.MagIn(thisWeap);
-        Physics.IgnoreCollision(e.snappedObject.GetComponent<Collider>(), thisWeap.weaponBodyCollider, true);
+        Physics.IgnoreCollision(magCollider, thisWeap.weaponBodyCollider, true);
+        if (thisWeap.secondHandGripCollider != null)
+        {
+            Physics.IgnoreCollision(magCollider, thisWeap.secondHandGripCollider, true);
+        }
+
+        if (disableColliderOnMagIn)
+        {
+            magCollider.enabled = false;
+        }
+
         mag.MagDropped += Mag_MagDropped;
     }
 
@@ -37,8 +52,13 @@ public class MagDropZone : MonoBehaviour
         //Stop listening for mag drop event so we won't redundantly unsnap
         mag.MagDropped -= Mag_MagDropped;
         mag.MagOut(thisWeap);
+        
+        if (disableColliderOnMagIn)
+        {
+            magCollider.enabled = true;
+        }
 
-        Physics.IgnoreCollision(e.snappedObject.GetComponent<Collider>(), thisWeap.weaponBodyCollider, false);
+        magCollider = null;
 
         //This is necessary for the initial mag so it won't revert to child of weapon
         var interactable = e.snappedObject.GetComponent<VRTK_InteractableObject>();

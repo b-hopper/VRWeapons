@@ -8,18 +8,26 @@ namespace VRWeapons
 {
     public class VRWControl : MonoBehaviour
     {
+        float VRWVersion = 2.0f;
+
         [HideInInspector]
         public List<Collider> weaponMainColliders;
 
-        [Header("Gunshot layer mask")]
         [Header("For now, all it is capable of is providing the shot layer mask.")]
         [Header("VRWControl will be completed soon. Will handle events.")]
+
+        [Tooltip("Check this to disable controller on weapon pickup.\n\nNOTE: If using VRTK, MAKE SURE you have the Controller Attach Point on the VRTK_InteractGrab " +
+            "script assigned to something other than the default \"Tip\" object. Otherwise, disabling the model will also disable the weapon."), SerializeField]
+        public bool disableControllersOnPickup;
+
+        [Header("Gunshot layer mask")]
         public LayerMask shotMask;
 
         public delegate void TriggerHaptics();
 
         private void Start()
         {
+            Debug.Log("VRWeapons Version " + VRWVersion.ToString("F2"));
             weaponMainColliders = new List<Collider>(CountWeapons());
             GetWeaponMainColliders();
         }
