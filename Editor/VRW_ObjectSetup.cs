@@ -64,7 +64,22 @@
                         Debug.LogWarning("Weapon already found on " + target + ". No Weapon added.");
                     }
                     target.GetComponent<AudioSource>().playOnAwake = false;
-
+                    if (target.GetComponent<IKickActions>() == null)
+                    {
+                        target.AddComponent<KinematicKick>();
+                    }
+                    else
+                    {
+                        Debug.LogWarning("KinematicKick already found on " + target + ". No KinematicKick added.");
+                    }
+                    if (target.GetComponent<IObjectPool>() == null)
+                    {
+                        target.AddComponent<ObjectPool>();
+                    }
+                    else
+                    {
+                        Debug.LogWarning("ObjectPool already found on " + target + ". No ObjectPool added.");
+                    }
                     //// Interaction systems, more to come ////
                     if (interactionSystem == InteractionSystems.VRTK)
                     {
@@ -93,22 +108,7 @@
                         {
                             Debug.LogWarning("VRTK_ChildOfControllerGrabAttach already found on " + target + ". No VRTK_ChildOfControllerGrabAttach added.");
                         }
-                        if (target.GetComponent<IKickActions>() == null)
-                        {
-                            target.AddComponent<KinematicKick>();
-                        }
-                        else
-                        {
-                            Debug.LogWarning("KinematicKick already found on " + target + ". No KinematicKick added.");
-                        }
-                        if (target.GetComponent<IObjectPool>() == null)
-                        {
-                            target.AddComponent<ObjectPool>();
-                        }
-                        else
-                        {
-                            Debug.LogWarning("ObjectPool already found on " + target + ". No ObjectPool added.");
-                        }
+
 
                         if (twoHanded)
                         {
@@ -452,6 +452,10 @@
                         {
                             MonoBehaviour e = target.GetComponentInChildren<IMagazine>() as MonoBehaviour;
                             dz.transform.localPosition = e.transform.localPosition;
+                            dz.transform.localEulerAngles = e.transform.localEulerAngles;
+                            dz.GetComponent<VRTK.VRTK_SnapDropZone>().highlightObjectPrefab = e.gameObject;
+                            dz.GetComponent<VRTK.VRTK_SnapDropZone>().defaultSnappedObject = e.gameObject;
+                            e.transform.parent = null;
                         }
                         Selection.activeGameObject = dz;
                     }

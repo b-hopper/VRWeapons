@@ -124,7 +124,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &3601616
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -295,7 +295,7 @@ Prefab:
       objectReference: {fileID: 2114024590}
     - target: {fileID: 1072547168382712, guid: af7c2c9ab2d22b74ead41e2f0cb46aea, type: 2}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: af7c2c9ab2d22b74ead41e2f0cb46aea, type: 2}
@@ -341,7 +341,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1803622501104616, guid: 60393045952c69b4dbe8da6a94899813, type: 2}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 60393045952c69b4dbe8da6a94899813, type: 2}
@@ -1582,7 +1582,7 @@ Prefab:
       objectReference: {fileID: 770264249}
     - target: {fileID: 1531862883176102, guid: 26e1bfc9a0ce9144489781cc62a5cfb2, type: 2}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 26e1bfc9a0ce9144489781cc62a5cfb2, type: 2}
@@ -2464,7 +2464,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1206965484690856, guid: 6e2eeef9f10a1b948aa7746210b14ece, type: 2}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6e2eeef9f10a1b948aa7746210b14ece, type: 2}
@@ -4466,7 +4466,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &682217833
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4899,7 +4899,12 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1616373086294670, guid: 0977dab4b0aa2994d92e0341b3ca4ee4, type: 2}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114516184270780442, guid: 0977dab4b0aa2994d92e0341b3ca4ee4,
+        type: 2}
+      propertyPath: triggerEndRotation.z
+      value: 90
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 0977dab4b0aa2994d92e0341b3ca4ee4, type: 2}
@@ -7366,7 +7371,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1803622501104616, guid: 60393045952c69b4dbe8da6a94899813, type: 2}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 60393045952c69b4dbe8da6a94899813, type: 2}
@@ -9096,6 +9101,10 @@ Prefab:
       propertyPath: defaultSnappedObject
       value: 
       objectReference: {fileID: 667896870}
+    - target: {fileID: 1188865735052752, guid: bcf3c2dcb19dbe54d8f0ca31c188d7c4, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: bcf3c2dcb19dbe54d8f0ca31c188d7c4, type: 2}
   m_IsPrefabParent: 0
@@ -9550,6 +9559,10 @@ Prefab:
       propertyPath: m_Name
       value: Glock Magazine
       objectReference: {fileID: 0}
+    - target: {fileID: 1895649025560288, guid: b53cb85e5b9070047ad79b40945816cb, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: b53cb85e5b9070047ad79b40945816cb, type: 2}
   m_IsPrefabParent: 0
@@ -9828,6 +9841,21 @@ Prefab:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 23635829800035316, guid: 26b56422a2d526d4fae741d688c2be8b,
+        type: 2}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 65638176771140034, guid: 26b56422a2d526d4fae741d688c2be8b,
+        type: 2}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 65638176771140034, guid: 26b56422a2d526d4fae741d688c2be8b,
+        type: 2}
+      propertyPath: m_Center.y
+      value: 0.10559
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 26b56422a2d526d4fae741d688c2be8b, type: 2}
   m_IsPrefabParent: 0
@@ -9872,7 +9900,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1206965484690856, guid: 6e2eeef9f10a1b948aa7746210b14ece, type: 2}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6e2eeef9f10a1b948aa7746210b14ece, type: 2}
@@ -10214,6 +10242,10 @@ Prefab:
     - target: {fileID: 1895649025560288, guid: b53cb85e5b9070047ad79b40945816cb, type: 2}
       propertyPath: m_Name
       value: Glock Magazine
+      objectReference: {fileID: 0}
+    - target: {fileID: 1895649025560288, guid: b53cb85e5b9070047ad79b40945816cb, type: 2}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: b53cb85e5b9070047ad79b40945816cb, type: 2}
@@ -11629,7 +11661,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1812905901179042, guid: 19423c6831b027b4b9fe19e926fea28a, type: 2}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 19423c6831b027b4b9fe19e926fea28a, type: 2}
@@ -12180,7 +12212,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1697171623
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13865,7 +13897,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1976283644
 MonoBehaviour:
   m_ObjectHideFlags: 0
