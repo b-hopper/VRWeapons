@@ -51,7 +51,7 @@ public class Bolt_InteractableObject : VRTK_InteractableObject
             thisObjectIsGrabbed = true;
         }
         else if (IsGrabbed())
-        {
+        {            
             ClampControllerToTrack();
             thisObjectIsGrabbed = true;                                                                                     // Have to set a flag, because can't rely on VRTK's grab mechanisms if the 
         }                                                                                                                   // bolt manipulator is also the second grab point. VRTK only allows one

@@ -261,7 +261,7 @@ namespace VRWeapons
             Ejector = newEjector;
         }
 
-        bool IsChambered()
+        public bool IsChambered()
         {
             bool val = false;
             if (chamberedRound != null)

@@ -117,6 +117,11 @@ namespace VRWeapons
             return tmp;
         }
 
+        public int GetCurrentRoundCount()
+        {
+            return index + 1;
+        }
+
         public void MagIn(Weapon weap)
         {
             weap.Magazine = this;

@@ -15,7 +15,7 @@ namespace VRWeapons
         public float boltLerpVal { set; get; }
         float boltMoveSpeed, lastboltLerpVal;
         bool movingBack, movingForward, isManip, canChamberNewRound, justPlayedSoundForward = true,
-            justPlayedSoundBack, doNotPlaySound, justEjected;
+            justPlayedSoundBack, doNotPlaySound, justEjected, lockedBack;
 
         int startChamberedTimer;
 
@@ -81,11 +81,6 @@ namespace VRWeapons
             }
 
             boltMoveSpeed = 1 / (float)slideTimeInFrames;
-
-            if (startChambered)
-            {
-                thisWeap.chamberedRound = ChamberNewRound();
-            }
         }
 
         public void OnTriggerPullActions(float angle)
@@ -152,14 +147,18 @@ namespace VRWeapons
                 {
                     boltLerpVal = 1;
                     movingBack = false;
-                    if (thisWeap.autoRackForward)
+                    if (thisWeap.autoRackForward && (thisWeap.Magazine == null || thisWeap.Magazine.GetCurrentRoundCount() > 0))
                     {
                         movingForward = true;
+                    }
+                    else
+                    {
+                        lockedBack = true;
                     }
                 }
             }
 
-            else if (movingForward)
+            else if (movingForward && !lockedBack)
             {
                 boltLerpVal -= boltMoveSpeed * Time.timeScale;
                 if (boltLerpVal <= 0)
@@ -270,6 +269,7 @@ namespace VRWeapons
 
         public void IsCurrentlyBeingManipulated(bool val)
         {
+            lockedBack = false;
             justManip = true;
             isManip = val;
         }

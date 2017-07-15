@@ -18,5 +18,6 @@ namespace VRWeapons
         Rigidbody GetRoundRigidBody();
         Transform GetRoundTransform();
         bool CanMagBeDetached { get; set; }
+        int GetCurrentRoundCount();
     }
 }

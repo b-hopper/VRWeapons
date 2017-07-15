@@ -46,7 +46,7 @@ namespace VRWeapons
 
             if (PopBullet())
             {
-                tmp = roundType;                
+                tmp = roundType;
             }
             return tmp;
         }
@@ -71,6 +71,11 @@ namespace VRWeapons
                 currentRoundCount--;
             }
             return tmp;
+        }
+
+        public int GetCurrentRoundCount()
+        {
+            return currentRoundCount;
         }
 
         public Rigidbody GetRoundRigidBody()
