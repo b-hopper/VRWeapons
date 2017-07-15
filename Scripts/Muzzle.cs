@@ -5,7 +5,6 @@ using UnityEngine.EventSystems;
 using Valve.VR.InteractionSystem;
 using VRWeapons;
 
-
 namespace VRWeapons
 {
     [RequireComponent(typeof(AudioSource))]

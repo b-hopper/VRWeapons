@@ -19,7 +19,7 @@ public class Bolt_InteractableObject : VRTK_InteractableObject
 
     Vector3 startPos, startRot;
     [SerializeField]
-    Vector3 boltClosedPosition, boltOpenPosition;
+    public Vector3 boltClosedPosition, boltOpenPosition;
 
     [SerializeField]
     bool isSecondHandGrip;

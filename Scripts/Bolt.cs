@@ -35,9 +35,6 @@ namespace VRWeapons
         [Tooltip("Weapon will start chambered if this is toggled."), SerializeField]
         bool startChambered;
 
-        [Tooltip("Location of round on bolt face. Should be child of bolt. Align round with desired location, then set it inactive."), SerializeField]
-        Transform chamberedRoundSnapT;
-
         [Tooltip("Used when charging handle is separate from actual bolt. Bolt should be a child of the charging handle, in this case."), SerializeField]
         public Transform boltGroup;
 
@@ -60,7 +57,7 @@ namespace VRWeapons
             "bolt object."), SerializeField]
         public Vector3 BoltEndPosition;
 
-        [Tooltip("Bolt will rotate from 0 to this value, when pulling bolt back. If 0, bolt will not rotate. If 1, bolt will only rotate."), SerializeField]
+        [Tooltip("Bolt will rotate from 0 to this value, when pulling bolt back. If 0, bolt will not rotate. If 1, bolt will only rotate."), SerializeField, Range(0, 1)]
         float BoltRotatesUntil;
 
         [Tooltip("Rotation of bolt when fully closed."), SerializeField]
@@ -68,6 +65,9 @@ namespace VRWeapons
         
         [Tooltip("Rotation of bolt when fully open."), SerializeField]
         public Vector3 BoltRotationEnd;
+
+        [Tooltip("Location of round on bolt face. Should be child of bolt. Align round with desired location, then set it inactive."), SerializeField]
+        public Transform chamberedRoundSnapT;
 
         private void Start()
         {
@@ -79,6 +79,14 @@ namespace VRWeapons
                 BoltRotationStart = bolt.transform.localEulerAngles;
                 BoltRotationEnd = bolt.transform.localEulerAngles;
             }
+
+            bolt.localPosition = BoltStartPosition;
+            bolt.localEulerAngles = BoltRotationStart;
+            if (boltGroup != null)
+            {
+                boltGroup.localPosition = GroupStartPosition;
+            }
+
 
             boltMoveSpeed = 1 / (float)slideTimeInFrames;
         }
