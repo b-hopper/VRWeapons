@@ -78,7 +78,10 @@ public class Weapon_VRTK_InteractableObject : VRTK_InteractableObject
             f.CurrentHeldWeapon = thisWeap;             // Setting up for touchpad input
         }
 
-        thisWeap.holdingDevice = e.interactingObject;
+        if (thisWeap.holdingDevice == null)
+        {
+            thisWeap.holdingDevice = e.interactingObject;
+        }
 
         base.OnInteractableObjectGrabbed(e);
         thisWeap.SetColliderEnabled(thisWeap.weaponBodyCollider, false);
@@ -104,7 +107,11 @@ public class Weapon_VRTK_InteractableObject : VRTK_InteractableObject
             VRTK_ControllerReference.GetControllerReference(e.interactingObject).model.SetActive(true);
         }
 
-        thisWeap.holdingDevice = null;
+        if (e.interactingObject == thisWeap.holdingDevice)
+        {
+            Debug.Log("Check");
+            thisWeap.holdingDevice = null;
+        }
 
         thisWeap.SetColliderEnabled(thisWeap.weaponBodyCollider, true);
         thisWeap.SetColliderEnabled(thisWeap.secondHandGripCollider, false);
