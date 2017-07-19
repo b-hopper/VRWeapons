@@ -33,7 +33,7 @@ public class Bolt_InteractableObject : VRTK_InteractableObject
         startRot = transform.localEulerAngles;
         thisWeap = GetComponentInParent<Weapon>();
 
-        Physics.IgnoreCollision(GetComponentInChildren<Collider>(), thisWeap.weaponBodyCollider, true);
+        thisWeap.IgnoreCollision(GetComponentInChildren<Collider>(), true);
 
         if (GetComponent<Rigidbody>() != null)
         {

@@ -99,6 +99,24 @@ namespace VRWeapons
             Burst = 2
         }
 
+        public void IgnoreCollision(Collider collider, bool isIgnored = true)
+        {
+            if(collider == null)
+            {
+                Debug.LogWarning("Cannot ignore null collider");
+                return;
+            }
+
+            if(weaponBodyCollider != null)
+            {
+                Physics.IgnoreCollision(collider, weaponBodyCollider, isIgnored);
+            }
+            if (secondHandGripCollider != null)
+            {
+                Physics.IgnoreCollision(collider, secondHandGripCollider, isIgnored);
+            }
+        }
+
         public enum AudioClips
         {
             MagIn = 0,

@@ -32,11 +32,7 @@ public class MagDropZone : MonoBehaviour
         magCollider = e.snappedObject.GetComponent<Collider>();
         IMagazine mag = e.snappedObject.GetComponent<IMagazine>();
         mag.MagIn(thisWeap);
-        Physics.IgnoreCollision(magCollider, thisWeap.weaponBodyCollider, true);
-        if (thisWeap.secondHandGripCollider != null)
-        {
-            Physics.IgnoreCollision(magCollider, thisWeap.secondHandGripCollider, true);
-        }
+        thisWeap.IgnoreCollision(magCollider, true);
 
         if (disableColliderOnMagIn)
         {

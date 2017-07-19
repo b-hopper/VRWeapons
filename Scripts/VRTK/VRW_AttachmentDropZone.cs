@@ -21,11 +21,11 @@ public class VRW_AttachmentDropZone : MonoBehaviour {
 
     void ObjectSnapped(object sender, SnapDropZoneEventArgs e)
     {
-        Physics.IgnoreCollision(thisWeap.weaponBodyCollider, e.snappedObject.GetComponentInChildren<Collider>(), true);
+        thisWeap.IgnoreCollision(e.snappedObject.GetComponentInChildren<Collider>(), true);
     }
 
     void ObjectUnsnapped(object sender, SnapDropZoneEventArgs e)
     {
-        Physics.IgnoreCollision(thisWeap.weaponBodyCollider, e.snappedObject.GetComponentInChildren<Collider>(), false);
+        thisWeap.IgnoreCollision(e.snappedObject.GetComponentInChildren<Collider>(), false);
     }
 }
