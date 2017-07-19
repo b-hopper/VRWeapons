@@ -11,6 +11,8 @@ public class Weapon_VRTK_InteractableObject : VRTK_InteractableObject
     
     VRTK_ControllerReference currentController;
 
+    GameObject currentControllerGO;
+
     VRWControl control;
 
     [Tooltip("Strength of haptics on weapon fire, 0 to 1."), SerializeField, Range(0f, 1f)]
@@ -62,6 +64,7 @@ public class Weapon_VRTK_InteractableObject : VRTK_InteractableObject
         if (e.interactingObject != GetSecondaryGrabbingObject())
         {
             currentController = VRTK_ControllerReference.GetControllerReference(e.interactingObject);
+            currentControllerGO = e.interactingObject;
         }
         
 
@@ -70,12 +73,15 @@ public class Weapon_VRTK_InteractableObject : VRTK_InteractableObject
             VRTK_ControllerReference.GetControllerReference(e.interactingObject).model.SetActive(false);
         }
 
-        if (f != null)
+        if (f != null && e.interactingObject != GetSecondaryGrabbingObject())
         {
             f.CurrentHeldWeapon = thisWeap;             // Setting up for touchpad input
         }
 
-        thisWeap.holdingDevice = e.interactingObject;
+        if (thisWeap.holdingDevice == null)
+        {
+            thisWeap.holdingDevice = e.interactingObject;
+        }
 
         base.OnInteractableObjectGrabbed(e);
         thisWeap.SetColliderEnabled(thisWeap.weaponBodyCollider, false);
@@ -89,6 +95,7 @@ public class Weapon_VRTK_InteractableObject : VRTK_InteractableObject
         if (e.interactingObject == GetGrabbingObject())
         {
             currentController = null;
+            currentControllerGO = null;
         }
         if (f != null)
         {
@@ -100,7 +107,11 @@ public class Weapon_VRTK_InteractableObject : VRTK_InteractableObject
             VRTK_ControllerReference.GetControllerReference(e.interactingObject).model.SetActive(true);
         }
 
-        thisWeap.holdingDevice = null;
+        if (e.interactingObject == thisWeap.holdingDevice)
+        {
+            Debug.Log("Check");
+            thisWeap.holdingDevice = null;
+        }
 
         thisWeap.SetColliderEnabled(thisWeap.weaponBodyCollider, true);
         thisWeap.SetColliderEnabled(thisWeap.secondHandGripCollider, false);
@@ -109,14 +120,20 @@ public class Weapon_VRTK_InteractableObject : VRTK_InteractableObject
 
     public override void StartUsing(VRTK_InteractUse usingObject)
     {
-        base.StartUsing(usingObject);
-        thisWeap.StartFiring(usingObject.gameObject);
+        if (usingObject.gameObject == currentControllerGO)
+        {
+            base.StartUsing(usingObject);
+            thisWeap.StartFiring(usingObject.gameObject);
+        }
     }
 
     public override void StopUsing(VRTK_InteractUse previousUsingObject)
     {
-        base.StopUsing(previousUsingObject);
-        thisWeap.StopFiring(previousUsingObject.gameObject);
+        if (previousUsingObject.gameObject == currentControllerGO)
+        {
+            base.StopUsing(previousUsingObject);
+            thisWeap.StopFiring(previousUsingObject.gameObject);
+        }
     }
 
     void CheckForControllerAliases()

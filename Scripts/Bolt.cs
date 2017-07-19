@@ -15,7 +15,7 @@ namespace VRWeapons
         public float boltLerpVal { set; get; }
         float boltMoveSpeed, lastboltLerpVal;
         bool movingBack, movingForward, isManip, canChamberNewRound, justPlayedSoundForward = true,
-            justPlayedSoundBack, doNotPlaySound, justEjected;
+            justPlayedSoundBack, doNotPlaySound, justEjected, lockedBack;
 
         int startChamberedTimer;
 
@@ -34,9 +34,6 @@ namespace VRWeapons
 
         [Tooltip("Weapon will start chambered if this is toggled."), SerializeField]
         bool startChambered;
-
-        [Tooltip("Location of round on bolt face. Should be child of bolt. Align round with desired location, then set it inactive."), SerializeField]
-        Transform chamberedRoundSnapT;
 
         [Tooltip("Used when charging handle is separate from actual bolt. Bolt should be a child of the charging handle, in this case."), SerializeField]
         public Transform boltGroup;
@@ -60,7 +57,7 @@ namespace VRWeapons
             "bolt object."), SerializeField]
         public Vector3 BoltEndPosition;
 
-        [Tooltip("Bolt will rotate from 0 to this value, when pulling bolt back. If 0, bolt will not rotate. If 1, bolt will only rotate."), SerializeField]
+        [Tooltip("Bolt will rotate from 0 to this value, when pulling bolt back. If 0, bolt will not rotate. If 1, bolt will only rotate."), SerializeField, Range(0, 1)]
         float BoltRotatesUntil;
 
         [Tooltip("Rotation of bolt when fully closed."), SerializeField]
@@ -68,6 +65,9 @@ namespace VRWeapons
         
         [Tooltip("Rotation of bolt when fully open."), SerializeField]
         public Vector3 BoltRotationEnd;
+
+        [Tooltip("Location of round on bolt face. Should be child of bolt. Align round with desired location, then set it inactive."), SerializeField]
+        public Transform chamberedRoundSnapT;
 
         private void Start()
         {
@@ -80,12 +80,15 @@ namespace VRWeapons
                 BoltRotationEnd = bolt.transform.localEulerAngles;
             }
 
-            boltMoveSpeed = 1 / (float)slideTimeInFrames;
-
-            if (startChambered)
+            bolt.localPosition = BoltStartPosition;
+            bolt.localEulerAngles = BoltRotationStart;
+            if (boltGroup != null)
             {
-                thisWeap.chamberedRound = ChamberNewRound();
+                boltGroup.localPosition = GroupStartPosition;
             }
+
+
+            boltMoveSpeed = 1 / (float)slideTimeInFrames;
         }
 
         public void OnTriggerPullActions(float angle)
@@ -152,14 +155,18 @@ namespace VRWeapons
                 {
                     boltLerpVal = 1;
                     movingBack = false;
-                    if (thisWeap.autoRackForward)
+                    if (thisWeap.autoRackForward && (thisWeap.Magazine == null || thisWeap.Magazine.GetCurrentRoundCount() > 0))
                     {
                         movingForward = true;
+                    }
+                    else
+                    {
+                        lockedBack = true;
                     }
                 }
             }
 
-            else if (movingForward)
+            else if (movingForward && !lockedBack)
             {
                 boltLerpVal -= boltMoveSpeed * Time.timeScale;
                 if (boltLerpVal <= 0)
@@ -270,6 +277,7 @@ namespace VRWeapons
 
         public void IsCurrentlyBeingManipulated(bool val)
         {
+            lockedBack = false;
             justManip = true;
             isManip = val;
         }

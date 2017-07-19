@@ -19,7 +19,7 @@ public class Bolt_InteractableObject : VRTK_InteractableObject
 
     Vector3 startPos, startRot;
     [SerializeField]
-    Vector3 boltClosedPosition, boltOpenPosition;
+    public Vector3 boltClosedPosition, boltOpenPosition;
 
     [SerializeField]
     bool isSecondHandGrip;
@@ -51,7 +51,7 @@ public class Bolt_InteractableObject : VRTK_InteractableObject
             thisObjectIsGrabbed = true;
         }
         else if (IsGrabbed())
-        {
+        {            
             ClampControllerToTrack();
             thisObjectIsGrabbed = true;                                                                                     // Have to set a flag, because can't rely on VRTK's grab mechanisms if the 
         }                                                                                                                   // bolt manipulator is also the second grab point. VRTK only allows one

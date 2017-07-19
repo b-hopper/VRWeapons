@@ -16,7 +16,8 @@ public class VRW_ControllerActions_VRTK : MonoBehaviour
 
     private void DropMagazine(object sender, VRTK.ControllerInteractionEventArgs e)
     {
-        if (CurrentHeldWeapon != null)
+        Debug.Log(CurrentHeldWeapon);
+        if (CurrentHeldWeapon != null && e.controllerReference.scriptAlias == CurrentHeldWeapon.holdingDevice)
         {
             CurrentHeldWeapon.DropMagazine();
         }
@@ -24,7 +25,8 @@ public class VRW_ControllerActions_VRTK : MonoBehaviour
 
     private void TriggerAxisChanged(object sender, VRTK.ControllerInteractionEventArgs e)
     {
-        if (CurrentHeldWeapon != null)
+        Debug.Log("Holding device: " + CurrentHeldWeapon.holdingDevice);
+        if (CurrentHeldWeapon != null && e.controllerReference.scriptAlias == CurrentHeldWeapon.holdingDevice)
         {
             CurrentHeldWeapon.SetTriggerAngle(e.buttonPressure);
         }

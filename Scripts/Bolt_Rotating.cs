@@ -16,9 +16,11 @@ namespace VRWeapons
 
         bool isFiring;
 
+        float timeTEMP;
+
         int roundIndex;
 
-        float amountToRotate, timeTEMP;
+        Vector3 amountToRotate;
         
         Vector3[] rotationPositions;
 
@@ -33,8 +35,10 @@ namespace VRWeapons
 
         private void Start()
         {
+            //Time.timeScale = 0.1f;
             thisWeap = GetComponentInParent<Weapon>();
-            amountToRotate = 360 / (float)roundsInChamber;
+            amountToRotate = new Vector3((360 / (float)roundsInChamber) * rotationDirection.x, (360 / (float)roundsInChamber) * rotationDirection.y, (360 / (float)roundsInChamber) * rotationDirection.z);
+            //Debug.Log(amountToRotate);
 
             SetUpRotationPositions();
             
@@ -45,9 +49,12 @@ namespace VRWeapons
             rotationPositions = new Vector3[roundsInChamber];
             for (int i = 0; i < roundsInChamber; i++)
             {
-                rotationPositions[i] = cylinder.localEulerAngles + new Vector3((cylinder.localEulerAngles.x * (amountToRotate * (i + 1))),
-                    (cylinder.localEulerAngles.y * (amountToRotate * (i + 1))), (cylinder.localEulerAngles.z * (amountToRotate * (i + 1))));
+                rotationPositions[i] = cylinder.localEulerAngles + new Vector3((cylinder.localEulerAngles.x + (amountToRotate.x * (i + 1))),
+                    (cylinder.localEulerAngles.y + (amountToRotate.y * (i + 1))), (cylinder.localEulerAngles.z + (amountToRotate.z * (i + 1))));
+
+                //Debug.Log(rotationPositions[i]);
             }
+            
         }
 
         public void OnTriggerPullActions(float angle)
@@ -56,19 +63,18 @@ namespace VRWeapons
             {
                 if (angle <= 0.1f)
                 {
-                    Debug.Log("Back to zero");
+                    //Debug.Log("Back to zero");
                     cylinder.localEulerAngles = rotationPositions[roundIndex];
                 }
                 else if (angle >= 0.9f)
                 {
-                    Debug.Log("Full trigger pull");
+                    //Debug.Log("Full trigger pull");
                     cylinder.localEulerAngles = rotationPositions[(roundIndex + 1) % roundsInChamber];
                 }
                 else
                 {
-                    cylinder.Rotate(new Vector3(0,15,0));
                     //cylinder.Rotate(Vector3.Lerp(rotationPositions[roundIndex], rotationPositions[(roundIndex + 1) % roundsInChamber], angle));
-                    //cylinder.localEulerAngles = Vector3.Lerp(rotationPositions[roundIndex], rotationPositions[(roundIndex + 1) % roundsInChamber], angle);
+                    cylinder.localEulerAngles = Vector3.Lerp(rotationPositions[roundIndex], rotationPositions[(roundIndex + 1) % roundsInChamber], angle);
                 }
             }
         }
@@ -90,12 +96,11 @@ namespace VRWeapons
 
         private void FixedUpdate()
         {
-            if (Time.time - timeTEMP > 1)
-            {
-                roundIndex = (roundIndex + 1) % roundsInChamber;
-                timeTEMP = Time.time;
-            }
-            OnTriggerPullActions(Time.time - timeTEMP);
+            timeTEMP = Time.time % 1;
+
+            //Debug.Log(timeTEMP);
+            
+            OnTriggerPullActions(timeTEMP);
         }
 
         public void ReplaceRoundWithEmptyShell(GameObject go)

@@ -7,7 +7,7 @@ namespace VRWeapons
 {
     public class Weapon_VRTK_ControlDirectionGrabAction : VRTK_ControlDirectionGrabAction
     {
-        Weapon thisWeap;
+        Weapon thisWeap;        
         bool isGripped;
         
         private void Start()
