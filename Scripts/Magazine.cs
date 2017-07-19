@@ -8,6 +8,9 @@ namespace VRWeapons
     [System.Serializable]
     public class Magazine : MonoBehaviour, IMagazine
     {
+        public event EventHandler BulletPushed;
+        public event EventHandler BulletPopped;
+
         VRWControl control;
 
         public event EventHandler MagDropped;
@@ -31,7 +34,8 @@ namespace VRWeapons
         
         public bool CanMagBeDetached { get { return canBeDetached; } set { canBeDetached = value; } }
 
-        private void Start()
+        //Needs to run on Awake so RoundsInMag will be ready before FeedRound is called
+        private void Awake()
         {
             control = FindObjectOfType<VRWControl>();
             roundColliders = new Collider[rounds.Length];
@@ -60,6 +64,7 @@ namespace VRWeapons
                                        
                     rounds[index].GetComponent<Collider>().enabled = false; 
                     index++;
+                    OnBulletPushed();
                 }
             }
             return val;
@@ -73,6 +78,7 @@ namespace VRWeapons
                 val = true;
                 index--;
                 rounds[index].GetComponent<Collider>().enabled = true;
+                OnBulletPopped();
             }
             return val;
         }
@@ -104,15 +110,11 @@ namespace VRWeapons
                 RoundsInMag.Remove(tmp);
                 if (roundColliders[index] != null && currentWeap != null)
                 {
-                    Physics.IgnoreCollision(roundColliders[index], currentWeap.weaponBodyCollider);
-                    if (currentWeap.secondHandGripCollider != null)
-                    {
-                        Physics.IgnoreCollision(roundColliders[index], currentWeap.secondHandGripCollider);
-                    }
+                    currentWeap.IgnoreCollision(roundColliders[index]);                    
                 }
                 index--;
-
-                
+                //TODO: Why doesn't FeedRound call PopBullet?
+                OnBulletPopped();
             }
             return tmp;
         }
@@ -233,6 +235,22 @@ namespace VRWeapons
                         Physics.IgnoreCollision(tmp, col);
                     }
                 }
+            }
+        }
+
+        private void OnBulletPushed()
+        {
+            if(BulletPushed != null)
+            {
+                BulletPushed.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        private void OnBulletPopped()
+        {
+            if (BulletPopped != null)
+            {
+                BulletPopped.Invoke(this, EventArgs.Empty);
             }
         }
     }
