@@ -26,13 +26,13 @@ namespace VRWeapons
         private void OnEnable()
         {
             mag.BulletPushed += Mag_BulletPushed;
-            mag.BulletPoped += Mag_BulletPoped;
+            mag.BulletPopped += Mag_BulletPopped;
         }
 
         private void OnDisable()
         {
             mag.BulletPushed -= Mag_BulletPushed;
-            mag.BulletPoped -= Mag_BulletPoped;
+            mag.BulletPopped -= Mag_BulletPopped;
         }
 
         private void Mag_BulletPushed(object sender, System.EventArgs e)
@@ -40,7 +40,7 @@ namespace VRWeapons
             BulletPushed.Invoke();
         }
 
-        private void Mag_BulletPoped(object sender, System.EventArgs e)
+        private void Mag_BulletPopped(object sender, System.EventArgs e)
         {
             BulletPopped.Invoke();
         }
