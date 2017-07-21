@@ -94,6 +94,13 @@ namespace VRWeapons.InteractionSystems.VRTK
         {
             VRW_ControllerActions_VRTK f;
             f = e.interactingObject.GetComponent<VRW_ControllerActions_VRTK>();
+
+            if (e.interactingObject == currentControllerGO)
+            {
+                thisWeap.SetColliderEnabled(thisWeap.weaponBodyCollider, true);
+                thisWeap.SetColliderEnabled(thisWeap.secondHandGripCollider, false);
+            }
+
             if (e.interactingObject == GetGrabbingObject())
             {
                 currentController = null;
@@ -111,12 +118,9 @@ namespace VRWeapons.InteractionSystems.VRTK
 
             if (e.interactingObject == thisWeap.holdingDevice)
             {
-                Debug.Log("Check");
                 thisWeap.holdingDevice = null;
             }
 
-            thisWeap.SetColliderEnabled(thisWeap.weaponBodyCollider, true);
-            thisWeap.SetColliderEnabled(thisWeap.secondHandGripCollider, false);
             base.OnInteractableObjectUngrabbed(e);
         }
 
