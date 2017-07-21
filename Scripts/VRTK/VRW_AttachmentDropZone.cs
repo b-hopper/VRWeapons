@@ -2,30 +2,34 @@
 using System.Collections.Generic;
 using UnityEngine;
 using VRTK;
-using VRWeapons;
 
-[RequireComponent(typeof(VRTK_SnapDropZone))]
+namespace VRWeapons.InteractionSystems.VRTK
+{
 
-public class VRW_AttachmentDropZone : MonoBehaviour {
+    [RequireComponent(typeof(VRTK_SnapDropZone))]
 
-    VRTK_SnapDropZone dropZone;
-    Weapon thisWeap;
-
-    private void Start()
+    public class VRW_AttachmentDropZone : MonoBehaviour
     {
-        dropZone = GetComponent<VRTK_SnapDropZone>();
-        dropZone.ObjectSnappedToDropZone += new SnapDropZoneEventHandler(ObjectSnapped);
-        dropZone.ObjectUnsnappedFromDropZone += new SnapDropZoneEventHandler(ObjectUnsnapped);
-        thisWeap = GetComponentInParent<Weapon>();
-    }
 
-    void ObjectSnapped(object sender, SnapDropZoneEventArgs e)
-    {
-        thisWeap.IgnoreCollision(e.snappedObject.GetComponentInChildren<Collider>(), true);
-    }
+        VRTK_SnapDropZone dropZone;
+        Weapon thisWeap;
 
-    void ObjectUnsnapped(object sender, SnapDropZoneEventArgs e)
-    {
-        thisWeap.IgnoreCollision(e.snappedObject.GetComponentInChildren<Collider>(), false);
+        private void Start()
+        {
+            dropZone = GetComponent<VRTK_SnapDropZone>();
+            dropZone.ObjectSnappedToDropZone += new SnapDropZoneEventHandler(ObjectSnapped);
+            dropZone.ObjectUnsnappedFromDropZone += new SnapDropZoneEventHandler(ObjectUnsnapped);
+            thisWeap = GetComponentInParent<Weapon>();
+        }
+
+        void ObjectSnapped(object sender, SnapDropZoneEventArgs e)
+        {
+            thisWeap.IgnoreCollision(e.snappedObject.GetComponentInChildren<Collider>(), true);
+        }
+
+        void ObjectUnsnapped(object sender, SnapDropZoneEventArgs e)
+        {
+            thisWeap.IgnoreCollision(e.snappedObject.GetComponentInChildren<Collider>(), false);
+        }
     }
 }

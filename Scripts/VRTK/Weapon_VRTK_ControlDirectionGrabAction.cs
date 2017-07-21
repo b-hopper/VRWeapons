@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using VRTK.SecondaryControllerGrabActions;
 
-namespace VRWeapons
+namespace VRWeapons.InteractionSystems.VRTK
 {
     public class Weapon_VRTK_ControlDirectionGrabAction : VRTK_ControlDirectionGrabAction
     {

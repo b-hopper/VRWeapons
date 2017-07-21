@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-namespace VRWeapons
+namespace VRWeapons.InteractionSystems.VRTK
 {
     [CustomEditor(typeof(Bolt_InteractableObject)), System.Serializable]
 

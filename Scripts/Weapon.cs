@@ -12,6 +12,10 @@ namespace VRWeapons
     [System.Serializable]
     public class Weapon : MonoBehaviour
     {
+        public delegate void WeaponFiredEvent(Weapon thisWeap, IBulletBehavior roundFired);
+
+        public event WeaponFiredEvent OnWeaponFired;
+
         IMuzzleActions Muzzle;
         IEjectorActions Ejector;
         IKickActions Kick;
@@ -244,6 +248,7 @@ namespace VRWeapons
                     if ((Time.time - nextFire >= fireRate) && IsChambered())
                     {
                         Muzzle.StartFiring(chamberedRound);
+                        OnWeaponFired.Invoke(this, chamberedRound);
                         DoOnFireActions();
                         chamberedRound = null;
                         nextFire = Time.time;

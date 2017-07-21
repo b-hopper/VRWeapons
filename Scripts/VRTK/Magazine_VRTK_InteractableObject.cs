@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using VRTK;
 
-namespace VRWeapons
+namespace VRWeapons.InteractionSystems.VRTK
 {
     public class Magazine_VRTK_InteractableObject : VRTK_InteractableObject
     {

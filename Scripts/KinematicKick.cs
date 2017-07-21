@@ -11,7 +11,7 @@ namespace VRWeapons
         float lerpVal;
         bool fixPosition, isKicking, originalPosSet;
         int shotsFiredSinceReset;
-
+        
         [Tooltip("Amount (and direction) the weapon moves positionally when fired. Logarithmically tapers down with each shot."), SerializeField]
         Vector3 amountToMove = new Vector3(0, 0.05f, -0.025f);
 

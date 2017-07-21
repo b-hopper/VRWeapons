@@ -4,71 +4,76 @@ using UnityEngine;
 using VRTK;
 using VRWeapons;
 
-[RequireComponent(typeof(VRTK_SnapDropZone))]
+namespace VRWeapons.InteractionSystems.VRTK
+{
 
-public class BulletDropZone : MonoBehaviour {
-    IBoltActions bolt;
-    IMagazine thisMag;
+    [RequireComponent(typeof(VRTK_SnapDropZone))]
 
-    Weapon thisWeapIfInternal;      // Only used if magazine is an internal magazine
-
-    VRTK_SnapDropZone dropZone;
-
-    MonoBehaviour thisMagGO;
-
-    Collider thisCol;
-
-    [Tooltip("Used for internal magazines - If checked, will disable this bullet drop zone unless bolt is back."), SerializeField]
-    bool chamberMustBeOpenToReload;
-
-    private void Start()
+    public class BulletDropZone : MonoBehaviour
     {
-        if (GetComponentInParent<Weapon>() != null)
-        {
-            thisWeapIfInternal = GetComponentInParent<Weapon>();
-        }
-        dropZone = GetComponent<VRTK_SnapDropZone>();
-        dropZone.ObjectSnappedToDropZone += new SnapDropZoneEventHandler(ObjectSnapped);
-        bolt = transform.parent.GetComponentInChildren<IBoltActions>();
-        thisMag = GetComponentInParent<IMagazine>();
-        thisMagGO = (MonoBehaviour)GetComponentInParent<IMagazine>();
-        thisCol = GetComponent<Collider>();
-        thisCol.enabled = true;
-    }
+        IBoltActions bolt;
+        IMagazine thisMag;
 
-    void ObjectSnapped(object sender, SnapDropZoneEventArgs e)
-    {        
-        bool tmp = thisMag.PushBullet(e.snappedObject);
-        dropZone.ForceUnsnap();
-        Debug.Log("Check");
-        if (tmp)
+        Weapon thisWeapIfInternal;      // Only used if magazine is an internal magazine
+
+        VRTK_SnapDropZone dropZone;
+
+        MonoBehaviour thisMagGO;
+
+        Collider thisCol;
+
+        [Tooltip("Used for internal magazines - If checked, will disable this bullet drop zone unless bolt is back."), SerializeField]
+        bool chamberMustBeOpenToReload;
+
+        private void Start()
         {
-            e.snappedObject.transform.parent = thisMagGO.transform;
-            e.snappedObject.SetActive(false);
-            if (thisWeapIfInternal != null)
+            if (GetComponentInParent<Weapon>() != null)
             {
-                thisWeapIfInternal.PlaySound(Weapon.AudioClips.MagIn);
+                thisWeapIfInternal = GetComponentInParent<Weapon>();
             }
+            dropZone = GetComponent<VRTK_SnapDropZone>();
+            dropZone.ObjectSnappedToDropZone += new SnapDropZoneEventHandler(ObjectSnapped);
+            bolt = transform.parent.GetComponentInChildren<IBoltActions>();
+            thisMag = GetComponentInParent<IMagazine>();
+            thisMagGO = (MonoBehaviour)GetComponentInParent<IMagazine>();
+            thisCol = GetComponent<Collider>();
+            thisCol.enabled = true;
         }
-    }
 
-    private void Update()
-    {
-        if (chamberMustBeOpenToReload)
+        void ObjectSnapped(object sender, SnapDropZoneEventArgs e)
         {
-            if (bolt != null)
+            bool tmp = thisMag.PushBullet(e.snappedObject);
+            dropZone.ForceUnsnap();
+            Debug.Log("Check");
+            if (tmp)
             {
-                if (bolt.boltLerpVal <= 0.9f)
+                e.snappedObject.transform.parent = thisMagGO.transform;
+                e.snappedObject.SetActive(false);
+                if (thisWeapIfInternal != null)
                 {
-                    thisCol.enabled = false;
-                }
-                else
-                {
-                    thisCol.enabled = true;
+                    thisWeapIfInternal.PlaySound(Weapon.AudioClips.MagIn);
                 }
             }
         }
-    }
 
-    
+        private void Update()
+        {
+            if (chamberMustBeOpenToReload)
+            {
+                if (bolt != null)
+                {
+                    if (bolt.boltLerpVal <= 0.9f)
+                    {
+                        thisCol.enabled = false;
+                    }
+                    else
+                    {
+                        thisCol.enabled = true;
+                    }
+                }
+            }
+        }
+
+
+    }
 }

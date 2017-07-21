@@ -13,6 +13,9 @@ namespace VRWeapons
         [HideInInspector]
         public List<Collider> weaponMainColliders;
 
+        [HideInInspector]
+        public List<Weapon> WeaponsInScene;
+
         [Header("For now, all it is capable of is providing the shot layer mask.")]
         [Header("VRWControl will be completed soon. Will handle events.")]
 
@@ -37,6 +40,8 @@ namespace VRWeapons
             int i = 0;
             foreach(Weapon tmp in FindObjectsOfType<Weapon>())
             {
+                WeaponsInScene.Add(tmp);
+                tmp.OnWeaponFired += new Weapon.WeaponFiredEvent(WeaponFired);
                 i++;
             }
             return i;
@@ -53,6 +58,11 @@ namespace VRWeapons
                 }
                 i++;
             }
+        }
+
+        void WeaponFired(Weapon weapon, IBulletBehavior roundFired)
+        {
+
         }
 
         public static float V3InverseLerp(Vector3 a, Vector3 b, Vector3 value)

@@ -55,7 +55,7 @@ namespace VRWeapons
             {
                 if (toggleBoltGroupPosition)
                 {
-                    if (bolt.boltGroup != null && bolt.GroupStartPosition != null)
+                    if (bolt.boltGroup != null)
                     {
                         bolt.boltGroup.localPosition = bolt.GroupStartPosition;
                         toggleBoltGroupPosition = !toggleBoltGroupPosition;
@@ -63,7 +63,7 @@ namespace VRWeapons
                 }
                 else
                 {
-                    if (bolt.boltGroup != null && bolt.GroupEndPosition != null)
+                    if (bolt.boltGroup != null)
                     {
                         bolt.boltGroup.localPosition = bolt.GroupEndPosition;
                         toggleBoltGroupPosition = !toggleBoltGroupPosition;
@@ -98,7 +98,7 @@ namespace VRWeapons
             {
                 if (toggleBoltPosition)
                 {
-                    if (bolt.bolt != null && bolt.BoltStartPosition != null)
+                    if (bolt.bolt != null)
                     {
                         bolt.bolt.localPosition = bolt.BoltStartPosition;
                         toggleBoltPosition = !toggleBoltPosition;
@@ -106,7 +106,7 @@ namespace VRWeapons
                 }
                 else
                 {
-                    if (bolt.bolt != null && bolt.BoltEndPosition != null)
+                    if (bolt.bolt != null)
                     {
                         bolt.bolt.localPosition = bolt.BoltEndPosition;
                         toggleBoltPosition = !toggleBoltPosition;
@@ -142,7 +142,7 @@ namespace VRWeapons
             {
                 if (toggleBoltRotation)
                 {
-                    if (bolt.bolt != null && bolt.BoltRotationStart != null)
+                    if (bolt.bolt != null)
                     {
                         bolt.bolt.localEulerAngles = bolt.BoltRotationStart;
                         toggleBoltRotation = !toggleBoltRotation;
@@ -150,7 +150,7 @@ namespace VRWeapons
                 }
                 else
                 {
-                    if (bolt.bolt != null && bolt.BoltRotationEnd != null)
+                    if (bolt.bolt != null)
                     {
                         bolt.bolt.localEulerAngles = bolt.BoltRotationEnd;
                         toggleBoltRotation = !toggleBoltRotation;

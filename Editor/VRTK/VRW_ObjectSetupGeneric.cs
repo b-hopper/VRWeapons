@@ -1,9 +1,10 @@
-﻿namespace VRWeapons
+﻿using UnityEngine;
+using UnityEditor;
+using VRTK;
+using VRTK.GrabAttachMechanics;
+
+namespace VRWeapons.InteractionSystems.VRTK
 {
-    using UnityEngine;
-    using UnityEditor;
-
-
     public class VRW_ObjectSetupVRTK : EditorWindow
     {
 
@@ -97,9 +98,9 @@
                     {
                         Debug.LogWarning("Weapon_VRTK_InteractableObject already found on " + target + ". No Weapon_VRTK_InteractableObject added.");
                     }
-                    if (target.GetComponent<VRTK.GrabAttachMechanics.VRTK_ChildOfControllerGrabAttach>() == null)
+                    if (target.GetComponent<VRTK_ChildOfControllerGrabAttach>() == null)
                     {
-                        target.AddComponent<VRTK.GrabAttachMechanics.VRTK_ChildOfControllerGrabAttach>();
+                        target.AddComponent<VRTK_ChildOfControllerGrabAttach>();
                     }
                     else
                     {
@@ -118,33 +119,33 @@
                             Debug.LogWarning("Weapon_VRTK_ControlDirectionGrabAction already found on " + target + ". No Weapon_VRTK_ControlDirectionGrabAction added.");
                         }
                     }
-                    if (FindObjectOfType<VRTK.VRTK_SDKManager>() != null)
+                    if (FindObjectOfType<VRTK_SDKManager>() != null)
                     {
-                        VRTK.VRTK_SDKManager tmp = FindObjectOfType<VRTK.VRTK_SDKManager>();
+                        VRTK_SDKManager tmp = FindObjectOfType<VRTK_SDKManager>();
                         if (tmp.scriptAliasLeftController != null)
                         {
                             if (tmp.scriptAliasLeftController.GetComponent<VRW_ControllerActions_VRTK>() == null)
                             {
                                 tmp.scriptAliasLeftController.AddComponent<VRW_ControllerActions_VRTK>();
                             }
-                            if (tmp.scriptAliasLeftController.GetComponent<VRTK.VRTK_ControllerEvents>() == null)
+                            if (tmp.scriptAliasLeftController.GetComponent<VRTK_ControllerEvents>() == null)
                             {
-                                tmp.scriptAliasLeftController.AddComponent<VRTK.VRTK_ControllerEvents>();
+                                tmp.scriptAliasLeftController.AddComponent<VRTK_ControllerEvents>();
                             }
-                            if (tmp.scriptAliasLeftController.GetComponent<VRTK.VRTK_InteractTouch>() == null)
+                            if (tmp.scriptAliasLeftController.GetComponent<VRTK_InteractTouch>() == null)
                             {
-                                tmp.scriptAliasLeftController.AddComponent<VRTK.VRTK_InteractTouch>();
+                                tmp.scriptAliasLeftController.AddComponent<VRTK_InteractTouch>();
                             }
-                            if (tmp.scriptAliasLeftController.GetComponent<VRTK.VRTK_InteractGrab>() == null)
+                            if (tmp.scriptAliasLeftController.GetComponent<VRTK_InteractGrab>() == null)
                             {
-                                tmp.scriptAliasLeftController.AddComponent<VRTK.VRTK_InteractGrab>();
-                                tmp.scriptAliasLeftController.GetComponent<VRTK.VRTK_InteractGrab>().controllerEvents = tmp.scriptAliasLeftController.GetComponent<VRTK.VRTK_ControllerEvents>();
+                                tmp.scriptAliasLeftController.AddComponent<VRTK_InteractGrab>();
+                                tmp.scriptAliasLeftController.GetComponent<VRTK_InteractGrab>().controllerEvents = tmp.scriptAliasLeftController.GetComponent<VRTK_ControllerEvents>();
                             }
-                            if (tmp.scriptAliasLeftController.GetComponent<VRTK.VRTK_InteractUse>() == null)
+                            if (tmp.scriptAliasLeftController.GetComponent<VRTK_InteractUse>() == null)
                             {
-                                tmp.scriptAliasLeftController.AddComponent<VRTK.VRTK_InteractUse>();
-                                tmp.scriptAliasLeftController.GetComponent<VRTK.VRTK_InteractUse>().controllerEvents = tmp.scriptAliasLeftController.GetComponent<VRTK.VRTK_ControllerEvents>();
-                                tmp.scriptAliasLeftController.GetComponent<VRTK.VRTK_InteractUse>().interactGrab = tmp.scriptAliasLeftController.GetComponent<VRTK.VRTK_InteractGrab>();
+                                tmp.scriptAliasLeftController.AddComponent<VRTK_InteractUse>();
+                                tmp.scriptAliasLeftController.GetComponent<VRTK_InteractUse>().controllerEvents = tmp.scriptAliasLeftController.GetComponent<VRTK_ControllerEvents>();
+                                tmp.scriptAliasLeftController.GetComponent<VRTK_InteractUse>().interactGrab = tmp.scriptAliasLeftController.GetComponent<VRTK_InteractGrab>();
                             }
                         }
                         else
@@ -157,24 +158,24 @@
                             {
                                 tmp.scriptAliasRightController.AddComponent<VRW_ControllerActions_VRTK>();
                             }
-                            if (tmp.scriptAliasRightController.GetComponent<VRTK.VRTK_ControllerEvents>() == null)
+                            if (tmp.scriptAliasRightController.GetComponent<VRTK_ControllerEvents>() == null)
                             {
-                                tmp.scriptAliasRightController.AddComponent<VRTK.VRTK_ControllerEvents>();
+                                tmp.scriptAliasRightController.AddComponent<VRTK_ControllerEvents>();
                             }
-                            if (tmp.scriptAliasRightController.GetComponent<VRTK.VRTK_InteractTouch>() == null)
+                            if (tmp.scriptAliasRightController.GetComponent<VRTK_InteractTouch>() == null)
                             {
-                                tmp.scriptAliasRightController.AddComponent<VRTK.VRTK_InteractTouch>();
+                                tmp.scriptAliasRightController.AddComponent<VRTK_InteractTouch>();
                             }
-                            if (tmp.scriptAliasRightController.GetComponent<VRTK.VRTK_InteractGrab>() == null)
+                            if (tmp.scriptAliasRightController.GetComponent<VRTK_InteractGrab>() == null)
                             {
-                                tmp.scriptAliasRightController.AddComponent<VRTK.VRTK_InteractGrab>();
-                                tmp.scriptAliasRightController.GetComponent<VRTK.VRTK_InteractGrab>().controllerEvents = tmp.scriptAliasRightController.GetComponent<VRTK.VRTK_ControllerEvents>();
+                                tmp.scriptAliasRightController.AddComponent<VRTK_InteractGrab>();
+                                tmp.scriptAliasRightController.GetComponent<VRTK_InteractGrab>().controllerEvents = tmp.scriptAliasRightController.GetComponent<VRTK_ControllerEvents>();
                             }
-                            if (tmp.scriptAliasRightController.GetComponent<VRTK.VRTK_InteractUse>() == null)
+                            if (tmp.scriptAliasRightController.GetComponent<VRTK_InteractUse>() == null)
                             {
-                                tmp.scriptAliasRightController.AddComponent<VRTK.VRTK_InteractUse>();
-                                tmp.scriptAliasRightController.GetComponent<VRTK.VRTK_InteractUse>().controllerEvents = tmp.scriptAliasRightController.GetComponent<VRTK.VRTK_ControllerEvents>();
-                                tmp.scriptAliasRightController.GetComponent<VRTK.VRTK_InteractUse>().interactGrab = tmp.scriptAliasRightController.GetComponent<VRTK.VRTK_InteractGrab>();
+                                tmp.scriptAliasRightController.AddComponent<VRTK_InteractUse>();
+                                tmp.scriptAliasRightController.GetComponent<VRTK_InteractUse>().controllerEvents = tmp.scriptAliasRightController.GetComponent<VRTK_ControllerEvents>();
+                                tmp.scriptAliasRightController.GetComponent<VRTK_InteractUse>().interactGrab = tmp.scriptAliasRightController.GetComponent<VRTK_InteractGrab>();
                             }
                         }
                         else
@@ -193,7 +194,7 @@
                     }
                     grabPoint.transform.parent = target.transform;
                     grabPoint.transform.localPosition = Vector3.zero;
-                    target.GetComponent<VRTK.GrabAttachMechanics.VRTK_ChildOfControllerGrabAttach>().rightSnapHandle = grabPoint.transform;
+                    target.GetComponent<VRTK_ChildOfControllerGrabAttach>().rightSnapHandle = grabPoint.transform;
                     
                 }
                 if (FindObjectOfType<VRWControl>() == null)
@@ -290,7 +291,7 @@
                             tmp.holdButtonToGrab = true;
                             tmp.isUsable = false;
 
-                            VRTK.GrabAttachMechanics.VRTK_TrackObjectGrabAttach tmpTrack = slideControl.AddComponent<VRTK.GrabAttachMechanics.VRTK_TrackObjectGrabAttach>();
+                            VRTK_TrackObjectGrabAttach tmpTrack = slideControl.AddComponent<VRTK_TrackObjectGrabAttach>();
                             tmpTrack.precisionGrab = true;
                             tmp.grabAttachMechanicScript = tmpTrack;
                             Selection.activeGameObject = slideControl;
@@ -417,15 +418,15 @@
                     dz.transform.parent = target.transform;
                     dz.transform.localPosition = Vector3.zero;
                         
-                    if (dz.GetComponent<VRTK.VRTK_SnapDropZone>() == null)
+                    if (dz.GetComponent<VRTK_SnapDropZone>() == null)
                     {
-                        dz.AddComponent<VRTK.VRTK_SnapDropZone>();
+                        dz.AddComponent<VRTK_SnapDropZone>();
                     }
-                    if (dz.GetComponent<VRTK.VRTK_PolicyList>() == null)
+                    if (dz.GetComponent<VRTK_PolicyList>() == null)
                     {
-                        dz.AddComponent<VRTK.VRTK_PolicyList>();
+                        dz.AddComponent<VRTK_PolicyList>();
                     }
-                    dz.GetComponent<VRTK.VRTK_SnapDropZone>().validObjectListPolicy = dz.GetComponent<VRTK.VRTK_PolicyList>();
+                    dz.GetComponent<VRTK_SnapDropZone>().validObjectListPolicy = dz.GetComponent<VRTK_PolicyList>();
 
                     if (dz.GetComponent<Collider>() == null)
                     {
@@ -443,8 +444,8 @@
                         MonoBehaviour e = target.GetComponentInChildren<IMagazine>() as MonoBehaviour;
                         dz.transform.localPosition = e.transform.localPosition;
                         dz.transform.localEulerAngles = e.transform.localEulerAngles;
-                        dz.GetComponent<VRTK.VRTK_SnapDropZone>().highlightObjectPrefab = e.gameObject;
-                        dz.GetComponent<VRTK.VRTK_SnapDropZone>().defaultSnappedObject = e.gameObject;
+                        dz.GetComponent<VRTK_SnapDropZone>().highlightObjectPrefab = e.gameObject;
+                        dz.GetComponent<VRTK_SnapDropZone>().defaultSnappedObject = e.gameObject;
                         e.transform.parent = null;
                     }
                     Selection.activeGameObject = dz;
@@ -467,15 +468,15 @@
                     Undo.RecordObject(dz, "Set up Bullet Drop Zone");
                     dz.name = "Bullet Drop Zone";
                     dz.AddComponent<BulletDropZone>();
-                    if (dz.GetComponent<VRTK.VRTK_SnapDropZone>() == null)
+                    if (dz.GetComponent<VRTK_SnapDropZone>() == null)
                     {
-                        dz.AddComponent<VRTK.VRTK_SnapDropZone>();
+                        dz.AddComponent<VRTK_SnapDropZone>();
                     }
-                    if (dz.GetComponent<VRTK.VRTK_PolicyList>() == null)
+                    if (dz.GetComponent<VRTK_PolicyList>() == null)
                     {
-                        dz.AddComponent<VRTK.VRTK_PolicyList>();
+                        dz.AddComponent<VRTK_PolicyList>();
                     }
-                    dz.GetComponent<VRTK.VRTK_SnapDropZone>().validObjectListPolicy = dz.GetComponent<VRTK.VRTK_PolicyList>();
+                    dz.GetComponent<VRTK_SnapDropZone>().validObjectListPolicy = dz.GetComponent<VRTK_PolicyList>();
                     if (dz.GetComponent<Collider>() == null)
                     {
                         dz.AddComponent<BoxCollider>();

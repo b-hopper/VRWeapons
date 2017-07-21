@@ -1,36 +1,40 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using VRWeapons;
+using VRTK;
 
-public class VRW_ControllerActions_VRTK : MonoBehaviour
+namespace VRWeapons.InteractionSystems.VRTK
 {
-    [HideInInspector]
-    public Weapon CurrentHeldWeapon;
 
-    private void Start()
+    public class VRW_ControllerActions_VRTK : MonoBehaviour
     {
-        GetComponent<VRTK.VRTK_ControllerEvents>().TouchpadPressed += new VRTK.ControllerInteractionEventHandler(DropMagazine);
-        GetComponent<VRTK.VRTK_ControllerEvents>().TriggerAxisChanged += new VRTK.ControllerInteractionEventHandler(TriggerAxisChanged);
-    }
+        [HideInInspector]
+        public Weapon CurrentHeldWeapon;
 
-    private void DropMagazine(object sender, VRTK.ControllerInteractionEventArgs e)
-    {
-        Debug.Log(CurrentHeldWeapon);
-        if (CurrentHeldWeapon != null && e.controllerReference.scriptAlias == CurrentHeldWeapon.holdingDevice)
+        private void Start()
         {
-            CurrentHeldWeapon.DropMagazine();
+            GetComponent<VRTK_ControllerEvents>().TouchpadPressed += new ControllerInteractionEventHandler(DropMagazine);
+            GetComponent<VRTK_ControllerEvents>().TriggerAxisChanged += new ControllerInteractionEventHandler(TriggerAxisChanged);
         }
-    }
 
-    private void TriggerAxisChanged(object sender, VRTK.ControllerInteractionEventArgs e)
-    {
-        if (CurrentHeldWeapon != null && e.controllerReference.scriptAlias == CurrentHeldWeapon.holdingDevice)
+        private void DropMagazine(object sender, ControllerInteractionEventArgs e)
         {
-            CurrentHeldWeapon.SetTriggerAngle(e.buttonPressure);
-            if (Debug.isDebugBuild)
+            Debug.Log(CurrentHeldWeapon);
+            if (CurrentHeldWeapon != null && e.controllerReference.scriptAlias == CurrentHeldWeapon.holdingDevice)
             {
-                Debug.Log("Holding device: " + CurrentHeldWeapon.holdingDevice);
+                CurrentHeldWeapon.DropMagazine();
+            }
+        }
+
+        private void TriggerAxisChanged(object sender, ControllerInteractionEventArgs e)
+        {
+            if (CurrentHeldWeapon != null && e.controllerReference.scriptAlias == CurrentHeldWeapon.holdingDevice)
+            {
+                CurrentHeldWeapon.SetTriggerAngle(e.buttonPressure);
+                if (Debug.isDebugBuild)
+                {
+                    Debug.Log("Holding device: " + CurrentHeldWeapon.holdingDevice);
+                }
             }
         }
     }
