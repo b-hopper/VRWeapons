@@ -6,15 +6,7 @@ using VRTK.GrabAttachMechanics;
 namespace VRWeapons.InteractionSystems.VRTK
 {
     public class VRW_ObjectSetupVRTK : EditorWindow
-    {
-
-        enum InteractionSystems
-        {
-            None = 0,
-            VRTK = 1,
-            MoreComingSoon = 2
-        }
-
+    {        
         enum MagazineType
         {
             Simple = 0,
@@ -35,7 +27,7 @@ namespace VRWeapons.InteractionSystems.VRTK
 
         GameObject target, slide;
 
-        [MenuItem("Window/VRWeapons/Set up new Weapon for VRTK")]
+        [MenuItem("Window/VRWeapons/Set up new Weapon forasdasd VRTK")]
         private static void Init()
         {
             VRW_ObjectSetupVRTK window = (VRW_ObjectSetupVRTK)GetWindow(typeof(VRW_ObjectSetupVRTK));

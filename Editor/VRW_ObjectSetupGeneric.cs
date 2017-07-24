@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using UnityEditor;
 
+
+
 namespace VRWeapons.InteractionSystems.Generic
 {
     public class VRW_ObjectSetupGeneric : EditorWindow
@@ -34,7 +36,7 @@ namespace VRWeapons.InteractionSystems.Generic
             window.maxSize = new Vector2(300f, 500f);
 
             window.autoRepaintOnSceneChange = true;
-            window.titleContent.text = "Weapon setup VRTK";
+            window.titleContent.text = "Weapon setup";
             window.Show();
         }
 

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-using VRTK;
 
 namespace VRWeapons
 {
@@ -41,6 +40,9 @@ namespace VRWeapons
         float nextFire;
 
         Vector3 triggerAngleStart, triggerPositionStart;
+
+        [HideInInspector]
+        public Transform grabPoint;
 
         //// Shown in inspector ////
         [Tooltip("Bolt will rack forward after racking backward, unless magazine is inserted and empty."), SerializeField]
@@ -92,7 +94,7 @@ namespace VRWeapons
 
         [Tooltip("Sound effect played when attempting to fire an empty weapon."), SerializeField]
         AudioClip DryFire;
-
+        
         //// End shown in inspector ////
 
         [System.Serializable]
@@ -147,10 +149,25 @@ namespace VRWeapons
             Kick = GetComponent<IKickActions>();
             shellPool = GetComponent<IObjectPool>();
             Magazine = GetComponentInChildren<IMagazine>();
+            if (grabPoint == null)
+            {
+                grabPoint = transform.Find("Grab Point");
+            }
             if (Bolt != null && Ejector != null)
             {
                 Bolt.SetEjector(Ejector);
             }
+            if (weaponBodyCollider != null)
+            {
+                IgnoreCollision(weaponBodyCollider, true);
+            }
+
+            if (Magazine != null)
+            {
+                MonoBehaviour go = (MonoBehaviour)Magazine;
+                IgnoreCollision(go.GetComponent<Collider>(), true);
+            }
+
             audioSource = GetComponent<AudioSource>();
             if (trigger != null) {
                 triggerAngleStart = trigger.localEulerAngles;
@@ -254,7 +271,10 @@ namespace VRWeapons
                         nextFire = Time.time;
                         justFired = true;
                         burstCount++;
-                        shotHaptics.Invoke();
+                        if (shotHaptics != null)
+                        {
+                            shotHaptics.Invoke();
+                        }
                     }
                     else if (!justFired && Time.time - nextFire >= fireRate)
                     {
