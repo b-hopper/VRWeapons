@@ -10,16 +10,19 @@ namespace VRWeapons.InteractionSystems.Generic
     {
         Weapon thisWeap;
 
-        SteamVR_Controller.Device device;
-        SteamVR_TrackedObject trackedObj;
+        SteamVR_Controller.Device device, secondHandDevice;
+        SteamVR_TrackedObject trackedObj, secondHandTrackedObj;
 
         [SerializeField] Valve.VR.EVRButtonId grabButton = Valve.VR.EVRButtonId.k_EButton_Grip;
         [SerializeField] Valve.VR.EVRButtonId fireButton = Valve.VR.EVRButtonId.k_EButton_SteamVR_Trigger;
         [SerializeField] Valve.VR.EVRButtonId dropMagButton = Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad;
 
+        [Tooltip("If checked, second hand grip button must be held down to remain gripping."), SerializeField]
+        bool holdButtonTo2HandGrip;
+
         Rigidbody thisRB;
 
-        bool isHeld, wasPreviouslyKinematic, isColliding;
+        bool isHeld, secondHandGripped, wasPreviouslyKinematic, isColliding;
 
         Transform previousParent;
 
@@ -40,27 +43,45 @@ namespace VRWeapons.InteractionSystems.Generic
 
         private void OnTriggerStay(Collider other)
         {
-            if (device == null || trackedObj == null)
+            if (!isHeld)
             {
-                Debug.Log("Check");
-                if ((trackedObj = other.GetComponentInParent<SteamVR_TrackedObject>()) != null)
+                if (device == null || trackedObj == null)
                 {
-                    device = SteamVR_Controller.Input((int)trackedObj.index);
+                    if ((trackedObj = other.GetComponentInParent<SteamVR_TrackedObject>()) != null)
+                    {
+                        device = SteamVR_Controller.Input((int)trackedObj.index);
+                    }
+                    isColliding = true;
                 }
-                isColliding = true;
-            }
-            if (device != null && !isHeld && device.GetPressDown(grabButton) && Time.time - dropTime > 0.2f)
-            {
-                wasPreviouslyKinematic = thisRB.isKinematic;
-                thisRB.isKinematic = true;
-                previousParent = transform.parent;
-                transform.parent = trackedObj.transform;
-                transform.localPosition = thisWeap.grabPoint.localPosition;
-                transform.localEulerAngles = thisWeap.grabPoint.localEulerAngles;
-                isHeld = true;
-                dropTime = Time.time;
+                if (device != null && device.GetPressDown(grabButton) && Time.time - dropTime > 0.2f)
+                {
+                    wasPreviouslyKinematic = thisRB.isKinematic;
+                    thisRB.isKinematic = true;
+                    previousParent = transform.parent;
+                    transform.parent = trackedObj.transform;
+                    transform.localPosition = thisWeap.grabPoint.localPosition;
+                    transform.localEulerAngles = thisWeap.grabPoint.localEulerAngles;
+                    isHeld = true;
+                    dropTime = Time.time;
 
-                DisableWeaponColliders(isHeld);
+                    DisableWeaponColliders(isHeld);
+                }
+            }
+            else
+            {
+                if (secondHandDevice == null || secondHandTrackedObj == null)
+                {
+                    if ((secondHandTrackedObj = other.GetComponentInParent<SteamVR_TrackedObject>()) != null)
+                    {
+                        secondHandDevice = SteamVR_Controller.Input((int)secondHandTrackedObj.index);
+                    }
+                    isColliding = true;
+                }
+                if (secondHandDevice != null && secondHandDevice.GetPressDown(grabButton) && Time.time - dropTime > 0.2f && !secondHandGripped)
+                {
+                    secondHandGripped = true;
+                    dropTime = Time.time;
+                }
             }
         }
 
@@ -104,11 +125,22 @@ namespace VRWeapons.InteractionSystems.Generic
                     device = null;
                     trackedObj = null;
                 }
+                if (secondHandGripped)
+                {
+                    ZLockedAim();
+                    if ((secondHandDevice.GetPressDown(grabButton) || (secondHandDevice.GetPressUp(grabButton) && holdButtonTo2HandGrip)) && Time.time - dropTime > 0.2f)
+                    {
+                        secondHandGripped = false;
+                        Realign();
+                    }
+                }
             }
             else if (!isColliding && !isHeld)
             {
                 device = null;
                 trackedObj = null;
+                secondHandDevice = null;
+                secondHandTrackedObj = null;
             }
         }
 
@@ -135,6 +167,62 @@ namespace VRWeapons.InteractionSystems.Generic
             {
                 thisWeap.secondHandGripCollider.enabled = isGripped;
             }
+        }
+
+        protected virtual void ZLockedAim()                     // BORROWED FROM VRTK'S VRTK_ControlDirectionGrabAction SCRIPT, THANKS STONE FOX//
+        {
+            Vector3 forward = (secondHandTrackedObj.transform.position - trackedObj.transform.position).normalized;
+
+            // calculate rightLocked rotation
+            Quaternion rightLocked = Quaternion.LookRotation(forward, Vector3.Cross(-trackedObj.transform.right, forward).normalized);
+
+            // delta from current rotation to the rightLocked rotation
+            Quaternion rightLockedDelta = Quaternion.Inverse(transform.rotation) * rightLocked;
+
+            float rightLockedAngle;
+            Vector3 rightLockedAxis;
+
+            // forward direction and roll
+            rightLockedDelta.ToAngleAxis(out rightLockedAngle, out rightLockedAxis);
+
+            if (rightLockedAngle > 180f)
+            {
+                // remap ranges from 0-360 to -180 to 180
+                rightLockedAngle -= 360f;
+            }
+
+            // make any negative values into positive values;
+            rightLockedAngle = Mathf.Abs(rightLockedAngle);
+
+            // calculate upLocked rotation
+            Quaternion upLocked = Quaternion.LookRotation(forward, trackedObj.transform.forward);
+
+            // delta from current rotation to the upLocked rotation
+            Quaternion upLockedDelta = Quaternion.Inverse(transform.rotation) * upLocked;
+
+            float upLockedAngle;
+            Vector3 upLockedAxis;
+
+            // forward direction and roll
+            upLockedDelta.ToAngleAxis(out upLockedAngle, out upLockedAxis);
+
+            // remap ranges from 0-360 to -180 to 180
+            if (upLockedAngle > 180f)
+            {
+                upLockedAngle -= 360f;
+            }
+
+            // make any negative values into positive values;
+            upLockedAngle = Mathf.Abs(upLockedAngle);
+
+            // assign the one that involves less change to roll
+            transform.rotation = (upLockedAngle < rightLockedAngle ? upLocked : rightLocked);
+        }
+        
+        void Realign()
+        {
+            transform.localEulerAngles = thisWeap.grabPoint.localEulerAngles;
+            transform.localPosition = thisWeap.grabPoint.localPosition;
         }
     }
 }
