@@ -250,6 +250,16 @@ namespace VRWeapons
             }
         }
 
+        public bool IsLoaded()
+        {
+            bool ret = false;
+            if (Magazine != null)
+            {
+                ret = true;
+            }
+            return ret;
+        }
+
         public Attack NewAttack(float newDamage, Vector3 newOrigin, RaycastHit newHit)
         {
             return new Attack

@@ -76,9 +76,14 @@ namespace VRWeapons.InteractionSystems.Generic
                     {
                         secondHandDevice = SteamVR_Controller.Input((int)secondHandTrackedObj.index);
                     }
+                    if (device == secondHandDevice)
+                    {
+                        secondHandDevice = null;
+                        secondHandTrackedObj = null;
+                    }
                     isColliding = true;
                 }
-                if (secondHandDevice != null && secondHandDevice.GetPressDown(grabButton) && Time.time - dropTime > 0.2f && !secondHandGripped)
+                if (secondHandDevice != null && secondHandDevice.GetPressDown(grabButton) && Time.time - dropTime > 0.2f && !secondHandGripped && secondHandDevice != device)
                 {
                     secondHandGripped = true;
                     dropTime = Time.time;
