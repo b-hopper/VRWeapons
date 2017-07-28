@@ -11,6 +11,8 @@ namespace VRWeapons.InteractionSystems.Generic
         Collider thisCol;
         IMagazine collidingMagazine;
 
+        float dropTime;
+
         [SerializeField]
         Transform magPosition;
 
@@ -20,11 +22,18 @@ namespace VRWeapons.InteractionSystems.Generic
         [Tooltip("How long in seconds it takes for magazine to reach mag well, once inserted."), SerializeField]
         float timeToMagInsert;
 
+        [Tooltip("List of valid tags accepted by this weapon.\n\nIf this is empty, weapon will accept any magazine. Use with caution."), SerializeField]
+        string[] validTags;
+
         private void Start()
         {
             thisWeap = GetComponentInParent<Weapon>();
+
+            GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
+
+            thisWeap.OnMagDropped += new Weapon.WeaponDroppedMagEvent(MagDropped);
+
             thisCol = GetComponent<Collider>();
-            GetComponent<Rigidbody>().isKinematic = true;
             if (magPosition != null)
             {
                 magPosition.gameObject.SetActive(false);
@@ -45,40 +54,59 @@ namespace VRWeapons.InteractionSystems.Generic
 
             if (startingMag != null)
             {
-                InsertMag(startingMag.GetComponent<IMagazine>(), startingMag);
+                if (startingMag.GetComponent<IMagazine>() != null)
+                {
+                    InsertMag(startingMag.GetComponent<IMagazine>(), startingMag);
+                }
+                else
+                {
+                    Debug.LogError("No script implementing interface IMagazine found on " + startingMag + ". Assign a correctly configured magazine.");
+                }
             }
         }
 
-        private void OnCollisionStay(Collision collision)
+        private void OnTriggerStay(Collider other)
         {
-            if ((collidingMagazine = collision.transform.GetComponent<IMagazine>()) == null)
+            if ((collidingMagazine = other.transform.GetComponent<IMagazine>()) == null)
             {
-                Physics.IgnoreCollision(thisCol, collision.collider);
-            }
+                Physics.IgnoreCollision(thisCol, other.GetComponent<Collider>());           // If it finds a non-magazine collider, ignore physics between the drop zone and that collider.
+            }                                                                               // This prevents excessive use of GetComponent.
             else
             {
-                if (!thisWeap.IsLoaded())
+                if (!thisWeap.IsLoaded() && Time.time - dropTime > 0.3f)
                 {
-                    collision.transform.parent = thisWeap.transform;
-                    collision.rigidbody.isKinematic = true;
-                    if (magPosition != null)
+                    if (IsValidMag(other.transform.tag))
                     {
-                        if (timeToMagInsert > 0)
+                        other.transform.parent = thisWeap.transform;
+                        other.GetComponent<Rigidbody>().isKinematic = true;
+                        if (magPosition != null)
                         {
-                            LerpMovement(collision.transform, collidingMagazine);
-                        }
-                        else
-                        {
-                            InsertMag(collidingMagazine, collision.transform);
+                            if (timeToMagInsert > 0)
+                            {
+                                StartCoroutine(LerpMovement(collidingMagazine, other.transform));
+                            }
+                            else
+                            {
+                                InsertMag(collidingMagazine, other.transform);
+                            }
                         }
                     }
                 }
             }
         }
-
-        IEnumerator LerpMovement(Transform t, IMagazine mag)
+        
+        IEnumerator LerpMovement(IMagazine mag, Transform t)
         {
             float startTime = Time.time;
+
+            Collider col = t.GetComponent<Collider>();
+            Physics.IgnoreCollision(col, thisWeap.weaponBodyCollider);
+
+            if (thisWeap.secondHandGripCollider != null)
+            {
+                Physics.IgnoreCollision(col, thisWeap.secondHandGripCollider);
+            }
+
             while (Time.time < startTime + timeToMagInsert)
             {
                 float lerpVal = (Time.time - startTime) / timeToMagInsert;
@@ -92,9 +120,46 @@ namespace VRWeapons.InteractionSystems.Generic
 
         void InsertMag(IMagazine newMag, Transform t)
         {
+            newMag.MagIn(thisWeap);
+
+            Collider col = t.GetComponent<Collider>();
+            Physics.IgnoreCollision(col, thisWeap.weaponBodyCollider);
+
+            if (thisWeap.secondHandGripCollider != null)
+            {
+                Physics.IgnoreCollision(col, thisWeap.secondHandGripCollider);
+            }
+
+            col.enabled = false;
+            
             t.localPosition = magPosition.localPosition;
             t.localEulerAngles = magPosition.localEulerAngles;
-            newMag.MagIn(thisWeap);
+        }
+
+        bool IsValidMag(string tag)
+        {
+            bool ret = false;
+
+            if (validTags.Length == 0)
+            {
+                ret = true;                             // In case no list is set up, allow all magazines.
+            }
+
+            for (int i = 0; i < validTags.Length; i++)
+            {
+                if (tag == validTags[i])
+                {
+                    ret = true;
+                }
+            }
+            return ret;
+        }
+
+        void MagDropped(IMagazine currentMag)
+        {
+            MonoBehaviour go = currentMag as MonoBehaviour;
+            go.GetComponent<Collider>().enabled = true;
+            dropTime = Time.time;
         }
     }
 }

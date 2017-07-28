@@ -13,6 +13,10 @@ namespace VRWeapons
     {
         public delegate void WeaponFiredEvent(Weapon thisWeap, IBulletBehavior roundFired);
 
+        public delegate void WeaponDroppedMagEvent(IMagazine currentMag);
+
+        public event WeaponDroppedMagEvent OnMagDropped;
+
         public event WeaponFiredEvent OnWeaponFired;
 
         IMuzzleActions Muzzle;
@@ -148,7 +152,6 @@ namespace VRWeapons
             Ejector = GetComponentInChildren<IEjectorActions>();
             Kick = GetComponent<IKickActions>();
             shellPool = GetComponent<IObjectPool>();
-            Magazine = GetComponentInChildren<IMagazine>();
             if (grabPoint == null)
             {
                 grabPoint = transform.Find("Grab Point");
@@ -244,6 +247,10 @@ namespace VRWeapons
         
         public void DropMagazine()
         {
+            if (OnMagDropped != null)
+            {
+                OnMagDropped.Invoke(Magazine);
+            }
             if (Magazine != null)
             {
                 Magazine.MagOut(this);

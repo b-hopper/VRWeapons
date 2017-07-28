@@ -21,6 +21,12 @@ namespace VRWeapons.InteractionSystems.Generic
         [Tooltip("If checked, second hand grip button must be held down to remain gripping."), SerializeField]
         public bool holdButtonTo2HandGrip;
 
+        [Tooltip("How long in frames haptics will fire when weapon is fired."), SerializeField]
+        int hapticTime;
+
+        [Tooltip("Haptic strength per pulse"), SerializeField, Range(0, 3999)]
+        ushort hapticStrength;
+
         Rigidbody thisRB;
 
         bool isHeld, secondHandGripped, wasPreviouslyKinematic, isColliding;
@@ -39,9 +45,25 @@ namespace VRWeapons.InteractionSystems.Generic
 
         void ShotHaptics()
         {
-            Debug.Log("Haptics haptics");
+            StartCoroutine(TriggerHaptics());
         }
 
+        IEnumerator TriggerHaptics()
+        {
+            if (device != null)
+            {
+                for (int i = 0; i < hapticTime; i++)
+                {
+                    if (secondHandGripped && secondHandDevice != null)
+                    {
+                        secondHandDevice.TriggerHapticPulse(hapticStrength);
+                    }
+                    device.TriggerHapticPulse(hapticStrength);
+                    yield return new WaitForFixedUpdate();
+                }
+            }
+        }
+        
         private void OnTriggerStay(Collider other)
         {
             if (!isHeld)
@@ -137,6 +159,8 @@ namespace VRWeapons.InteractionSystems.Generic
                     if ((secondHandDevice.GetPressDown(grabButton) || (secondHandDevice.GetPressUp(grabButton) && holdButtonTo2HandGrip)) && Time.time - dropTime > 0.2f)
                     {
                         secondHandGripped = false;
+                        secondHandDevice = null;
+                        secondHandTrackedObj = null;
                         Realign();
                     }
                 }
