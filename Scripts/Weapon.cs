@@ -286,7 +286,10 @@ namespace VRWeapons
                     if ((Time.time - nextFire >= fireRate) && IsChambered())
                     {
                         Muzzle.StartFiring(chamberedRound);
-                        OnWeaponFired.Invoke(this, chamberedRound);
+                        if (OnWeaponFired != null)
+                        {
+                            OnWeaponFired.Invoke(this, chamberedRound);
+                        }
                         DoOnFireActions();
                         chamberedRound = null;
                         nextFire = Time.time;

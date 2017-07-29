@@ -19,9 +19,12 @@ namespace VRWeapons
 
         [Tooltip("If toggled, magazine is able to be removed from the weapon. Turn off if weapon is using an internal magazine."), SerializeField]
         bool canBeDetached = true;
+
+        [SerializeField]
+        bool infiniteAmmo;
         
         public bool CanMagBeDetached { get { return canBeDetached; } set { canBeDetached = value; } }
-
+        
         int currentRoundCount;
 
         private void Start()
@@ -44,7 +47,7 @@ namespace VRWeapons
         {
             IBulletBehavior tmp = null;
 
-            if (PopBullet())
+            if (infiniteAmmo || PopBullet())
             {
                 tmp = roundType;
             }

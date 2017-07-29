@@ -22,6 +22,8 @@ namespace VRWeapons
 
         Collider[] roundColliders;
 
+        Collider thisCol;
+
         Weapon currentWeap;
 
         int index;
@@ -41,6 +43,7 @@ namespace VRWeapons
             roundColliders = new Collider[rounds.Length];
             RoundsInMag = new List<IBulletBehavior>(rounds.Length);
             rb = GetComponent<Rigidbody>();
+            thisCol = GetComponent<Collider>();
             if (rb == null)
             {
                 Debug.LogWarning("Rigidbody not found", this);
@@ -48,7 +51,6 @@ namespace VRWeapons
 
             PopulateAllSlotsInList();   // This method is pretty expensive depending on how many rounds there are,
                                         // but happens on loading the scene so it should be fine.
-            DisablePhysicsCollisions();
         }
 
         public bool PushBullet(GameObject newRound)
@@ -229,17 +231,11 @@ namespace VRWeapons
             }
         }
 
-        void DisablePhysicsCollisions()                                     // Disable collisions on main weapon body colliders. Will still interact with reload point colliders.
+        private void OnCollisionEnter(Collision collision)
         {
-            Collider tmp = GetComponentInChildren<Collider>();
-            if (tmp != null) {
-                foreach (Collider col in control.weaponMainColliders)
-                {
-                    if (col != null)
-                    {
-                        Physics.IgnoreCollision(tmp, col);
-                    }
-                }
+            if (!collision.collider.isTrigger && collision.gameObject.GetComponentInParent<Weapon>() != null)
+            {
+                Physics.IgnoreCollision(collision.collider, thisCol);
             }
         }
 

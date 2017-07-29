@@ -58,7 +58,10 @@ namespace VRWeapons.InteractionSystems.Generic
                     {
                         secondHandDevice.TriggerHapticPulse(hapticStrength);
                     }
-                    device.TriggerHapticPulse(hapticStrength);
+                    if (device != null)
+                    {
+                        device.TriggerHapticPulse(hapticStrength);
+                    }
                     yield return new WaitForFixedUpdate();
                 }
             }

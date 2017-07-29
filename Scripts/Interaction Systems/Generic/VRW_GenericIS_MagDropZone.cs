@@ -107,11 +107,13 @@ namespace VRWeapons.InteractionSystems.Generic
                 Physics.IgnoreCollision(col, thisWeap.secondHandGripCollider);
             }
 
+            Quaternion endRotation = magPosition.rotation;
+
             while (Time.time < startTime + timeToMagInsert)
             {
                 float lerpVal = (Time.time - startTime) / timeToMagInsert;
                 t.localPosition = Vector3.Lerp(t.localPosition, magPosition.localPosition, lerpVal);
-                t.localEulerAngles = Vector3.Lerp(t.localEulerAngles, magPosition.localEulerAngles, lerpVal);
+                t.rotation = Quaternion.Lerp(t.rotation, magPosition.rotation, lerpVal);
                 yield return new WaitForFixedUpdate();
             }
             InsertMag(mag, t);

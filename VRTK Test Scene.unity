@@ -124,7 +124,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &3601616
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -341,7 +341,12 @@ Prefab:
       objectReference: {fileID: 2114024590}
     - target: {fileID: 1072547168382712, guid: af7c2c9ab2d22b74ead41e2f0cb46aea, type: 2}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114243688141922490, guid: af7c2c9ab2d22b74ead41e2f0cb46aea,
+        type: 2}
+      propertyPath: positionalKickStrength
+      value: 0.05
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: af7c2c9ab2d22b74ead41e2f0cb46aea, type: 2}
@@ -3108,7 +3113,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1206965484690856, guid: 6e2eeef9f10a1b948aa7746210b14ece, type: 2}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6e2eeef9f10a1b948aa7746210b14ece, type: 2}
@@ -6733,6 +6738,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   secondHandGripped: 0
   holdingDevice: {fileID: 0}
+  grabPoint: {fileID: 0}
   autoRackForward: 0
   boltMovesOnFiring: 0
   impactProfile: {fileID: 11400000, guid: 14d8f1f1efda64048a0d9c7e8e17b778, type: 2}
@@ -11715,7 +11721,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1206965484690856, guid: 6e2eeef9f10a1b948aa7746210b14ece, type: 2}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6e2eeef9f10a1b948aa7746210b14ece, type: 2}

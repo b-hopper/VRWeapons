@@ -11,9 +11,6 @@ namespace VRWeapons
         float VRWVersion = 2.0f;
 
         [HideInInspector]
-        public List<Collider> weaponMainColliders;
-
-        [HideInInspector]
         public List<Weapon> WeaponsInScene;
 
         [Header("For now, all it is capable of is providing the shot layer mask.")]
@@ -31,8 +28,6 @@ namespace VRWeapons
         private void Start()
         {
             Debug.Log("VRWeapons Version " + VRWVersion.ToString("F2"));
-            weaponMainColliders = new List<Collider>(CountWeapons());
-            GetWeaponMainColliders();
         }
 
         int CountWeapons()
@@ -45,19 +40,6 @@ namespace VRWeapons
                 i++;
             }
             return i;
-        }
-
-        public void GetWeaponMainColliders()
-        {
-            int i = 0;
-            foreach (Weapon tmp in FindObjectsOfType<Weapon>())
-            {
-                if (tmp.weaponBodyCollider != null)
-                {
-                    weaponMainColliders.Insert(i, tmp.weaponBodyCollider);
-                }
-                i++;
-            }
         }
 
         void WeaponFired(Weapon weapon, IBulletBehavior roundFired)

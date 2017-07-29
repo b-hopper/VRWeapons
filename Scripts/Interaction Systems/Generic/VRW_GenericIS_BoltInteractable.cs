@@ -18,6 +18,8 @@ namespace VRWeapons.InteractionSystems.Generic
 
         Weapon thisWeap;
 
+        Vector3 offset;
+
         bool thisObjectIsGrabbed, hasMoved;
 
         float lerpValue, dropTime;
@@ -60,6 +62,7 @@ namespace VRWeapons.InteractionSystems.Generic
                 }
                 if (device != null && device.GetPressDown(weaponInteractable.grabButton) && Time.time - dropTime > 0.2f)
                 {
+                    offset = trackedObj.transform.position - transform.position;
                     thisObjectIsGrabbed = true;
                     dropTime = Time.time;
                 }
@@ -85,7 +88,7 @@ namespace VRWeapons.InteractionSystems.Generic
                     bolt.IsCurrentlyBeingManipulated(true);
                     hasMoved = true;
 
-                    transform.position = trackedObj.transform.position;
+                    transform.position = trackedObj.transform.position - offset;
 
                     ClampControllerToTrack();                                                                                       // Clamps to make sure it stays on the tracks it has been assigned in inspector
 
