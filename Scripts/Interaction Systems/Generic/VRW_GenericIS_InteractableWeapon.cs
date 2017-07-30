@@ -85,8 +85,8 @@ namespace VRWeapons.InteractionSystems.Generic
                     thisRB.isKinematic = true;
                     previousParent = transform.parent;
 
-                    transform.rotation = trackedObj.transform.rotation * Quaternion.Euler(thisWeap.grabPoint.localEulerAngles);
-                    transform.position = trackedObj.transform.position - (thisWeap.grabPoint.position - transform.position);
+                    Realign();
+
                     transform.parent = trackedObj.transform;
 
                     isHeld = true;
@@ -256,8 +256,8 @@ namespace VRWeapons.InteractionSystems.Generic
 
         void Realign()
         {
-            transform.localEulerAngles = thisWeap.grabPoint.localEulerAngles;
-            transform.localPosition = thisWeap.grabPoint.localPosition;
+            transform.rotation = trackedObj.transform.rotation * Quaternion.Euler(thisWeap.grabPoint.localEulerAngles);
+            transform.position = trackedObj.transform.position - (thisWeap.grabPoint.position - transform.position);
         }
     }
 }

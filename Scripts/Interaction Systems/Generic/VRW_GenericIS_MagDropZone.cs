@@ -11,6 +11,10 @@ namespace VRWeapons.InteractionSystems.Generic
         Collider thisCol;
         IMagazine collidingMagazine;
 
+        IEnumerator magIn;
+
+        bool isLerping;
+
         float dropTime;
 
         [SerializeField]
@@ -79,11 +83,13 @@ namespace VRWeapons.InteractionSystems.Generic
                     {
                         other.transform.parent = thisWeap.transform;
                         other.GetComponent<Rigidbody>().isKinematic = true;
-                        if (magPosition != null)
+                        if (magPosition != null && !isLerping)
                         {
                             if (timeToMagInsert > 0)
                             {
-                                StartCoroutine(LerpMovement(collidingMagazine, other.transform));
+                                magIn = LerpMovement(collidingMagazine, other.transform);
+                                StartCoroutine(magIn);
+                                isLerping = true;
                             }
                             else
                             {
@@ -117,11 +123,12 @@ namespace VRWeapons.InteractionSystems.Generic
                 yield return new WaitForFixedUpdate();
             }
             InsertMag(mag, t);
-            mag.MagIn(thisWeap);
+            isLerping = false;
         }
 
         void InsertMag(IMagazine newMag, Transform t)
         {
+            magIn = null;
             newMag.MagIn(thisWeap);
 
             Collider col = t.GetComponent<Collider>();
@@ -159,9 +166,12 @@ namespace VRWeapons.InteractionSystems.Generic
 
         void MagDropped(IMagazine currentMag)
         {
-            MonoBehaviour go = currentMag as MonoBehaviour;
-            go.GetComponent<Collider>().enabled = true;
-            dropTime = Time.time;
+            if (currentMag != null)
+            {
+                MonoBehaviour go = currentMag as MonoBehaviour;
+                go.GetComponent<Collider>().enabled = true;
+                dropTime = Time.time;
+            }
         }
     }
 }

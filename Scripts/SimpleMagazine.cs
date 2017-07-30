@@ -30,7 +30,10 @@ namespace VRWeapons
         private void Start()
         {
             roundType = GetComponent<IBulletBehavior>();
-            rb = GetComponent<Rigidbody>();
+            if (rb == null)
+            {
+                rb = GetComponent<Rigidbody>();
+            }
             currentRoundCount = maxRounds;
 
             if (roundType == null)
@@ -98,6 +101,11 @@ namespace VRWeapons
             transform.parent = weap.transform;
             if (rb != null)
             {
+                rb.isKinematic = true;
+            }
+            else
+            {
+                rb = GetComponent<Rigidbody>();
                 rb.isKinematic = true;
             }
         }

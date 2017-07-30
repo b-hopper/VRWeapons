@@ -231,7 +231,7 @@ namespace VRWeapons
                     soundToPlay = DryFire;
                     break;
             }
-            if (soundToPlay != null)
+            if (soundToPlay != null && audioSource != null)
             {
                 audioSource.pitch = Time.timeScale;
                 audioSource.clip = soundToPlay;

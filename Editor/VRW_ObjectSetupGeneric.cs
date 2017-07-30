@@ -1,8 +1,6 @@
 ﻿using UnityEngine;
 using UnityEditor;
 
-
-
 namespace VRWeapons.InteractionSystems.Generic
 {
     public class VRW_ObjectSetupGeneric : EditorWindow
@@ -29,16 +27,18 @@ namespace VRWeapons.InteractionSystems.Generic
 
         MagazineType magType;
         BoltType boltType;
-        BulletType bulletType;
+        BulletType bulletTypeForMag, bulletType;
+
+        bool isInteractable;
         
-        GameObject target, slide;
+        GameObject target, slide, projectile;
 
         [MenuItem("Window/VRWeapons/Set up new Weapon")]
         private static void Init()
         {
             VRW_ObjectSetupGeneric window = (VRW_ObjectSetupGeneric)GetWindow(typeof(VRW_ObjectSetupGeneric));
-            window.minSize = new Vector2(300f, 250f);
-            window.maxSize = new Vector2(300f, 500f);
+            window.minSize = new Vector2(300f, 325f);
+            window.maxSize = new Vector2(300f, 375f);
 
             window.autoRepaintOnSceneChange = true;
             window.titleContent.text = "Weapon setup";
@@ -231,7 +231,7 @@ namespace VRWeapons.InteractionSystems.Generic
 
             if (magType == MagazineType.Simple)
             {
-                bulletType = (BulletType)EditorGUILayout.EnumPopup("Bullet Type", bulletType);
+                bulletTypeForMag = (BulletType)EditorGUILayout.EnumPopup("Bullet Type", bulletTypeForMag);
             }
 
             if (GUILayout.Button(new GUIContent("Set up selected object as Magazine", "Simple magazines should have a single bullet type added as a component to the magazine. \n\nComplex " +
@@ -254,7 +254,7 @@ namespace VRWeapons.InteractionSystems.Generic
                     }
                     if (newMag.GetComponent<IBulletBehavior>() == null && newMag.GetComponent<IMagazine>() != null)
                     {
-                        switch (bulletType)
+                        switch (bulletTypeForMag)
                         {
                             case BulletType.Projectile:
                                 newMag.AddComponent<BulletTypes.ProjectileBullet>();
@@ -342,6 +342,84 @@ namespace VRWeapons.InteractionSystems.Generic
                 /////////////////////////////////////NEED BULLET DROP ZONE HERE///////////////////////////////////
                 //////////////////////////////////////////////////////////////////////////////////////////////////
             }
+            EditorGUILayout.TextArea("", GUI.skin.horizontalSlider);
+
+            GUIStyle centeredStyle = GUI.skin.GetStyle("Label");
+            centeredStyle.alignment = TextAnchor.UpperCenter;
+
+            EditorGUILayout.LabelField("Bullet Builder", centeredStyle);
+
+            bulletType = (BulletType)EditorGUILayout.EnumPopup("Bullet Type", bulletType);
+
+            if (bulletType == BulletType.Projectile)
+            {
+                projectile = (GameObject)EditorGUILayout.ObjectField("Projectile Object", projectile, typeof(Object), true);
+            }
+
+            isInteractable = EditorGUILayout.Toggle("Bullet can be picked up", isInteractable);
+
+            EditorGUILayout.BeginHorizontal();
+
+            if (GUILayout.Button(new GUIContent("Set Up\nBullet", "Press this button to set up a bullet for use in complex magazines.")))
+            {
+                if (target.GetComponent<IBulletBehavior>() == null)
+                {
+                    switch (bulletType)
+                    {
+                        case BulletType.RaycastBullet:
+                            target.AddComponent<BulletTypes.RaycastBullet>();
+                            break;
+                        case BulletType.ShotgunShell:
+                            target.AddComponent<BulletTypes.ShotgunBullet>();
+                            break;
+                        case BulletType.Projectile:
+                            {
+                                if (projectile != null)
+                                {
+                                    if (projectile.GetComponent<Rigidbody>() == null)
+                                    {
+                                        projectile.AddComponent<Rigidbody>();
+                                    }
+                                    target.AddComponent<BulletTypes.ProjectileBullet>();
+                                    target.GetComponent<BulletTypes.ProjectileBullet>().projectile = projectile;
+                                    projectile.transform.parent = target.transform;
+                                    projectile.SetActive(false);
+                                }
+                                else
+                                {
+                                    Debug.LogError("Projectile round requires a projectile object. Please assign a projectile object above.", target);
+                                }
+                                break;
+                            }
+                    }
+                    if (target.GetComponent<Rigidbody>() == null)
+                    {
+                        target.AddComponent<Rigidbody>();
+                    }
+                    if (target.GetComponent<Collider>() == null)
+                    {
+                        target.AddComponent<BoxCollider>();
+                    }
+                    if (isInteractable && target.GetComponent<VRW_GenericIS_Interactable>() == null)
+                    {
+                        target.AddComponent<VRW_GenericIS_Interactable>();
+                    }
+                }
+            }
+
+            if (GUILayout.Button(new GUIContent("Set Up\nEmpty Shell", "Press this button to set up an empty bullet shell, for use in ejecting spent rounds.")))
+            {
+                if (target.GetComponent<Rigidbody>() == null)
+                {
+                    target.AddComponent<Rigidbody>();
+                }
+                if (target.GetComponent<Collider>() == null)
+                {
+                    target.AddComponent<BoxCollider>();
+                }
+            }
+            EditorGUILayout.EndHorizontal();
+
 
         }
     }
