@@ -28,10 +28,7 @@ namespace VRWeapons
 
         [Tooltip("Decreases the amount of kick when 2-hand gripped by multiplication. 0 = no kick, 1 = full kick."), SerializeField, Range(0f, 1f)]
         float twoHandGripKickReduction = 0.5f;
-
-        [SerializeField]
-        bool debugMode;
-
+        
         private void Start()
         {
             thisWeap = GetComponent<Weapon>();
@@ -97,10 +94,6 @@ namespace VRWeapons
                 lerpVal = 1;
                 fixPosition = true;
                 isKicking = false;
-                if (debugMode)
-                {
-                    Debug.Break();
-                }
             }
             transform.Translate(transform.InverseTransformDirection(targetPos) * recoilLerpSpeed);
             lerpVal += recoilLerpSpeed;

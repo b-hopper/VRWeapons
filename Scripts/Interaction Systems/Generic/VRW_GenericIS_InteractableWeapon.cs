@@ -22,10 +22,10 @@ namespace VRWeapons.InteractionSystems.Generic
         public bool holdButtonTo2HandGrip;
 
         [Tooltip("How long in frames haptics will fire when weapon is fired."), SerializeField]
-        int hapticTime;
+        int hapticTime = 6;
 
         [Tooltip("Haptic strength per pulse"), SerializeField, Range(0, 3999)]
-        ushort hapticStrength;
+        ushort hapticStrength = 3999;
 
         Rigidbody thisRB;
 
@@ -84,9 +84,11 @@ namespace VRWeapons.InteractionSystems.Generic
                     wasPreviouslyKinematic = thisRB.isKinematic;
                     thisRB.isKinematic = true;
                     previousParent = transform.parent;
+
+                    transform.rotation = trackedObj.transform.rotation * Quaternion.Euler(thisWeap.grabPoint.localEulerAngles);
+                    transform.position = trackedObj.transform.position - (thisWeap.grabPoint.position - transform.position);
                     transform.parent = trackedObj.transform;
-                    transform.localPosition = thisWeap.grabPoint.localPosition;
-                    transform.localEulerAngles = thisWeap.grabPoint.localEulerAngles;
+
                     isHeld = true;
                     dropTime = Time.time;
 

@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace VRWeapons {
+namespace VRWeapons.BulletTypes
+{
     
     [System.Serializable]
     public class ShotgunBullet : MonoBehaviour, IBulletBehavior{

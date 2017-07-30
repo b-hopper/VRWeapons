@@ -262,16 +262,23 @@ namespace VRWeapons
 
         public void ReplaceRoundWithEmptyShell(GameObject go)
         {
-            go.transform.parent = chamberedRoundSnapT.parent;
-            go.transform.localPosition = chamberedRoundSnapT.localPosition;
-            go.transform.localEulerAngles = chamberedRoundSnapT.localEulerAngles;
-            if (chamberedRoundT != null)
+            if (chamberedRoundSnapT != null)
             {
-                DestroyImmediate(chamberedRoundT.gameObject);
+                go.transform.parent = chamberedRoundSnapT.parent;
+                go.transform.localPosition = chamberedRoundSnapT.localPosition;
+                go.transform.localEulerAngles = chamberedRoundSnapT.localEulerAngles;
+                if (chamberedRoundT != null)
+                {
+                    DestroyImmediate(chamberedRoundT.gameObject);
+                }
+                chamberedRoundT = go.transform;
+                chamberedRoundRB = go.GetComponent<Rigidbody>();
+                chamberedRoundRB.isKinematic = true;
             }
-            chamberedRoundT = go.transform;
-            chamberedRoundRB = go.GetComponent<Rigidbody>();
-            chamberedRoundRB.isKinematic = true;
+            else
+            {
+                Debug.LogWarning("No chambered round snap transform assigned, please assign in editor before attempting to eject rounds.");
+            }
         }
 
 
