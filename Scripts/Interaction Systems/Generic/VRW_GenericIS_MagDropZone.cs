@@ -128,6 +128,11 @@ namespace VRWeapons.InteractionSystems.Generic
 
         void InsertMag(IMagazine newMag, Transform t)
         {
+            VRW_GenericIS_BulletDropZone dz = null;
+            if ((dz = t.GetComponentInChildren<VRW_GenericIS_BulletDropZone>()) != null)
+            {
+                dz.thisCol.enabled = false;
+            }
             magIn = null;
             newMag.MagIn(thisWeap);
 

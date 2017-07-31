@@ -334,13 +334,31 @@ namespace VRWeapons.InteractionSystems.Generic
             if (GUILayout.Button(new GUIContent("Set up Bullet DropZone", "This drop zone is to add individual rounds to a complex magazine.")))
             {
                 GameObject mag = (GameObject)Selection.activeObject;
+
+                GameObject dz = null;
                 if (mag.GetComponent<IMagazine>() == null)
                 {
                     Debug.LogError("No IMagazine script found on " + mag + ". Please set up magazine before setting up Bullet DropZone.");
                 }
-                //////////////////////////////////////////////////////////////////////////////////////////////////
-                /////////////////////////////////////NEED BULLET DROP ZONE HERE///////////////////////////////////
-                //////////////////////////////////////////////////////////////////////////////////////////////////
+                else if (mag.GetComponentInChildren<VRW_GenericIS_BulletDropZone>() == null)
+                {
+                    dz = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                    dz.name = "Bullet Drop Zone";
+                    dz.transform.parent = mag.transform;
+                    dz.transform.localPosition = Vector3.zero;
+                    dz.GetComponent<MeshRenderer>().enabled = false;
+                    dz.AddComponent<VRW_GenericIS_BulletDropZone>();
+                    BoxCollider col = dz.GetComponent<BoxCollider>();
+                    col.size = new Vector3(0.03f, 0.05f, 0.02f);
+                }
+                else
+                {
+                    dz = mag.GetComponentInChildren<VRW_GenericIS_BulletDropZone>().gameObject;
+                }
+                if (dz != null)
+                {
+                    dz.GetComponent<Collider>().isTrigger = true;
+                }
             }
             EditorGUILayout.TextArea("", GUI.skin.horizontalSlider);
 

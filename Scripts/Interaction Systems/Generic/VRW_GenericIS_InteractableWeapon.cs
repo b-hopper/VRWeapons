@@ -10,6 +10,12 @@ namespace VRWeapons.InteractionSystems.Generic
     {
         Weapon thisWeap;
 
+        public delegate void OnWeaponDroppedEvent(Weapon droppedWeapon);
+        public delegate void OnWeaponPickedUpEvent(Weapon pickedUpWeapon);
+
+        public event OnWeaponDroppedEvent weaponDropped;
+        public event OnWeaponPickedUpEvent weaponPickedUp;
+
         SteamVR_Controller.Device device, secondHandDevice;
         [HideInInspector]
         public SteamVR_TrackedObject trackedObj, secondHandTrackedObj;
@@ -89,6 +95,11 @@ namespace VRWeapons.InteractionSystems.Generic
 
                     transform.parent = trackedObj.transform;
 
+                    if (weaponPickedUp != null)
+                    {
+                        weaponPickedUp.Invoke(thisWeap);
+                    }
+
                     isHeld = true;
                     dropTime = Time.time;
 
@@ -153,6 +164,11 @@ namespace VRWeapons.InteractionSystems.Generic
                     isHeld = false;
 
                     DisableWeaponColliders(isHeld);
+
+                    if (weaponDropped != null)
+                    {
+                        weaponDropped.Invoke(thisWeap);
+                    }
 
                     dropTime = Time.time;
                     device = null;

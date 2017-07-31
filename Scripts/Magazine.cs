@@ -63,9 +63,10 @@ namespace VRWeapons
                 {
                     RoundsInMag.Insert(index, newBulletBehavior);
                     val = true;
-                                       
+
                     rounds[index].GetComponent<Collider>().enabled = false; 
                     index++;
+                    rounds[index] = newRound;
                     OnBulletPushed();
                 }
             }
@@ -112,8 +113,9 @@ namespace VRWeapons
                 RoundsInMag.Remove(tmp);
                 if (roundColliders[index] != null && currentWeap != null)
                 {
-                    currentWeap.IgnoreCollision(roundColliders[index]);                    
+                    currentWeap.IgnoreCollision(roundColliders[index]);
                 }
+                rounds[index] = null;
                 index--;
                 //TODO: Why doesn't FeedRound call PopBullet?
                 OnBulletPopped();
@@ -131,6 +133,11 @@ namespace VRWeapons
             weap.Magazine = this;
             weap.PlaySound(Weapon.AudioClips.MagIn);
             transform.parent = weap.transform;
+            Collider col;
+            if (rounds[index] != null && (col = rounds[index].GetComponent<Collider>()) != null)
+            {
+                weap.IgnoreCollision(col);
+            }
             currentWeap = weap;
             if (rb != null)
             {
@@ -205,12 +212,12 @@ namespace VRWeapons
                 {
                     list[i] = list[i + offset];
                 }
-                if (list[i].GetComponent<Collider>() != null)
+                if (list[i] != null && list[i].GetComponent<Collider>() != null)
                 {
                     list[i].GetComponent<Collider>().enabled = false;   // Colliders are causing problems with ejection. Disable them...
                 }
             }
-            list[list.Length - 1].GetComponent<Collider>().enabled = true;  // ...except for the last one, which is the top round in the magazine.
+            list[list.Length - 1 - offset].GetComponent<Collider>().enabled = true;  // ...except for the last one, which is the top round in the magazine.
         }
 
         void ReportRoundsInMag()
