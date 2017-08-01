@@ -35,7 +35,7 @@ namespace VRWeapons.InteractionSystems.Generic
 
             GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
 
-            thisWeap.OnMagDropped += new Weapon.WeaponDroppedMagEvent(MagDropped);
+            thisWeap.OnMagRemoved += new Weapon.MagazineRemovedEvent(MagDropped);
 
             thisCol = GetComponent<Collider>();
             if (magPosition != null)
@@ -144,6 +144,8 @@ namespace VRWeapons.InteractionSystems.Generic
                 Physics.IgnoreCollision(col, thisWeap.secondHandGripCollider);
             }
 
+            thisWeap.InsertMagazine(newMag);
+
             col.enabled = false;
             
             t.localPosition = magPosition.localPosition;
@@ -169,7 +171,7 @@ namespace VRWeapons.InteractionSystems.Generic
             return ret;
         }
 
-        void MagDropped(IMagazine currentMag)
+        void MagDropped(Weapon thisWeap, IMagazine currentMag)
         {
             if (currentMag != null)
             {

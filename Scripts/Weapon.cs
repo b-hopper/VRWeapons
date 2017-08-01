@@ -12,13 +12,17 @@ namespace VRWeapons
     public class Weapon : MonoBehaviour
     {
         public delegate void WeaponFiredEvent(Weapon thisWeap, IBulletBehavior roundFired);
-
-        public delegate void WeaponDroppedMagEvent(IMagazine currentMag);
-
-        public event WeaponDroppedMagEvent OnMagDropped;
-
+        public delegate void WeaponPickedUpEvent(Weapon pickedUpWeapon);
+        public delegate void WeaponDroppedEvent(Weapon droppedWeapon);
+        public delegate void MagazineRemovedEvent(Weapon thisWeap, IMagazine droppedMag);
+        public delegate void MagazineInsertedEvent(Weapon thisWeap, IMagazine newMag);
+                
         public event WeaponFiredEvent OnWeaponFired;
-
+        public event WeaponPickedUpEvent OnWeaponPickedUp;
+        public event WeaponDroppedEvent OnWeaponDropped;
+        public event MagazineRemovedEvent OnMagRemoved;
+        public event MagazineInsertedEvent OnMagInserted;
+                
         IMuzzleActions Muzzle;
         IEjectorActions Ejector;
         IKickActions Kick;
@@ -152,6 +156,7 @@ namespace VRWeapons
             Ejector = GetComponentInChildren<IEjectorActions>();
             Kick = GetComponent<IKickActions>();
             shellPool = GetComponent<IObjectPool>();
+            
             if (grabPoint == null)
             {
                 grabPoint = transform.Find("Grab Point");
@@ -243,19 +248,7 @@ namespace VRWeapons
         public void ChangeFireMode(FireMode newMode)
         {
             fireMode = newMode;
-        }
-        
-        public void DropMagazine()
-        {
-            if (OnMagDropped != null)
-            {
-                OnMagDropped.Invoke(Magazine);
-            }
-            if (Magazine != null)
-            {
-                Magazine.MagOut(this);
-            }
-        }
+        }        
 
         public bool IsLoaded()
         {
@@ -361,6 +354,42 @@ namespace VRWeapons
             {
                 Kick.Kick();
             }            
+        }
+
+        public void InsertMagazine(IMagazine newMag)
+        {
+            if (OnMagInserted != null)
+            {
+                OnMagInserted.Invoke(this, newMag);
+            }
+        }
+
+        public void DropMagazine()
+        {
+            if (OnMagRemoved != null)
+            {
+                OnMagRemoved.Invoke(this, Magazine);
+            }
+            if (Magazine != null)
+            {
+                Magazine.MagOut(this);
+            }
+        }
+
+        public void WeaponPickedUp()
+        {
+            if (OnWeaponPickedUp != null)
+            {
+                OnWeaponPickedUp.Invoke(this);
+            }
+        }
+
+        public void WeaponDropped()
+        {
+            if (OnWeaponDropped != null)
+            {
+                OnWeaponDropped.Invoke(this);
+            }
         }
 
         public void SetTriggerAngle(float angle)

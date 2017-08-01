@@ -191,7 +191,9 @@ namespace VRWeapons.InteractionSystems.Generic
                         GameObject go = GameObject.CreatePrimitive(PrimitiveType.Cube);
                         go.name = "Bolt Controller";
                         go.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
-                        go.GetComponent<MeshRenderer>().enabled = false;
+                        var tempMaterial = new Material(go.GetComponent<Renderer>().sharedMaterial);
+                        tempMaterial.color = Color.red;
+                        go.GetComponent<MeshRenderer>().sharedMaterial = tempMaterial;
                         go.AddComponent<VRW_GenericIS_BoltInteractable>();
                         go.transform.parent = slide.GetComponentInParent<Weapon>().transform;
                         go.transform.localPosition = Vector3.zero;                        

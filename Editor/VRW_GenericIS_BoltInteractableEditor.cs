@@ -39,6 +39,12 @@ namespace VRWeapons.InteractionSystems.Generic
                     togglePosition = !togglePosition;
                 }
             }
+            GUILayout.EndHorizontal();
+            if (GUILayout.Button(new GUIContent("Save Bolt Controller")))
+            {
+                boltIntObj.GetComponent<MeshRenderer>().enabled = false;
+                boltIntObj.transform.localPosition = boltIntObj.boltClosedPosition;
+            }
         }
     }
 }
