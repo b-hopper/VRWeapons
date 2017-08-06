@@ -156,6 +156,12 @@ namespace VRWeapons
             Ejector = GetComponentInChildren<IEjectorActions>();
             Kick = GetComponent<IKickActions>();
             shellPool = GetComponent<IObjectPool>();
+            Magazine = GetComponentInChildren<IMagazine>();
+            MonoBehaviour mag = (MonoBehaviour)Magazine as MonoBehaviour;
+            if (!mag.enabled)
+            {
+                Magazine = null;
+            }
             
             if (grabPoint == null)
             {

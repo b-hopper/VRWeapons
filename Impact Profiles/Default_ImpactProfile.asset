@@ -16,5 +16,6 @@ MonoBehaviour:
     material: {fileID: 0}
     texture: {fileID: 0}
     tag: 
-    impactPrefabs: []
+    impactPrefabs:
+    - {fileID: 1577757298439268, guid: bfef012c58c3046b1adc7041ec909ce2, type: 2}
   impacts: []

@@ -29,6 +29,13 @@ namespace VRWeapons.InteractionSystems.VRTK
 
         private void Start()
         {
+            if (isSecondHandGrip)
+            {                
+                VRW_ShotgunPump pump = gameObject.AddComponent<VRW_ShotgunPump>();
+                pump.boltClosedPosition = boltClosedPosition;
+                pump.boltOpenPosition = boltOpenPosition;
+                Destroy(this);
+            }
             thisWeapIntObj = GetComponentInParent<Weapon_VRTK_InteractableObject>();
             bolt = transform.parent.GetComponentInChildren<IBoltActions>();
             startPos = transform.localPosition;
@@ -47,12 +54,7 @@ namespace VRWeapons.InteractionSystems.VRTK
         {
             float oldLerpValue = lerpValue;
 
-            if (isSecondHandGrip && thisWeapIntObj.GetSecondaryGrabbingObject() != null)                                        // Used for weapons where grip point is also slide manipulator
-            {                                                                                                                   // Manually moves position of slide manipulator to match grabbing object
-                transform.position = thisWeapIntObj.GetSecondaryGrabbingObject().transform.position;
-                thisObjectIsGrabbed = true;
-            }
-            else if (IsGrabbed())
+            if (IsGrabbed())
             {
                 ClampControllerToTrack();
                 thisObjectIsGrabbed = true;                                                                                     // Have to set a flag, because can't rely on VRTK's grab mechanisms if the 

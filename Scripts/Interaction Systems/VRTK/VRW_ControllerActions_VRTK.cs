@@ -19,7 +19,6 @@ namespace VRWeapons.InteractionSystems.VRTK
 
         private void DropMagazine(object sender, ControllerInteractionEventArgs e)
         {
-            Debug.Log(CurrentHeldWeapon);
             if (CurrentHeldWeapon != null && e.controllerReference.scriptAlias == CurrentHeldWeapon.holdingDevice)
             {
                 CurrentHeldWeapon.DropMagazine();
@@ -31,10 +30,6 @@ namespace VRWeapons.InteractionSystems.VRTK
             if (CurrentHeldWeapon != null && e.controllerReference.scriptAlias == CurrentHeldWeapon.holdingDevice)
             {
                 CurrentHeldWeapon.SetTriggerAngle(e.buttonPressure);
-                if (Debug.isDebugBuild)
-                {
-                    Debug.Log("Holding device: " + CurrentHeldWeapon.holdingDevice);
-                }
             }
         }
     }

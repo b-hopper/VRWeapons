@@ -214,9 +214,9 @@ GameObject:
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 5
   m_Component:
-  - component: {fileID: 4534117265978742}
-  - component: {fileID: 33588181609703198}
-  - component: {fileID: 23469205963218686}
+  - component: {fileID: 4603148463561730}
+  - component: {fileID: 33126529052942156}
+  - component: {fileID: 23172376828054460}
   m_Layer: 12
   m_Name: 7.62 Round(Clone)
   m_TagString: 762Round
