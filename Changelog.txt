@@ -1,23 +1,16 @@
-NOTES:
+------------------------------------------------
+v2.00
+------------------------------------------------
+	Huge changes!
 
-	Empty bullet shell object must be on a layer that does NOT interact with weapon, else ejector does not function correctly.
-
-
-	TODO:
-		Rotational bolts
-		Separate bolt movement - DONE
-		New bolt script for revolvers
-		Editor/converter
-
-
-
-
-
-
-
-
-
-
+	I've rebuilt VRWeapons from scratch. It now functions in a much more modular, flexible way, instead of all being crammed into one script. Each piece uses an interface, making it
+	easy to create custom behavior if desired. Those are found in the Assets/VRWeapons/Scripts/Interfaces folder. Additionally, VRWeapons is now fully integrated with VRTK, making for
+	much more robust interaction mechanics. By default, VRW is not using VRTK interactions, but you can use the VRTK interaction pack by unpacking the VRW_VRTK_InteractionSystem.unitypackage
+	to your project. For those not using VRTK - don't fret, I have also built a generic interaction system for any other cases. I will be adding more specific interaction systems 
+	in the future, next up is InstantVR. 
+	As far as features added - it is now possible to load magazines with individual rounds, and weapons are able to utilize individual bullet behavior (for example, if you want every 
+	5th round to fire a tracer, simply load your magazines in-editor [or in-game!] with the appropriate bullet objects).
+	
 ------------------------------------------------
 v1.25
 ------------------------------------------------
