@@ -182,11 +182,16 @@ namespace VRWeapons
             if (Magazine != null)
             {
                 MonoBehaviour go = (MonoBehaviour)Magazine;
-                if (go.GetComponent<Rigidbody>() != null)
+                if (go.GetComponent<Rigidbody>() != null && go.gameObject != this.gameObject)
                 {
                     go.GetComponent<Rigidbody>().isKinematic = true;
                 }
                 IgnoreCollision(go.GetComponent<Collider>(), true);
+            }
+
+            if (secondHandGripCollider != null)
+            {
+                secondHandGripCollider.enabled = false;
             }
 
             audioSource = GetComponent<AudioSource>();

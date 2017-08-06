@@ -142,7 +142,7 @@ namespace VRWeapons
                 weap.IgnoreCollision(col);
             }
             currentWeap = weap;
-            if (rb != null)
+            if (rb != null && weap.gameObject != this.gameObject)
             {
                 rb.isKinematic = true;
             }
