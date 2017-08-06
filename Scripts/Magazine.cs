@@ -52,7 +52,7 @@ namespace VRWeapons
             PopulateAllSlotsInList();   // This method is pretty expensive depending on how many rounds there are,
                                         // but happens on loading the scene so it should be fine.
         }
-
+        
         public bool PushBullet(GameObject newRound)
         {
             IBulletBehavior newBulletBehavior = newRound.GetComponent<IBulletBehavior>();
@@ -61,11 +61,14 @@ namespace VRWeapons
             {
                 if (RoundsInMag.Count < rounds.Length)
                 {
+                    index++;
                     RoundsInMag.Insert(index, newBulletBehavior);
                     val = true;
 
-                    rounds[index].GetComponent<Collider>().enabled = false; 
-                    index++;
+                    if (index > 0 && rounds[index - 1] != null)
+                    {
+                        rounds[index - 1].GetComponent<Collider>().enabled = false;
+                    }
                     rounds[index] = newRound;
                     OnBulletPushed();
                 }

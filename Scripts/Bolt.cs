@@ -196,7 +196,7 @@ namespace VRWeapons
                 {
                     Ejector.Eject(chamberedRoundT, chamberedRoundRB);
                 }
-
+                thisWeap.chamberedRound = null;
                 justEjected = true;
                 canChamberNewRound = true;
             }

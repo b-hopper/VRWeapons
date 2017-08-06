@@ -16,9 +16,14 @@ namespace VRWeapons.BulletTypes
 
         Rigidbody projRB;
 
+        Projectile.IProjectile projActual;
+
         private void Start()
         {
             projRB = projectile.GetComponent<Rigidbody>();
+
+            projActual = projectile.GetComponent<Projectile.IProjectile>();
+
             if (projRB == null)
             {
                 Debug.LogError("Projectiles require a rigidbody to function correctly. Please add a rigidbody.", projectile);
@@ -28,6 +33,13 @@ namespace VRWeapons.BulletTypes
 
         public void DoBulletBehavior(Transform muzzleDir, float damage, float range, float bulletSpreadRange, Weapon thisWeapon, LayerMask shotMask)
         {
+            Weapon.Attack attack = new Weapon.Attack();
+            attack.damage = damage;
+            attack.origin = muzzleDir.position;
+            attack.originWeapon = thisWeapon;
+
+            projActual.SetParams(attack, shotMask);
+                
             projectile.SetActive(true);
             projectile.transform.position = muzzleDir.position;
             projectile.transform.parent = null;

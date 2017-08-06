@@ -44,7 +44,6 @@ namespace VRWeapons.InteractionSystems.VRTK
         {
             bool tmp = thisMag.PushBullet(e.snappedObject);
             dropZone.ForceUnsnap();
-            Debug.Log("Check");
             if (tmp)
             {
                 e.snappedObject.transform.parent = thisMagGO.transform;
@@ -53,6 +52,10 @@ namespace VRWeapons.InteractionSystems.VRTK
                 {
                     thisWeapIfInternal.PlaySound(Weapon.AudioClips.MagIn);
                 }
+            }
+            else
+            {
+                Debug.Log("Magazine " + this + " full!");
             }
         }
 
