@@ -15,11 +15,6 @@ MonoBehaviour:
     impactType: 0
     material: {fileID: 0}
     texture: {fileID: 0}
-    impactPrefabs:
-    - {fileID: 109574, guid: bfef012c58c3046b1adc7041ec909ce2, type: 2}
-  impacts:
-  - impactType: 0
-    material: {fileID: 2100000, guid: fba78cfb70419fb4786430a306819d6b, type: 2}
-    texture: {fileID: 0}
-    impactPrefabs:
-    - {fileID: 1535010857658152, guid: 1d6c297bd49fbc24c89e0de3634e6cd8, type: 2}
+    tag: 
+    impactPrefabs: []
+  impacts: []

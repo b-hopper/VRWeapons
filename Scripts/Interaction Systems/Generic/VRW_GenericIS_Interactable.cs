@@ -89,8 +89,7 @@ namespace VRWeapons.InteractionSystems.Generic
                     trackedObj = null;
                     isHeld = false;
                 }
-            }
-            
+            }            
         }
 
         void Drop()

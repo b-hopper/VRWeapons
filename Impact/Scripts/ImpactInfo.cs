@@ -56,7 +56,7 @@ public struct ImpactInfo
 		int length = impactPrefabs.Length;
 
 		if (length == 0) {
-			Debug.LogErrorFormat ("Please assign at least one impact prefab for material '{0}'", material.name);
+			Debug.LogWarning ("Please assign at least one impact prefab for material '{0}'");
 			return null;
 		} else if (length == 1) {
 			return impactPrefabs [0];

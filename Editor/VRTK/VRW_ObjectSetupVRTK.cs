@@ -280,9 +280,11 @@ namespace VRWeapons.InteractionSystems.VRTK
                             GameObject slideControl = GameObject.CreatePrimitive(PrimitiveType.Cube);
                             slideControl.name = "Bolt Grab Point";
                             slideControl.transform.localScale = new Vector3(0.05f, 0.05f, 0.05f);
-                            DestroyImmediate(slideControl.GetComponent<Renderer>());
                             slideControl.transform.parent = target.transform;
                             slideControl.transform.localPosition = Vector3.zero;
+                            var tempMaterial = new Material(slideControl.GetComponent<Renderer>().sharedMaterial);
+                            tempMaterial.color = Color.red;
+                            slideControl.GetComponent<MeshRenderer>().sharedMaterial = tempMaterial;
 
                             Rigidbody rb = slideControl.AddComponent<Rigidbody>();
                             rb.isKinematic = true;

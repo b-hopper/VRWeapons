@@ -15,7 +15,7 @@ namespace VRWeapons
         MonoBehaviour muzzleGO;
 
         [Tooltip("How much to kick back when the weapon is fired. Logarithmically tapers down with each shot."), SerializeField, Range(0, 1)]
-        float positionalKickStrength;
+        float positionalKickStrength = 0.05f;
         
         [Tooltip("Amount (and direction) the weapon rotates when fired. Logarithmically tapers down with each shot."), SerializeField]
         Vector3 amountToRotate = new Vector3(-5, 0, 0);
