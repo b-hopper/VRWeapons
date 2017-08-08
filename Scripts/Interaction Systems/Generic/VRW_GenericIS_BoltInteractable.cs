@@ -18,7 +18,7 @@ namespace VRWeapons.InteractionSystems.Generic
 
         Weapon thisWeap;
 
-        Vector3 offset;
+        Vector3 offset, lastGoodPosition;
 
         bool thisObjectIsGrabbed, hasMoved;
 
@@ -90,11 +90,9 @@ namespace VRWeapons.InteractionSystems.Generic
 
                     transform.position = trackedObj.transform.position - offset;
 
-                    ClampControllerToTrack();                                                                                       // Clamps to make sure it stays on the tracks it has been assigned in inspector
-
-                    lerpValue = VRWControl.V3InverseLerp(boltClosedPosition, boltOpenPosition, transform.localPosition);            // Final lerp value of bolt, which is then passed...
-
-                    bolt.boltLerpVal = lerpValue;                                                                                   // ... to the bolt itself.
+                    lerpValue = VRWControl.V3InverseLerp(boltClosedPosition, boltOpenPosition, transform.localPosition);
+                    ClampControllerToTrack();
+                    bolt.boltLerpVal = lerpValue;
                 }
                 if (device == null ||
                     (device.GetPressUp(weaponInteractable.grabButton) && mustHoldGrabButton) ||
@@ -107,7 +105,7 @@ namespace VRWeapons.InteractionSystems.Generic
             {
                 bolt.IsCurrentlyBeingManipulated(false);
                 hasMoved = false;
-                ClampControllerToTrack();
+                transform.localPosition = lastGoodPosition;
             }
             else
             {
@@ -121,7 +119,8 @@ namespace VRWeapons.InteractionSystems.Generic
 
         void ClampControllerToTrack()
         {
-            transform.localPosition = VRWControl.V3Clamp(transform.localPosition, boltOpenPosition, boltClosedPosition);
+            transform.localPosition = Vector3.Lerp(boltClosedPosition, boltOpenPosition, lerpValue);
+            lastGoodPosition = transform.localPosition;
         }
 
     }

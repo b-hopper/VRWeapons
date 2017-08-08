@@ -9,15 +9,14 @@ namespace VRWeapons.InteractionSystems.VRTK
     public class Bolt_InteractableObject : VRTK_InteractableObject
     {
         IBoltActions bolt;
-
-        Vector3 controllerLocation, offset;
-
+        
         float boltLerpValue, lerpValue;
-
-        Weapon_VRTK_InteractableObject thisWeapIntObj;
+        
         Weapon thisWeap;
 
-        bool hasMoved, thisObjectIsGrabbed, needsOffset = true;
+        Vector3 lastGoodPosition;
+
+        bool hasMoved;
 
         Vector3 startPos, startRot;
         [SerializeField]
@@ -36,7 +35,6 @@ namespace VRWeapons.InteractionSystems.VRTK
                 pump.boltOpenPosition = boltOpenPosition;
                 Destroy(this);
             }
-            thisWeapIntObj = GetComponentInParent<Weapon_VRTK_InteractableObject>();
             bolt = transform.parent.GetComponentInChildren<IBoltActions>();
             startPos = transform.localPosition;
             startRot = transform.localEulerAngles;
@@ -56,31 +54,18 @@ namespace VRWeapons.InteractionSystems.VRTK
 
             if (IsGrabbed())
             {
-                ClampControllerToTrack();
-                thisObjectIsGrabbed = true;                                                                                     // Have to set a flag, because can't rely on VRTK's grab mechanisms if the 
-            }                                                                                                                   // bolt manipulator is also the second grab point. VRTK only allows one
-            else                                                                                                                // object to be grabbed at a time, far as I know.
-            {
-                thisObjectIsGrabbed = false;
-            }
-
-            if (thisObjectIsGrabbed)
-            {
                 bolt.IsCurrentlyBeingManipulated(true);
                 hasMoved = true;
-
-                ClampControllerToTrack();                                                                                       // Clamps to make sure it stays on the tracks it has been assigned in inspector
-
-                lerpValue = VRWControl.V3InverseLerp(boltClosedPosition, boltOpenPosition, transform.localPosition);            // Final lerp value of bolt, which is then passed...
-
-                bolt.boltLerpVal = lerpValue;                                                                                   // ... to the bolt itself.
+                lerpValue = VRWControl.V3InverseLerp(boltClosedPosition, boltOpenPosition, transform.localPosition);
+                ClampControllerToTrack();
+                bolt.boltLerpVal = lerpValue;
             }
 
             else if (hasMoved)
             {
                 bolt.IsCurrentlyBeingManipulated(false);
                 hasMoved = false;
-                ClampControllerToTrack();
+                transform.localPosition = lastGoodPosition;
             }
 
             else
@@ -100,7 +85,8 @@ namespace VRWeapons.InteractionSystems.VRTK
                                                                                                                                 // Before this, the bolt manipulator was rotated with the controller.
         void ClampControllerToTrack()
         {
-            transform.localPosition = VRWControl.V3Clamp(transform.localPosition, boltOpenPosition, boltClosedPosition);
+            transform.localPosition = Vector3.Lerp(boltClosedPosition, boltOpenPosition, lerpValue);
+            lastGoodPosition = transform.localPosition;
         }
     }
 }
