@@ -40,7 +40,7 @@ namespace VRWeapons.InteractionSystems.VRTK
             startRot = transform.localEulerAngles;
             thisWeap = GetComponentInParent<Weapon>();
 
-            thisWeap.IgnoreCollision(GetComponentInChildren<Collider>(), true);
+            thisWeap.IgnoreCollision(GetComponentInChildren<Collider>());
 
             if (GetComponent<Rigidbody>() != null)
             {

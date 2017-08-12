@@ -294,6 +294,7 @@ namespace VRWeapons.InteractionSystems.VRTK
                             tmp.isGrabbable = true;
                             tmp.holdButtonToGrab = true;
                             tmp.isUsable = false;
+                            tmp.disableWhenIdle = false;
 
                             VRTK_TrackObjectGrabAttach tmpTrack = slideControl.AddComponent<VRTK_TrackObjectGrabAttach>();
                             tmpTrack.precisionGrab = true;

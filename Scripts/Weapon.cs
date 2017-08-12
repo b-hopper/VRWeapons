@@ -113,24 +113,6 @@ namespace VRWeapons
             Burst = 2
         }
 
-        public void IgnoreCollision(Collider collider, bool isIgnored = true)
-        {
-            if(collider == null)
-            {
-                Debug.LogWarning("Cannot ignore null collider");
-                return;
-            }
-
-            if(weaponBodyCollider != null)
-            {
-                Physics.IgnoreCollision(collider, weaponBodyCollider, isIgnored);
-            }
-            if (secondHandGripCollider != null)
-            {
-                Physics.IgnoreCollision(collider, secondHandGripCollider, isIgnored);
-            }
-        }
-
         public enum AudioClips
         {
             MagIn = 0,
@@ -217,7 +199,39 @@ namespace VRWeapons
                 Magazine.MagIn(this);       // Required for internal magazines
             }
         }
-        
+
+        public int GetRoundCount()
+        {
+            int count = 0;
+            if (IsChambered())
+            {
+                count++;
+            }
+            if (Magazine != null)
+            {
+                count += Magazine.GetCurrentRoundCount();
+            }
+            return count;
+        }
+
+        public void IgnoreCollision(Collider collider, bool isIgnored = true)
+        {
+            if (collider == null)
+            {
+                Debug.LogWarning("Cannot ignore null collider");
+                return;
+            }
+
+            if (weaponBodyCollider != null)
+            {
+                Physics.IgnoreCollision(collider, weaponBodyCollider, isIgnored);
+            }
+            if (secondHandGripCollider != null)
+            {
+                Physics.IgnoreCollision(collider, secondHandGripCollider, isIgnored);
+            }
+        }
+                
         public void StartFiring(GameObject usingObject)
         {
             isFiring = true;
@@ -297,10 +311,6 @@ namespace VRWeapons
                     if ((Time.time - nextFire >= fireRate) && IsChambered())
                     {
                         Muzzle.StartFiring(chamberedRound);
-                        if (OnWeaponFired != null)
-                        {
-                            OnWeaponFired.Invoke(this, chamberedRound);
-                        }
                         DoOnFireActions();
                         chamberedRound = null;
                         nextFire = Time.time;
@@ -309,6 +319,10 @@ namespace VRWeapons
                         if (shotHaptics != null)
                         {
                             shotHaptics.Invoke();
+                        }
+                        if (OnWeaponFired != null)
+                        {
+                            OnWeaponFired.Invoke(this, chamberedRound);
                         }
                     }
                     else if (!justFired && Time.time - nextFire >= fireRate)
