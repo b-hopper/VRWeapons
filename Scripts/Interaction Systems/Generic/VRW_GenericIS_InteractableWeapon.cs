@@ -87,11 +87,12 @@ namespace VRWeapons.InteractionSystems.Generic
 
                     Realign();
 
-                    transform.parent = trackedObj.transform;
+                    transform.parent = trackedObj.transform;                    
 
                     thisWeap.WeaponPickedUp();
 
                     isHeld = true;
+                    thisWeap.isHeld = true;
                     dropTime = Time.time;
 
                     DisableWeaponColliders(isHeld);
@@ -107,6 +108,7 @@ namespace VRWeapons.InteractionSystems.Generic
                     }
                     if (device == secondHandDevice)
                     {
+                        thisWeap.secondHandDevice = null;
                         secondHandDevice = null;
                         secondHandTrackedObj = null;
                     }
@@ -114,6 +116,7 @@ namespace VRWeapons.InteractionSystems.Generic
                 }
                 if (secondHandDevice != null && secondHandDevice.GetPressDown(grabButton) && Time.time - dropTime > 0.2f && !secondHandGripped && secondHandDevice != device)
                 {
+                    thisWeap.secondHandDevice = secondHandTrackedObj.gameObject;
                     secondHandGripped = true;
                     dropTime = Time.time;
                 }
@@ -153,6 +156,7 @@ namespace VRWeapons.InteractionSystems.Generic
                     tossObject(thisRB);
 
                     isHeld = false;
+                    thisWeap.isHeld = false;
 
                     DisableWeaponColliders(isHeld);
 

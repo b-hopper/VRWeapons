@@ -40,10 +40,10 @@ namespace VRWeapons
         int burstCount;
 
         [HideInInspector]
-        public bool secondHandGripped;
+        public bool secondHandGripped, isHeld;
 
         [HideInInspector]
-        public GameObject holdingDevice;
+        public GameObject holdingDevice, secondHandDevice;
 
         float nextFire;
 
@@ -163,6 +163,10 @@ namespace VRWeapons
                 if (!mag.enabled)
                 {
                     Magazine = null;
+                }
+                else
+                {
+                    InsertMagazine(Magazine);
                 }
             }
             

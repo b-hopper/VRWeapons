@@ -9,8 +9,10 @@ namespace VRWeapons
         Weapon thisWeap;
         Vector3 originalPos, originalRot, targetPos, targetRot, currentPos, currentRot;
         float lerpVal;
-        bool fixPosition, isKicking, originalPosSet;
+        bool fixPosition, isKicking, originalPosSet, wasGrippedWhenFired;
         int shotsFiredSinceReset;
+
+        Quaternion targetRotation;
 
         MonoBehaviour muzzleGO;
 
@@ -39,7 +41,7 @@ namespace VRWeapons
         public void Kick()
         {
             float tmpKickReduction = 1;
-            if (!originalPosSet)
+            if (!originalPosSet && !thisWeap.secondHandGripped)
             {
                 originalPos = transform.localPosition;
                 originalRot = transform.localEulerAngles;
@@ -54,7 +56,7 @@ namespace VRWeapons
             shotsFiredSinceReset++;
             currentPos = transform.localPosition;
             
-            targetPos = ((transform.localPosition - transform.forward) * positionalKickStrength) / shotsFiredSinceReset;
+            targetPos = ((transform.localPosition - muzzleGO.transform.forward) * positionalKickStrength) / shotsFiredSinceReset;
 
             if (!thisWeap.secondHandGripped)
             {
@@ -69,18 +71,19 @@ namespace VRWeapons
 
         private void Update()
         {
-            if (isKicking)
+            if (isKicking && thisWeap.isHeld)
             {
                 DoPositionalRecoil();
                 if (!thisWeap.secondHandGripped)
                 {
+                    wasGrippedWhenFired = true;
                     DoRotationalRecoil();
                 }
             }
-            else if (fixPosition)
+            else if (fixPosition && thisWeap.isHeld)
             {
                 DoPositionalRecovery();
-                if (!thisWeap.secondHandGripped)
+                if (!thisWeap.secondHandGripped && wasGrippedWhenFired)
                 {
                     DoRotationalRecovery();
                 }
@@ -94,6 +97,7 @@ namespace VRWeapons
                 lerpVal = 1;
                 fixPosition = true;
                 isKicking = false;
+                wasGrippedWhenFired = false;
             }
             transform.Translate(transform.InverseTransformDirection(targetPos) * recoilLerpSpeed);
             lerpVal += recoilLerpSpeed;
@@ -122,7 +126,10 @@ namespace VRWeapons
 
         void DoRotationalRecovery()
         {
-            transform.localEulerAngles = Vector3.Lerp(originalRot, transform.localEulerAngles, lerpVal);
+            if (!thisWeap.secondHandGripped)
+            {
+                transform.localEulerAngles = Vector3.Lerp(originalRot, transform.localEulerAngles, lerpVal);
+            }
         }
     }
 }

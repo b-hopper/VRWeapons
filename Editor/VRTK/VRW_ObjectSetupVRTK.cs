@@ -107,7 +107,7 @@ namespace VRWeapons.InteractionSystems.VRTK
                     {
                         Debug.LogWarning("VRTK_ChildOfControllerGrabAttach already found on " + target + ". No VRTK_ChildOfControllerGrabAttach added.");
                     }
-
+                    target.GetComponent<Weapon_VRTK_InteractableObject>().grabAttachMechanicScript = target.GetComponent<VRTK_ChildOfControllerGrabAttach>();
 
                     if (twoHanded)
                     {
@@ -119,6 +119,7 @@ namespace VRWeapons.InteractionSystems.VRTK
                         {
                             Debug.LogWarning("Weapon_VRTK_ControlDirectionGrabAction already found on " + target + ". No Weapon_VRTK_ControlDirectionGrabAction added.");
                         }
+                        target.GetComponent<Weapon_VRTK_InteractableObject>().secondaryGrabActionScript = target.GetComponent<Weapon_VRTK_ControlDirectionGrabAction>();
                     }
                     if (FindObjectOfType<VRTK_SDKManager>() != null)
                     {
@@ -451,6 +452,7 @@ namespace VRWeapons.InteractionSystems.VRTK
                         dz.AddComponent<VRTK_PolicyList>();
                     }
                     dz.GetComponent<VRTK_SnapDropZone>().validObjectListPolicy = dz.GetComponent<VRTK_PolicyList>();
+                    dz.GetComponent<VRTK_PolicyList>().operation = VRTK_PolicyList.OperationTypes.Include;
 
                     if (dz.GetComponent<Collider>() == null)
                     {

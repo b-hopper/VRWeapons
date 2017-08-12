@@ -87,8 +87,22 @@ namespace VRWeapons
                 boltGroup.localPosition = GroupStartPosition;
             }
 
+            if (startChambered)
+            {
+                thisWeap.OnMagInserted += new Weapon.MagazineInsertedEvent(StartChambered);
+            }
 
             boltMoveSpeed = 1 / (float)slideTimeInFrames;
+        }
+
+        void StartChambered(Weapon thisWeap, IMagazine newMag)
+        {
+            if (thisWeap.Magazine == null)
+            {
+                newMag.MagIn(thisWeap);
+            }
+            thisWeap.chamberedRound = ChamberNewRound();
+            thisWeap.OnMagInserted -= StartChambered;
         }
 
         public void OnTriggerPullActions(float angle)
@@ -123,8 +137,8 @@ namespace VRWeapons
                     chamberedRoundT.localPosition = chamberedRoundSnapT.localPosition;
                     chamberedRoundRB.isKinematic = true;
                 }
-
                 // Setting up the chambered round to prepare for firing
+                
                 return thisWeap.Magazine.FeedRound();
             }
             else
@@ -135,16 +149,6 @@ namespace VRWeapons
 
         private void FixedUpdate()
         {
-            if (startChambered)
-            {
-                startChamberedTimer++;
-                if (startChamberedTimer > 5)
-                {
-                    thisWeap.chamberedRound = ChamberNewRound();
-                    startChambered = false;
-                }
-            }
-
             if (movingBack)
             {
                 doNotPlaySound = true;

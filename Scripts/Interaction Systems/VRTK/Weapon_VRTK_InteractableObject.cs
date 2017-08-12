@@ -83,6 +83,13 @@ namespace VRWeapons.InteractionSystems.VRTK
             if (thisWeap.holdingDevice == null)
             {
                 thisWeap.holdingDevice = e.interactingObject;
+                thisWeap.isHeld = true;
+            }
+
+            if (e.interactingObject == GetSecondaryGrabbingObject())
+            {
+                thisWeap.secondHandDevice = e.interactingObject;
+                thisWeap.secondHandGripped = true;
             }
 
             base.OnInteractableObjectGrabbed(e);
@@ -119,6 +126,11 @@ namespace VRWeapons.InteractionSystems.VRTK
             if (e.interactingObject == thisWeap.holdingDevice)
             {
                 thisWeap.holdingDevice = null;
+                thisWeap.isHeld = false;
+            }
+            else
+            {
+                thisWeap.secondHandDevice = null;
             }
 
             base.OnInteractableObjectUngrabbed(e);

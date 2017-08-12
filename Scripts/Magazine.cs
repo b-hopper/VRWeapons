@@ -190,6 +190,10 @@ namespace VRWeapons
                     if (rounds[j].GetComponent<Collider>() != null)
                     {
                         roundColliders[j - offset] = rounds[j].GetComponent<Collider>();
+                        if (GetComponent<Weapon>() != null)
+                        {
+                            GetComponent<Weapon>().IgnoreCollision(roundColliders[j - offset]);
+                        }
                     }
                     
                     index = j - offset;
