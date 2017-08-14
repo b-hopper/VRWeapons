@@ -61,6 +61,10 @@ namespace VRWeapons
             {
                 if (RoundsInMag.Count < rounds.Length)
                 {
+                    if (currentWeap != null)
+                    {
+                        currentWeap.IgnoreCollision(newRound.GetComponent<Collider>());
+                    }
                     index++;
                     RoundsInMag.Insert(index, newBulletBehavior);
                     val = true;

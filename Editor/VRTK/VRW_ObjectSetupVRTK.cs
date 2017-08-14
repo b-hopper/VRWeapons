@@ -92,7 +92,7 @@ namespace VRWeapons.InteractionSystems.VRTK
                         tmp.useOnlyIfGrabbed = true;
                         if (target.GetComponentInChildren<Collider>() != null)
                         {
-                            tmp.SetWeaponBodyCollider(target.GetComponentInChildren<Collider>());
+                            target.GetComponent<Weapon>().weaponBodyCollider = target.GetComponentInChildren<Collider>();
                         }
                     }
                     else
@@ -321,27 +321,34 @@ namespace VRWeapons.InteractionSystems.VRTK
                 MonoBehaviour slide = (MonoBehaviour)target.GetComponentInChildren<IBoltActions>();
                 if (slide != null)
                 {
+                    bool weaponFound = false;
+                    GameObject parent = null;
                     if (target.GetComponent<Weapon>() == null)
                     {
-                        Debug.LogError("No Weapon script found on " + target + ". Please select an object with a valid Weapon script.");
+                        if (target.GetComponentInParent<Weapon>() == null)
+                        {
+                            Debug.LogError("No Weapon script found on " + target.name + ". Add a Weapon script first.");
+                        }
+                        else
+                        {
+                            parent = target.GetComponentInParent<Weapon>().gameObject;
+                            weaponFound = true;
+                        }
                     }
-                    else if (slide == null)
+                    else
                     {
-                        Debug.LogError("No IBoltActions script found on " + target + ". Please assign a bolt before adding an ejector.");
+                        parent = target.GetComponent<Weapon>().gameObject;
+                        weaponFound = true;
                     }
-                    else if (target.GetComponentInChildren<IEjectorActions>() == null)
+                    if (weaponFound && parent.GetComponentInChildren<IEjectorActions>() == null)
                     {
                         GameObject ejector = new GameObject();
                         ejector.name = "Ejector";
-                        ejector.transform.parent = target.transform;
+                        ejector.transform.parent = parent.transform;
                         ejector.transform.localPosition = Vector3.zero;
                         ejector.AddComponent<Ejector>();
                         ejector.transform.localEulerAngles = new Vector3(-15, 90, 0);
                         Selection.activeGameObject = ejector;
-                    }
-                    else
-                    {
-                        Debug.LogWarning("Class implementing IEjectorActions already found on children of " + target + ". No ejector added.");
                     }
                 }
             }
@@ -453,7 +460,8 @@ namespace VRWeapons.InteractionSystems.VRTK
                         dz.AddComponent<VRTK_PolicyList>();
                     }
                     dz.GetComponent<VRTK_SnapDropZone>().validObjectListPolicy = dz.GetComponent<VRTK_PolicyList>();
-                    dz.GetComponent<VRTK_PolicyList>().operation = VRTK_PolicyList.OperationTypes.Include;
+                    dz.GetComponent<VRTK_PolicyList>().operation = VRTK_PolicyList.OperationTypes.Include;         
+                    dz.GetComponent<VRTK_SnapDropZone>().snapType = VRTK_SnapDropZone.SnapTypes.UseParenting;
 
                     if (dz.GetComponent<Collider>() == null)
                     {

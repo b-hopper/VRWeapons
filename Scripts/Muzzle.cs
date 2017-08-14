@@ -19,7 +19,8 @@ namespace VRWeapons
 
         Dictionary<GameObject, List<ParticleSystem>> flashPool;
 
-        public float range, bulletSpreadRange, damage;
+        [SerializeField]
+        public float range = 200, bulletSpreadRange, damage = 50;
 
         [Tooltip("Muzzle flash objects. If the object contains a Particle System, use empty parent GameObject and set particle system GameObjects as children. Flash objects should " +
             "be children of muzzle, and set inactive."), SerializeField]

@@ -42,7 +42,10 @@ namespace VRWeapons.InteractionSystems.VRTK
             GUILayout.EndHorizontal();
             if (GUILayout.Button(new GUIContent("Save Bolt Controller")))
             {
-                boltIntObj.GetComponent<MeshRenderer>().enabled = false;
+                if (boltIntObj.GetComponent<MeshRenderer>() != null)
+                {
+                    boltIntObj.GetComponent<MeshRenderer>().enabled = false;
+                }
                 boltIntObj.transform.localPosition = boltIntObj.boltClosedPosition;
             }
 

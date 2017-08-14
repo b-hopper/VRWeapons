@@ -185,13 +185,5 @@ namespace VRWeapons.InteractionSystems.VRTK
                 }
             }
         }
-
-        public void SetWeaponBodyCollider(Collider collider)
-        {
-            if (collider != null)
-            {
-                thisWeap.weaponBodyCollider = collider;
-            }
-        }
     }
 }

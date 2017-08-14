@@ -50,6 +50,7 @@ namespace VRWeapons
 
                 objIndex[selectedIndex] = (objIndex[selectedIndex] + 1) % (ObjectsPerElement);
 
+                obj.SetActive(false);
                 obj.SetActive(true);
             }
             return obj;

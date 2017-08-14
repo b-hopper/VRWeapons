@@ -9,10 +9,8 @@ namespace VRWeapons
         Weapon thisWeap;
         Vector3 originalPos, originalRot, targetPos, targetRot, currentPos, currentRot;
         float lerpVal;
-        bool fixPosition, isKicking, originalPosSet, wasGrippedWhenFired;
+        bool fixPosition, isKicking, originalPosSet, originalRotSet, wasGrippedWhenFired;
         int shotsFiredSinceReset;
-
-        Quaternion targetRotation;
 
         MonoBehaviour muzzleGO;
 
@@ -35,17 +33,28 @@ namespace VRWeapons
         {
             thisWeap = GetComponent<Weapon>();
 
-            muzzleGO = thisWeap.gameObject.GetComponentInChildren<IMuzzleActions>() as MonoBehaviour;
+            muzzleGO = thisWeap.gameObject.GetComponentInChildren<IMuzzleActions>() as MonoBehaviour;            
+        }
+
+        void SetOriginalPos(Weapon thisWeap)
+        {
+            originalPos = transform.localPosition;
+            originalRot = transform.localEulerAngles;
         }
 
         public void Kick()
         {
             float tmpKickReduction = 1;
-            if (!originalPosSet && !thisWeap.secondHandGripped)
+            if (!originalPosSet)
             {
                 originalPos = transform.localPosition;
-                originalRot = transform.localEulerAngles;
                 originalPosSet = true;
+            }
+
+            if (!originalRotSet && !thisWeap.secondHandGripped)
+            {
+                originalRot = transform.localEulerAngles;
+                originalRotSet = true;
             }
 
             if (thisWeap.secondHandGripped)
@@ -87,6 +96,11 @@ namespace VRWeapons
                 {
                     DoRotationalRecovery();
                 }
+                if (lerpVal <= 0)
+                {
+                    shotsFiredSinceReset = 0;
+                    fixPosition = false;
+                }
             }
         }
 
@@ -105,14 +119,9 @@ namespace VRWeapons
 
         void DoPositionalRecovery()
         { 
-            if (!thisWeap.IsWeaponFiring())
-            {
-                shotsFiredSinceReset = 0;
-            }
             if (lerpVal <= 0)
             {
                 lerpVal = 0;
-                fixPosition = false;
                 targetPos = originalPos;
             }
             transform.localPosition = Vector3.Lerp(originalPos, transform.localPosition, lerpVal);
