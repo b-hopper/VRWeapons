@@ -14,7 +14,7 @@ namespace VRWeapons
 
         [SerializeField]
         float ejectorRotationalRandomness = 45;
-
+        
         public void Eject(Transform t, Rigidbody rb)
         {
             rb.isKinematic = false;

@@ -13,7 +13,7 @@ namespace VRWeapons
         IBulletBehavior FeedRound();
         void MagIn(Weapon weap);
         void MagOut(Weapon weap);
-        bool PushBullet(GameObject newRound);
+        bool TryPushBullet(GameObject newRound);
         bool PopBullet();
         Rigidbody GetRoundRigidBody();
         Transform GetRoundTransform();

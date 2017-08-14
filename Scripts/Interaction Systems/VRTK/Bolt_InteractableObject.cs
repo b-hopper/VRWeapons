@@ -6,7 +6,7 @@ using VRTK;
 
 namespace VRWeapons.InteractionSystems.VRTK
 {
-    public class Bolt_InteractableObject : VRTK_InteractableObject
+    public class Bolt_InteractableObject : VRTK_InteractableObject, IBoltGrabber
     {
         IBoltActions bolt;
         
@@ -25,6 +25,7 @@ namespace VRWeapons.InteractionSystems.VRTK
         [SerializeField]
         bool isSecondHandGrip;
 
+        Collider thisCol;
 
         private void Start()
         {
@@ -40,7 +41,9 @@ namespace VRWeapons.InteractionSystems.VRTK
             startRot = transform.localEulerAngles;
             thisWeap = GetComponentInParent<Weapon>();
 
-            thisWeap.IgnoreCollision(GetComponentInChildren<Collider>());
+            thisCol = GetComponentInChildren<Collider>();
+
+            thisWeap.IgnoreCollision(thisCol);
 
             if (GetComponent<Rigidbody>() != null)
             {
@@ -83,6 +86,11 @@ namespace VRWeapons.InteractionSystems.VRTK
             transform.localEulerAngles = startRot;                                                                              // Rotation isn't an issue, but to avoid making the collider feel like it's in a 
         }                                                                                                                       // weird position, make sure the rotation is set back to how it originally was.
                                                                                                                                 // Before this, the bolt manipulator was rotated with the controller.
+        public Collider GetInteractableCollider()
+        {
+            return thisCol;
+        }
+
         void ClampControllerToTrack()
         {
             transform.localPosition = Vector3.Lerp(boltClosedPosition, boltOpenPosition, lerpValue);

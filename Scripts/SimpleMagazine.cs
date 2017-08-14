@@ -27,9 +27,13 @@ namespace VRWeapons
         
         int currentRoundCount;
 
-        private void Start()
+        private void Awake()
         {
             roundType = GetComponent<IBulletBehavior>();
+        }
+
+        private void Start()
+        {
             if (rb == null)
             {
                 rb = GetComponent<Rigidbody>();
@@ -57,7 +61,7 @@ namespace VRWeapons
             return tmp;
         }
 
-        public bool PushBullet(GameObject newRound)
+        public bool TryPushBullet(GameObject newRound)
         {
             bool val = false;
             if (currentRoundCount < maxRounds)
@@ -99,13 +103,8 @@ namespace VRWeapons
             weap.Magazine = this;
             weap.PlaySound(Weapon.AudioClips.MagIn);
             transform.parent = weap.transform;
-            if (rb != null)
+            if (rb != null && canBeDetached)
             {
-                rb.isKinematic = true;
-            }
-            else
-            {
-                rb = GetComponent<Rigidbody>();
                 rb.isKinematic = true;
             }
         }

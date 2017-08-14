@@ -53,7 +53,7 @@ namespace VRWeapons
                                         // but happens on loading the scene so it should be fine.
         }
         
-        public bool PushBullet(GameObject newRound)
+        public bool TryPushBullet(GameObject newRound)
         {
             IBulletBehavior newBulletBehavior = newRound.GetComponent<IBulletBehavior>();
             bool val = false;
@@ -65,8 +65,12 @@ namespace VRWeapons
                     {
                         currentWeap.IgnoreCollision(newRound.GetComponent<Collider>());
                     }
-                    index++;
+                    if (rounds.Length > 1)
+                    {
+                        index++;
+                    }
                     RoundsInMag.Insert(index, newBulletBehavior);
+                    
                     val = true;
 
                     if (index > 0 && rounds[index - 1] != null)
@@ -86,7 +90,10 @@ namespace VRWeapons
             if (RoundsInMag.Remove(RoundsInMag[index]))
             {
                 val = true;
-                index--;
+                if (rounds.Length > 1)
+                {
+                    index--;
+                }
                 rounds[index].GetComponent<Collider>().enabled = true;
                 OnBulletPopped();
             }
@@ -123,7 +130,10 @@ namespace VRWeapons
                     currentWeap.IgnoreCollision(roundColliders[index]);
                 }
                 rounds[index] = null;
-                index--;
+                if (rounds.Length > 1)
+                {
+                    index--;
+                }
                 //TODO: Why doesn't FeedRound call PopBullet?
                 OnBulletPopped();
             }
@@ -131,7 +141,7 @@ namespace VRWeapons
         }
 
         public int GetCurrentRoundCount()
-        {
+        {            
             return index + 1;
         }
 
@@ -228,7 +238,10 @@ namespace VRWeapons
                     list[i].GetComponent<Collider>().enabled = false;   // Colliders are causing problems with ejection. Disable them...
                 }
             }
-            list[list.Length - 1 - offset].GetComponent<Collider>().enabled = true;  // ...except for the last one, which is the top round in the magazine.
+            if (list.Length > 1)
+            {
+                list[list.Length - 1 - offset].GetComponent<Collider>().enabled = true;  // ...except for the last one, which is the top round in the magazine.
+            }
         }
 
         void ReportRoundsInMag()

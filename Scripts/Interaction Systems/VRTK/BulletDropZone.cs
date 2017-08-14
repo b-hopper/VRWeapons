@@ -25,6 +25,12 @@ namespace VRWeapons.InteractionSystems.VRTK
         [Tooltip("Used for internal magazines - If checked, will disable this bullet drop zone unless bolt is back."), SerializeField]
         bool chamberMustBeOpenToReload;
 
+        [SerializeField]
+        bool chamberRoundOnInsert;
+
+        [Tooltip("Check this box if rounds should disable on insert. Do not check for 1-shot weapons like RPGs where the rounds are visible."), SerializeField]
+        bool disableOnInsert;
+
         private void Start()
         {
             if (GetComponentInParent<Weapon>() != null)
@@ -42,15 +48,37 @@ namespace VRWeapons.InteractionSystems.VRTK
 
         void ObjectSnapped(object sender, SnapDropZoneEventArgs e)
         {
-            bool tmp = thisMag.PushBullet(e.snappedObject);
+            bool tmp = thisMag.TryPushBullet(e.snappedObject);
             dropZone.ForceUnsnap();
             if (tmp)
             {
                 e.snappedObject.transform.parent = thisMagGO.transform;
-                e.snappedObject.SetActive(false);
+                if (disableOnInsert)
+                {
+                    e.snappedObject.SetActive(false);
+                }
+                else
+                {
+                    Rigidbody rb = e.snappedObject.GetComponent<Rigidbody>();
+                    if (rb != null)
+                    {
+                        rb.isKinematic = true;
+                    }
+                }
                 if (thisWeapIfInternal != null)
                 {
                     thisWeapIfInternal.PlaySound(Weapon.AudioClips.MagIn);
+                }
+                if (chamberRoundOnInsert)
+                {
+                    if(thisWeapIfInternal != null)
+                    {
+                        thisWeapIfInternal.ChamberNewRound(thisMag.FeedRound());
+                    }
+                    else
+                    {
+                        Debug.Log("Round not chambered - no weapon found!");
+                    }
                 }
             }
             else

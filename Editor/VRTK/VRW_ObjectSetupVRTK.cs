@@ -318,39 +318,36 @@ namespace VRWeapons.InteractionSystems.VRTK
             }
             if (GUILayout.Button(new GUIContent("Create new Ejector", "Location of the ejector does not matter, but face ejector so that forward is ejection direction.")))
             {
-                MonoBehaviour slide = (MonoBehaviour)target.GetComponentInChildren<IBoltActions>();
-                if (slide != null)
+                bool weaponFound = false;
+                GameObject parent = null;
+                if (target.GetComponent<Weapon>() == null)
                 {
-                    bool weaponFound = false;
-                    GameObject parent = null;
-                    if (target.GetComponent<Weapon>() == null)
+                    if (target.GetComponentInParent<Weapon>() == null)
                     {
-                        if (target.GetComponentInParent<Weapon>() == null)
-                        {
-                            Debug.LogError("No Weapon script found on " + target.name + ". Add a Weapon script first.");
-                        }
-                        else
-                        {
-                            parent = target.GetComponentInParent<Weapon>().gameObject;
-                            weaponFound = true;
-                        }
+                        Debug.LogError("No Weapon script found on " + target.name + ". Add a Weapon script first.");
                     }
                     else
                     {
-                        parent = target.GetComponent<Weapon>().gameObject;
+                        parent = target.GetComponentInParent<Weapon>().gameObject;
                         weaponFound = true;
                     }
-                    if (weaponFound && parent.GetComponentInChildren<IEjectorActions>() == null)
-                    {
-                        GameObject ejector = new GameObject();
-                        ejector.name = "Ejector";
-                        ejector.transform.parent = parent.transform;
-                        ejector.transform.localPosition = Vector3.zero;
-                        ejector.AddComponent<Ejector>();
-                        ejector.transform.localEulerAngles = new Vector3(-15, 90, 0);
-                        Selection.activeGameObject = ejector;
-                    }
                 }
+                else
+                {
+                    parent = target.GetComponent<Weapon>().gameObject;
+                    weaponFound = true;
+                }
+                if (weaponFound && parent.GetComponentInChildren<IEjectorActions>() == null)
+                {
+                    GameObject ejector = new GameObject();
+                    ejector.name = "Ejector";
+                    ejector.transform.parent = parent.transform;
+                    ejector.transform.localPosition = Vector3.zero;
+                    ejector.AddComponent<Ejector>();
+                    ejector.transform.localEulerAngles = new Vector3(-15, 90, 0);
+                    Selection.activeGameObject = ejector;
+                }
+                
             }
             magType = (MagazineType)EditorGUILayout.EnumPopup("Magazine Type", magType);
 
@@ -486,7 +483,8 @@ namespace VRWeapons.InteractionSystems.VRTK
                     Selection.activeGameObject = dz;
                 }
             }
-            if (GUILayout.Button(new GUIContent("Set up Bullet DropZone", "For VRTK, this drop zone is to add individual rounds to a complex magazine.")))
+            if (GUILayout.Button(new GUIContent("Set up Bullet DropZone", "For VRTK, this drop zone is to add individual rounds to a complex magazine.\n\n" +
+                "If the weapon has an internal magazine, use this to load rounds into it.")))
             {
                 GameObject mag = (GameObject)Selection.activeObject;
                 if (mag.GetComponent<IMagazine>() == null)
@@ -585,6 +583,11 @@ namespace VRWeapons.InteractionSystems.VRTK
                     if (isInteractable && target.GetComponent<VRTK_InteractableObject>() == null)
                     {
                         target.AddComponent<VRTK_InteractableObject>();
+                    }
+                    if (isInteractable)
+                    {
+                        target.GetComponent<VRTK_InteractableObject>().isGrabbable = true;
+                        target.GetComponent<VRTK_InteractableObject>().holdButtonToGrab = false;
                     }
                 }
             }

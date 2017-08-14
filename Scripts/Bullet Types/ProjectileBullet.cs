@@ -35,7 +35,7 @@ namespace VRWeapons.BulletTypes
         {
             Weapon.Attack attack = new Weapon.Attack();
             attack.damage = damage;
-            attack.origin = muzzleDir.position;
+            attack.origin = transform.position;
             attack.originWeapon = thisWeapon;
 
             projActual.SetParams(attack, shotMask);
@@ -44,6 +44,7 @@ namespace VRWeapons.BulletTypes
             projectile.transform.position = muzzleDir.position;
             projectile.transform.parent = null;
             projRB.AddForce(muzzleDir.forward * shotForce, ForceMode.Impulse);
+            gameObject.SetActive(false);
         }
     }
 }

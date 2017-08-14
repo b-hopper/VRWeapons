@@ -7,7 +7,8 @@ namespace VRWeapons.BulletTypes
 {
     
     [System.Serializable]
-    public class ShotgunBullet : MonoBehaviour, IBulletBehavior{
+    public class ShotgunBullet : MonoBehaviour, IBulletBehavior
+    {
 
         [SerializeField]
         float shotForce;

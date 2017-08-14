@@ -5,7 +5,7 @@ using UnityEngine;
 namespace VRWeapons.InteractionSystems.Generic
 {
     [RequireComponent(typeof(Rigidbody))]
-    public class VRW_GenericIS_BoltInteractable : MonoBehaviour
+    public class VRW_GenericIS_BoltInteractable : MonoBehaviour, IBoltGrabber
     {
         IBoltActions bolt;
 
@@ -34,14 +34,15 @@ namespace VRWeapons.InteractionSystems.Generic
         {
             thisWeap = GetComponentInParent<Weapon>();
             col = GetComponent<Collider>();
-            Physics.IgnoreCollision(col, thisWeap.weaponBodyCollider);
-            if (thisWeap.secondHandGripCollider != null)
-            {
-                Physics.IgnoreCollision(col, thisWeap.secondHandGripCollider);
-            }
+            thisWeap.IgnoreCollision(col);
             bolt = transform.parent.GetComponentInChildren<IBoltActions>();
             GetComponent<Rigidbody>().isKinematic = true;
             weaponInteractable = GetComponentInParent<VRW_GenericIS_InteractableWeapon>();
+        }
+
+        public Collider GetInteractableCollider()
+        {
+            return col;
         }
 
         private void OnTriggerStay(Collider other)

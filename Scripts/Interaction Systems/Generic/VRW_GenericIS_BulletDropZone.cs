@@ -71,7 +71,7 @@ namespace VRWeapons.InteractionSystems.Generic
                 Physics.IgnoreCollision(thisCol, bulletCol);
             }
 
-            else if (!isLerping && IsValidDrop(other.gameObject.tag) && thisMag.PushBullet(other.gameObject))
+            else if (!isLerping && IsValidDrop(other.gameObject.tag) && thisMag.TryPushBullet(other.gameObject))
             {
                 other.transform.parent = thisMagGO.transform;
                 if (timeToInsert > 0)

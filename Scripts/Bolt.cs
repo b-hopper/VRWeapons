@@ -69,9 +69,17 @@ namespace VRWeapons
         [Tooltip("Location of round on bolt face. Should be child of bolt. Align round with desired location, then set it inactive."), SerializeField]
         public Transform chamberedRoundSnapT;
 
-        private void Start()
+        private void Awake()
         {
             thisWeap = GetComponentInParent<Weapon>();
+            if (startChambered)
+            {
+                thisWeap.OnMagInserted += new Weapon.MagazineInsertedEvent(StartChambered);
+            }
+        }
+
+        private void Start()
+        {
             spentShellPool = GetComponent<IObjectPool>();
             
             if (BoltRotatesUntil == 0)
@@ -85,14 +93,16 @@ namespace VRWeapons
             if (boltGroup != null)
             {
                 boltGroup.localPosition = GroupStartPosition;
-            }
+            }            
 
-            if (startChambered)
+            if (slideTimeInFrames != 0)
             {
-                thisWeap.OnMagInserted += new Weapon.MagazineInsertedEvent(StartChambered);
+                boltMoveSpeed = 1 / (float)slideTimeInFrames;
             }
-
-            boltMoveSpeed = 1 / (float)slideTimeInFrames;
+            else
+            {
+                boltMoveSpeed = 1;
+            }
         }
 
         void StartChambered(Weapon thisWeap, IMagazine newMag)
@@ -101,7 +111,7 @@ namespace VRWeapons
             {
                 newMag.MagIn(thisWeap);
             }
-            thisWeap.chamberedRound = ChamberNewRound();
+            thisWeap.ChamberNewRound(ChamberNewRound());
             thisWeap.OnMagInserted -= StartChambered;
         }
 
@@ -138,8 +148,9 @@ namespace VRWeapons
                     chamberedRoundRB.isKinematic = true;
                 }
                 // Setting up the chambered round to prepare for firing
-                
-                return thisWeap.Magazine.FeedRound();
+
+                IBulletBehavior tmp = thisWeap.Magazine.FeedRound();
+                return tmp;
             }
             else
             {
@@ -271,6 +282,13 @@ namespace VRWeapons
                 go.transform.parent = chamberedRoundSnapT.parent;
                 go.transform.localPosition = chamberedRoundSnapT.localPosition;
                 go.transform.localEulerAngles = chamberedRoundSnapT.localEulerAngles;
+                Collider col = go.GetComponent<Collider>();
+
+                if (col != null)
+                {
+                    thisWeap.IgnoreCollision(col);
+                }
+
                 if (chamberedRoundT != null)
                 {
                     DestroyImmediate(chamberedRoundT.gameObject);

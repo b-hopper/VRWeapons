@@ -28,6 +28,7 @@ namespace VRWeapons
         IKickActions Kick;
         IBoltActions Bolt;
         IObjectPool shellPool;
+        IBoltGrabber boltGrabber;
         public IBulletBehavior chamberedRound;
         public IMagazine Magazine;
                 
@@ -139,6 +140,7 @@ namespace VRWeapons
             Kick = GetComponent<IKickActions>();
             shellPool = GetComponent<IObjectPool>();
             Magazine = GetComponentInChildren<IMagazine>();
+            boltGrabber = GetComponentInChildren<IBoltGrabber>();
             if (Magazine != null)
             {
                 MonoBehaviour mag = (MonoBehaviour)Magazine as MonoBehaviour;
@@ -193,11 +195,6 @@ namespace VRWeapons
                     triggerEndRotation = triggerAngleStart;
                 }
             }
-
-            if (Magazine != null)
-            {
-                Magazine.MagIn(this);       // Required for internal magazines
-            }
         }
 
         public int GetRoundCount()
@@ -222,6 +219,13 @@ namespace VRWeapons
                 return;
             }
 
+            if (boltGrabber != null)
+            {
+                if (boltGrabber.GetInteractableCollider() != null)
+                {
+                    Physics.IgnoreCollision(collider, boltGrabber.GetInteractableCollider(), isIgnored);
+                }
+            }            
             if (weaponBodyCollider != null)
             {
                 Physics.IgnoreCollision(collider, weaponBodyCollider, isIgnored);
