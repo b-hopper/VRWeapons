@@ -11,13 +11,19 @@ namespace VRWeapons.InteractionSystems.VRTK
         [HideInInspector]
         public Weapon CurrentHeldWeapon;
 
+        [SerializeField]
+        private bool dropMagazineWithTouchpad = true;
+
         private void Start()
         {
-            GetComponent<VRTK_ControllerEvents>().TouchpadPressed += new ControllerInteractionEventHandler(DropMagazine);
+            if(dropMagazineWithTouchpad)
+            { 
+                GetComponent<VRTK_ControllerEvents>().TouchpadPressed += new ControllerInteractionEventHandler(DropMagazine);
+            }
             GetComponent<VRTK_ControllerEvents>().TriggerAxisChanged += new ControllerInteractionEventHandler(TriggerAxisChanged);
         }
 
-        private void DropMagazine(object sender, ControllerInteractionEventArgs e)
+        public void DropMagazine(object sender, ControllerInteractionEventArgs e)
         {
             Debug.Log(CurrentHeldWeapon);
             if (CurrentHeldWeapon != null && e.controllerReference.scriptAlias == CurrentHeldWeapon.holdingDevice)
