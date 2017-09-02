@@ -12,7 +12,6 @@ namespace VRWeapons.InteractionSystems.VRTK
         
     public class MagDropZone : MonoBehaviour
     {
-        Collider magCollider;
         Weapon thisWeap;
         Weapon_VRTK_InteractableObject thisWeapInteractable;
         VRTK_SnapDropZone dropZone;
@@ -32,15 +31,10 @@ namespace VRWeapons.InteractionSystems.VRTK
 
         void ObjectSnapped(object sender, SnapDropZoneEventArgs e)
         {
-            magCollider = e.snappedObject.GetComponent<Collider>();
             IMagazine mag = e.snappedObject.GetComponent<IMagazine>();
-            mag.MagIn(thisWeap);
-            thisWeap.IgnoreCollision(magCollider, true);
+            thisWeap.HandleMagIn(mag);
+            SetCollidersEnabled(mag, false);
 
-            if (disableColliderOnMagIn)
-            {
-                magCollider.enabled = false;
-            }
 
             mag.MagDropped += Mag_MagDropped;
         }
@@ -52,12 +46,7 @@ namespace VRWeapons.InteractionSystems.VRTK
             mag.MagDropped -= Mag_MagDropped;
             mag.MagOut(thisWeap);
 
-            if (disableColliderOnMagIn)
-            {
-                magCollider.enabled = true;
-            }
-
-            magCollider = null;
+            SetCollidersEnabled(mag, true);
 
             //This is necessary for the initial mag so it won't revert to child of weapon
             var interactable = e.snappedObject.GetComponent<VRTK_InteractableObject>();
@@ -66,6 +55,21 @@ namespace VRWeapons.InteractionSystems.VRTK
                 interactable.SaveCurrentState();
             }
 
+        }
+
+        private void SetCollidersEnabled(IMagazine mag, bool enabled)
+        {
+            if (disableColliderOnMagIn)
+            {
+                mag.SetCollidersEnabled(enabled);
+            }
+            else //Ignore collision with weapon instead
+            {
+                foreach (var collider in mag.Colliders)
+                {
+                    thisWeap.IgnoreCollision(collider, !enabled);
+                }
+            }
         }
 
         private void Mag_MagDropped(object sender, System.EventArgs e)

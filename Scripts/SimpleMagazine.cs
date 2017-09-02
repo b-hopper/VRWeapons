@@ -6,7 +6,7 @@ using UnityEngine;
 namespace VRWeapons
 {
     [System.Serializable]
-    public class SimpleMagazine : MonoBehaviour, IMagazine
+    public class SimpleMagazine : MagazineBase, IMagazine
     {
         public event EventHandler MagDropped;
 
@@ -15,7 +15,7 @@ namespace VRWeapons
         Rigidbody rb;
 
         [SerializeField]
-        int maxRounds;
+        protected int maxRounds;
 
         [Tooltip("If toggled, magazine is able to be removed from the weapon. Turn off if weapon is using an internal magazine."), SerializeField]
         bool canBeDetached = true;
@@ -24,7 +24,7 @@ namespace VRWeapons
 
         int currentRoundCount;
 
-        private void Start()
+        protected virtual void Start()
         {
             roundType = GetComponent<IBulletBehavior>();
             rb = GetComponent<Rigidbody>();
@@ -51,7 +51,7 @@ namespace VRWeapons
             return tmp;
         }
 
-        public bool PushBullet(GameObject newRound)
+        public virtual bool PushBullet(GameObject newRound)
         {
             bool val = false;
             if (currentRoundCount < maxRounds)
@@ -62,7 +62,7 @@ namespace VRWeapons
             return val;
         }
 
-        public bool PopBullet()
+        public virtual bool PopBullet()
         {
             bool tmp = false;
             if (currentRoundCount > 0)
@@ -73,7 +73,7 @@ namespace VRWeapons
             return tmp;
         }
 
-        public int GetCurrentRoundCount()
+        public virtual int GetCurrentRoundCount()
         {
             return currentRoundCount;
         }

@@ -6,7 +6,7 @@ using UnityEngine;
 namespace VRWeapons
 {
     [System.Serializable]
-    public class Magazine : MonoBehaviour, IMagazine
+    public class Magazine : MagazineBase, IMagazine
     {
         public event EventHandler BulletPushed;
         public event EventHandler BulletPopped;

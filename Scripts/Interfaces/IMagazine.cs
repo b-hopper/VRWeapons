@@ -19,5 +19,8 @@ namespace VRWeapons
         Transform GetRoundTransform();
         bool CanMagBeDetached { get; set; }
         int GetCurrentRoundCount();
+        IEnumerable<Collider> Colliders { get; }
+
+        void SetCollidersEnabled(bool isEnabled);
     }
 }

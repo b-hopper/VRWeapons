@@ -50,6 +50,9 @@ namespace VRWeapons
         [Tooltip("Bolt moves back on firing. Disable for bolt/pump action weapons."), SerializeField]
         bool boltMovesOnFiring;
 
+        [SerializeField, Tooltip("Weapon will automatically chamber a round if empty when magazine is inserted")]
+        private bool autoChamber = false;
+
         public ImpactProfile impactProfile;
 
         [SerializeField]
@@ -180,6 +183,19 @@ namespace VRWeapons
         {
             stopFiring = true;
             isFiring = false;
+        }
+
+        public void HandleMagIn(IMagazine mag)
+        {
+            Magazine = mag;
+            PlaySound(AudioClips.MagIn);
+            if(autoChamber && !IsChambered())
+            {
+                //Hack to unlock bolt without modifying interface
+                Bolt.IsCurrentlyBeingManipulated(false);
+                Bolt.BoltBack();
+            }
+            mag.MagIn(this);
         }
 
         public void ChamberNewRound(IBulletBehavior round)
