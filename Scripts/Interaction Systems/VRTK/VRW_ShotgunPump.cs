@@ -19,10 +19,18 @@ namespace VRWeapons.InteractionSystems.VRTK
 
         IBoltActions bolt;
 
+        public void SetBolt(IBoltActions bolt)
+        {
+            this.bolt = bolt;
+        }
+
         private void Start()
         {
             weapIntObj = GetComponentInParent<Weapon_VRTK_InteractableObject>();
-            bolt = transform.parent.GetComponentInChildren<IBoltActions>();
+            if(bolt == null)
+            {
+                bolt = transform.parent.GetComponentInChildren<IBoltActions>();
+            }
             startRot = transform.localEulerAngles;
         }
 

@@ -27,24 +27,29 @@ namespace VRWeapons.InteractionSystems.VRTK
 
         [SerializeField]
         bool isSecondHandGrip;
+        [SerializeField]
+        bool allowShotgunPump = true;
 
         Collider thisCol;
 
         private void Start()
         {
-            if (isSecondHandGrip)
-            {
-                VRW_ShotgunPump pump = gameObject.AddComponent<VRW_ShotgunPump>();
-                pump.boltClosedPosition = boltClosedPosition;
-                pump.boltOpenPosition = boltOpenPosition;
-                Destroy(this);
-            }
             
             bolt = boltGameObject != null ? boltGameObject.GetComponent<IBoltActions>() : transform.parent.GetComponentInChildren<IBoltActions>();
             if(bolt == null)
             {
                 Debug.LogError("IBoltActions not found", this);
                 enabled = false;
+                return;
+            }
+
+            if (isSecondHandGrip && allowShotgunPump)
+            {
+                VRW_ShotgunPump pump = gameObject.AddComponent<VRW_ShotgunPump>();
+                pump.boltClosedPosition = boltClosedPosition;
+                pump.boltOpenPosition = boltOpenPosition;
+                pump.SetBolt(bolt);
+                Destroy(this);
             }
 
             startPos = transform.localPosition;
