@@ -37,8 +37,10 @@ namespace VRWeapons
         public bool CanMagBeDetached { get { return canBeDetached; } set { canBeDetached = value; } }
 
         //Needs to run on Awake so RoundsInMag will be ready before FeedRound is called
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
+
             control = FindObjectOfType<VRWControl>();
             roundColliders = new Collider[rounds.Length];
             RoundsInMag = new List<IBulletBehavior>(rounds.Length);

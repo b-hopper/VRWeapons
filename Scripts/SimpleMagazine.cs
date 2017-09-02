@@ -27,9 +27,17 @@ namespace VRWeapons
         
         int currentRoundCount;
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
+
             roundType = GetComponent<IBulletBehavior>();
+            if (roundType == null)
+            {
+                Debug.LogWarning("IBulletBehaviour not found", this);
+            }
+
+            currentRoundCount = maxRounds;
         }
 
         protected virtual void Start()
@@ -37,16 +45,10 @@ namespace VRWeapons
             if (rb == null)
             {
                 rb = GetComponent<Rigidbody>();
-            }
-            currentRoundCount = maxRounds;
-
-            if (roundType == null)
-            {
-                Debug.LogWarning("IBulletBehaviour not found", this);
-            }
-            if(rb == null)
-            {
-                Debug.LogWarning("Rigidbody not found", this);
+                if (rb == null)
+                {
+                    Debug.LogWarning("Rigidbody not found", this);
+                }
             }
         }
 

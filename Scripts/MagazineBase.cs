@@ -11,6 +11,15 @@ public abstract class MagazineBase : MonoBehaviour //, IMagazine
 
     public IEnumerable<Collider> Colliders { get { return colliders; } }
     
+    protected virtual void Awake()
+    {
+        //Legacy support
+        if(colliders.Count == 0)
+        {
+            colliders.Add(GetComponent<Collider>());
+        }
+    }
+
     private void OnValidate()
     {
         if (autoManageColliders && colliders.Count == 0)
