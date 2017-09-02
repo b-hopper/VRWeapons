@@ -72,9 +72,17 @@ namespace VRWeapons
         [Tooltip("Location of round on bolt face. Should be child of bolt. Align round with desired location, then set it inactive."), SerializeField]
         public Transform chamberedRoundSnapT;
 
-        protected virtual void Start()
+        protected virtual void Awake()
         {
             thisWeap = GetComponentInParent<Weapon>();
+            if (startChambered)
+            {
+                thisWeap.OnMagInserted += new Weapon.MagazineInsertedEvent(StartChambered);
+            }
+        }
+
+        protected virtual void Start()
+        {
             spentShellPool = GetComponent<IObjectPool>();
             
             if (BoltRotatesUntil == 0)
@@ -88,10 +96,26 @@ namespace VRWeapons
             if (boltGroup != null)
             {
                 boltGroup.localPosition = GroupStartPosition;
+            }            
+
+            if (slideTimeInFrames != 0)
+            {
+                boltMoveSpeed = 1 / (float)slideTimeInFrames;
             }
+            else
+            {
+                boltMoveSpeed = 1;
+            }
+        }
 
-
-            boltMoveSpeed = 1 / (float)slideTimeInFrames;
+        void StartChambered(Weapon thisWeap, IMagazine newMag)
+        {
+            if (thisWeap.Magazine == null)
+            {
+                newMag.MagIn(thisWeap);
+            }
+            thisWeap.ChamberNewRound(ChamberNewRound());
+            thisWeap.OnMagInserted -= StartChambered;
         }
 
         public void OnTriggerPullActions(float angle)
@@ -126,9 +150,10 @@ namespace VRWeapons
                     chamberedRoundT.localPosition = chamberedRoundSnapT.localPosition;
                     chamberedRoundRB.isKinematic = true;
                 }
-
                 // Setting up the chambered round to prepare for firing
-                return thisWeap.Magazine.FeedRound();
+
+                IBulletBehavior tmp = thisWeap.Magazine.FeedRound();
+                return tmp;
             }
             else
             {
@@ -146,16 +171,6 @@ namespace VRWeapons
 
         protected virtual void FixedUpdate()
         {
-            if (startChambered)
-            {
-                startChamberedTimer++;
-                if (startChamberedTimer > 5)
-                {
-                    thisWeap.chamberedRound = ChamberNewRound();
-                    startChambered = false;
-                }
-            }
-
             if (movingBack)
             {
                 doNotPlaySound = true;
@@ -207,7 +222,7 @@ namespace VRWeapons
                 { 
                     Eject();
                 }
-
+                thisWeap.chamberedRound = null;
                 justEjected = true;
                 canChamberNewRound = true;
             }
@@ -273,16 +288,30 @@ namespace VRWeapons
 
         public virtual void ReplaceRoundWithEmptyShell(GameObject go)
         {
-            go.transform.parent = chamberedRoundSnapT.parent;
-            go.transform.localPosition = chamberedRoundSnapT.localPosition;
-            go.transform.localEulerAngles = chamberedRoundSnapT.localEulerAngles;
-            if (chamberedRoundT != null)
+            if (chamberedRoundSnapT != null)
             {
-                DestroyImmediate(chamberedRoundT.gameObject);
+                go.transform.parent = chamberedRoundSnapT.parent;
+                go.transform.localPosition = chamberedRoundSnapT.localPosition;
+                go.transform.localEulerAngles = chamberedRoundSnapT.localEulerAngles;
+                Collider col = go.GetComponent<Collider>();
+
+                if (col != null)
+                {
+                    thisWeap.IgnoreCollision(col);
+                }
+
+                if (chamberedRoundT != null)
+                {
+                    DestroyImmediate(chamberedRoundT.gameObject);
+                }
+                chamberedRoundT = go.transform;
+                chamberedRoundRB = go.GetComponent<Rigidbody>();
+                chamberedRoundRB.isKinematic = true;
             }
-            chamberedRoundT = go.transform;
-            chamberedRoundRB = go.GetComponent<Rigidbody>();
-            chamberedRoundRB.isKinematic = true;
+            else
+            {
+                Debug.LogWarning("No chambered round snap transform assigned, please assign in editor before attempting to eject rounds.");
+            }
         }
 
 

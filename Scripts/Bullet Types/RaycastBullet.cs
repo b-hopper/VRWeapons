@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using VRWeapons;
 
-namespace VRWeapons
+namespace VRWeapons.BulletTypes
 {
     [System.Serializable]
     public class RaycastBullet : MonoBehaviour, IBulletBehavior

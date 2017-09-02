@@ -9,12 +9,14 @@ namespace VRWeapons
         Weapon thisWeap;
         Vector3 originalPos, originalRot, targetPos, targetRot, currentPos, currentRot;
         float lerpVal;
-        bool fixPosition, isKicking, originalPosSet;
+        bool fixPosition, isKicking, originalPosSet, originalRotSet, wasGrippedWhenFired;
         int shotsFiredSinceReset;
-        
-        [Tooltip("Amount (and direction) the weapon moves positionally when fired. Logarithmically tapers down with each shot."), SerializeField]
-        Vector3 amountToMove = new Vector3(0, 0.05f, -0.025f);
 
+        MonoBehaviour muzzleGO;
+
+        [Tooltip("How much to kick back when the weapon is fired. Logarithmically tapers down with each shot."), SerializeField, Range(0, 1)]
+        float positionalKickStrength = 0.05f;
+        
         [Tooltip("Amount (and direction) the weapon rotates when fired. Logarithmically tapers down with each shot."), SerializeField]
         Vector3 amountToRotate = new Vector3(-5, 0, 0);
 
@@ -26,10 +28,18 @@ namespace VRWeapons
 
         [Tooltip("Decreases the amount of kick when 2-hand gripped by multiplication. 0 = no kick, 1 = full kick."), SerializeField, Range(0f, 1f)]
         float twoHandGripKickReduction = 0.5f;
-
+        
         private void Start()
         {
             thisWeap = GetComponent<Weapon>();
+
+            muzzleGO = thisWeap.gameObject.GetComponentInChildren<IMuzzleActions>() as MonoBehaviour;            
+        }
+
+        void SetOriginalPos(Weapon thisWeap)
+        {
+            originalPos = transform.localPosition;
+            originalRot = transform.localEulerAngles;
         }
 
         public void Kick()
@@ -38,8 +48,13 @@ namespace VRWeapons
             if (!originalPosSet)
             {
                 originalPos = transform.localPosition;
-                originalRot = transform.localEulerAngles;
                 originalPosSet = true;
+            }
+
+            if (!originalRotSet && !thisWeap.secondHandGripped)
+            {
+                originalRot = transform.localEulerAngles;
+                originalRotSet = true;
             }
 
             if (thisWeap.secondHandGripped)
@@ -49,37 +64,42 @@ namespace VRWeapons
 
             shotsFiredSinceReset++;
             currentPos = transform.localPosition;
-            targetPos = new Vector3(currentPos.x + ((amountToMove.x * 1 / shotsFiredSinceReset) * tmpKickReduction),
-                currentPos.y + ((amountToMove.y * 1 / shotsFiredSinceReset) * tmpKickReduction),
-                currentPos.z + ((amountToMove.z * 1 / shotsFiredSinceReset) * tmpKickReduction));
+            
+            targetPos = ((transform.localPosition - muzzleGO.transform.forward) * positionalKickStrength) / shotsFiredSinceReset;
 
             if (!thisWeap.secondHandGripped)
             {
                 currentRot = transform.localEulerAngles;
 
-                targetRot = new Vector3(currentRot.x + (amountToRotate.x * 1 / shotsFiredSinceReset),
-                    currentRot.y + (amountToRotate.y * 1 / shotsFiredSinceReset),
-                    currentRot.z + (amountToRotate.z * 1 / shotsFiredSinceReset));
+                targetRot = new Vector3(currentRot.x + (amountToRotate.x / shotsFiredSinceReset),
+                    currentRot.y + (amountToRotate.y / shotsFiredSinceReset),
+                    currentRot.z + (amountToRotate.z / shotsFiredSinceReset));
             }
             isKicking = true;
         }
 
         private void Update()
         {
-            if (isKicking)
+            if (isKicking && thisWeap.isHeld)
             {
                 DoPositionalRecoil();
                 if (!thisWeap.secondHandGripped)
                 {
+                    wasGrippedWhenFired = true;
                     DoRotationalRecoil();
                 }
             }
-            else if (fixPosition)
+            else if (fixPosition && thisWeap.isHeld)
             {
                 DoPositionalRecovery();
-                if (!thisWeap.secondHandGripped)
+                if (!thisWeap.secondHandGripped && wasGrippedWhenFired)
                 {
                     DoRotationalRecovery();
+                }
+                if (lerpVal <= 0)
+                {
+                    shotsFiredSinceReset = 0;
+                    fixPosition = false;
                 }
             }
         }
@@ -91,21 +111,17 @@ namespace VRWeapons
                 lerpVal = 1;
                 fixPosition = true;
                 isKicking = false;
+                wasGrippedWhenFired = false;
             }
-            transform.localPosition = Vector3.Lerp(currentPos, targetPos, lerpVal);
+            transform.Translate(transform.InverseTransformDirection(targetPos) * recoilLerpSpeed);
             lerpVal += recoilLerpSpeed;
         }
 
         void DoPositionalRecovery()
         { 
-            if (!thisWeap.IsWeaponFiring())
-            {
-                shotsFiredSinceReset = 0;
-            }
             if (lerpVal <= 0)
             {
                 lerpVal = 0;
-                fixPosition = false;
                 targetPos = originalPos;
             }
             transform.localPosition = Vector3.Lerp(originalPos, transform.localPosition, lerpVal);
@@ -119,7 +135,10 @@ namespace VRWeapons
 
         void DoRotationalRecovery()
         {
-            transform.localEulerAngles = Vector3.Lerp(originalRot, transform.localEulerAngles, lerpVal);
+            if (!thisWeap.secondHandGripped)
+            {
+                transform.localEulerAngles = Vector3.Lerp(originalRot, transform.localEulerAngles, lerpVal);
+            }
         }
     }
 }

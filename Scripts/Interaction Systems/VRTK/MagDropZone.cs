@@ -32,7 +32,9 @@ namespace VRWeapons.InteractionSystems.VRTK
         void ObjectSnapped(object sender, SnapDropZoneEventArgs e)
         {
             IMagazine mag = e.snappedObject.GetComponent<IMagazine>();
+            //Calls mag.MagIn and Weapon.InsertMagazine
             thisWeap.HandleMagIn(mag);
+            //Calls thisWeapon.IgnoreCollision if disableColliderOnMagIn is false
             SetCollidersEnabled(mag, false);
 
 
@@ -77,6 +79,7 @@ namespace VRWeapons.InteractionSystems.VRTK
             if (sender is IMagazine)
             {
                 (sender as IMagazine).MagDropped -= Mag_MagDropped;
+                thisWeap.DropMagazine();
             }
             dropZone.ForceUnsnap();
         }

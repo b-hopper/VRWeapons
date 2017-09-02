@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-namespace VRWeapons.InteractionSystems.VRTK
+namespace VRWeapons.InteractionSystems.Generic
 {
-    [CustomEditor(typeof(Bolt_InteractableObject)), System.Serializable]
+    [CustomEditor(typeof(VRW_GenericIS_BoltInteractable)), System.Serializable]
 
-    public class Bolt_InteractableObjectEditor : Editor
+    public class VRW_GenericIS_BoltInteractableEditor : Editor
     {
         bool togglePosition;
 
         public override void OnInspectorGUI()
         {
-            Bolt_InteractableObject boltIntObj = (Bolt_InteractableObject)target;
+            VRW_GenericIS_BoltInteractable boltIntObj = (VRW_GenericIS_BoltInteractable)target;
 
             base.OnInspectorGUI();
 
@@ -42,14 +42,9 @@ namespace VRWeapons.InteractionSystems.VRTK
             GUILayout.EndHorizontal();
             if (GUILayout.Button(new GUIContent("Save Bolt Controller")))
             {
-                if (boltIntObj.GetComponent<MeshRenderer>() != null)
-                {
-                    boltIntObj.GetComponent<MeshRenderer>().enabled = false;
-                }
+                boltIntObj.GetComponent<MeshRenderer>().enabled = false;
                 boltIntObj.transform.localPosition = boltIntObj.boltClosedPosition;
             }
-
         }
-
     }
 }

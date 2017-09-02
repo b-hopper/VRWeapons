@@ -19,15 +19,25 @@ namespace VRWeapons
 
         [Tooltip("If toggled, magazine is able to be removed from the weapon. Turn off if weapon is using an internal magazine."), SerializeField]
         bool canBeDetached = true;
+
+        [SerializeField]
+        bool infiniteAmmo;
         
         public bool CanMagBeDetached { get { return canBeDetached; } set { canBeDetached = value; } }
-
+        
         int currentRoundCount;
+
+        private void Awake()
+        {
+            roundType = GetComponent<IBulletBehavior>();
+        }
 
         protected virtual void Start()
         {
-            roundType = GetComponent<IBulletBehavior>();
-            rb = GetComponent<Rigidbody>();
+            if (rb == null)
+            {
+                rb = GetComponent<Rigidbody>();
+            }
             currentRoundCount = maxRounds;
 
             if (roundType == null)
@@ -44,14 +54,14 @@ namespace VRWeapons
         {
             IBulletBehavior tmp = null;
 
-            if (PopBullet())
+            if (infiniteAmmo || PopBullet())
             {
                 tmp = roundType;
             }
             return tmp;
         }
 
-        public virtual bool PushBullet(GameObject newRound)
+        public virtual bool TryPushBullet(GameObject newRound)
         {
             bool val = false;
             if (currentRoundCount < maxRounds)
@@ -93,7 +103,7 @@ namespace VRWeapons
             weap.Magazine = this;
             weap.PlaySound(Weapon.AudioClips.MagIn);
             transform.parent = weap.transform;
-            if (rb != null)
+            if (rb != null && canBeDetached)
             {
                 rb.isKinematic = true;
             }

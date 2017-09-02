@@ -25,7 +25,7 @@ namespace VRWeapons
         {
             rb.isKinematic = false;
             Vector3 forward = (transform.forward + (Random.insideUnitSphere * ejectorRandomness)).normalized;
-            rb.AddForce(forward * ejectForce, ForceMode.Impulse);
+            rb.AddForce(forward * ejectForce, forceMode);
             rb.AddTorque(Random.insideUnitSphere * ejectorRotationalRandomness, forceMode);
             t.parent = null;
 

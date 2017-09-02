@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-using VRTK;
 
 namespace VRWeapons
 {
@@ -13,14 +12,23 @@ namespace VRWeapons
     public class Weapon : MonoBehaviour
     {
         public delegate void WeaponFiredEvent(Weapon thisWeap, IBulletBehavior roundFired);
-
+        public delegate void WeaponPickedUpEvent(Weapon pickedUpWeapon);
+        public delegate void WeaponDroppedEvent(Weapon droppedWeapon);
+        public delegate void MagazineRemovedEvent(Weapon thisWeap, IMagazine droppedMag);
+        public delegate void MagazineInsertedEvent(Weapon thisWeap, IMagazine newMag);
+                
         public event WeaponFiredEvent OnWeaponFired;
-
+        public event WeaponPickedUpEvent OnWeaponPickedUp;
+        public event WeaponDroppedEvent OnWeaponDropped;
+        public event MagazineRemovedEvent OnMagRemoved;
+        public event MagazineInsertedEvent OnMagInserted;
+                
         IMuzzleActions Muzzle;
         IEjectorActions Ejector;
         IKickActions Kick;
         IBoltActions Bolt;
         IObjectPool shellPool;
+        IBoltGrabber boltGrabber;
         public IBulletBehavior chamberedRound;
         public IMagazine Magazine;
                 
@@ -33,14 +41,17 @@ namespace VRWeapons
         int burstCount;
 
         [HideInInspector]
-        public bool secondHandGripped;
+        public bool secondHandGripped, isHeld;
 
         [HideInInspector]
-        public GameObject holdingDevice;
+        public GameObject holdingDevice, secondHandDevice;
 
         float nextFire;
 
         Vector3 triggerAngleStart, triggerPositionStart;
+
+        [HideInInspector]
+        public Transform grabPoint;
 
         //// Shown in inspector ////
         [Tooltip("Bolt will rack forward after racking backward, unless magazine is inserted and empty."), SerializeField]
@@ -95,7 +106,7 @@ namespace VRWeapons
 
         [Tooltip("Sound effect played when attempting to fire an empty weapon."), SerializeField]
         AudioClip DryFire;
-
+        
         //// End shown in inspector ////
 
         [System.Serializable]
@@ -104,24 +115,6 @@ namespace VRWeapons
             SemiAuto = 0,
             Automatic = 1,
             Burst = 2
-        }
-
-        public void IgnoreCollision(Collider collider, bool isIgnored = true)
-        {
-            if(collider == null)
-            {
-                Debug.LogWarning("Cannot ignore null collider");
-                return;
-            }
-
-            if(weaponBodyCollider != null)
-            {
-                Physics.IgnoreCollision(collider, weaponBodyCollider, isIgnored);
-            }
-            if (secondHandGripCollider != null)
-            {
-                Physics.IgnoreCollision(collider, secondHandGripCollider, isIgnored);
-            }
         }
 
         public enum AudioClips
@@ -150,10 +143,48 @@ namespace VRWeapons
             Kick = GetComponent<IKickActions>();
             shellPool = GetComponent<IObjectPool>();
             Magazine = GetComponentInChildren<IMagazine>();
+            boltGrabber = GetComponentInChildren<IBoltGrabber>();
+            if (Magazine != null)
+            {
+                MonoBehaviour mag = (MonoBehaviour)Magazine as MonoBehaviour;
+                if (!mag.enabled)
+                {
+                    Magazine = null;
+                }
+                else
+                {
+                    InsertMagazine(Magazine);
+                }
+            }
+            
+            if (grabPoint == null)
+            {
+                grabPoint = transform.Find("Grab Point");
+            }
             if (Bolt != null && Ejector != null)
             {
                 Bolt.SetEjector(Ejector);
             }
+            if (weaponBodyCollider != null)
+            {
+                IgnoreCollision(weaponBodyCollider, true);
+            }
+
+            if (Magazine != null)
+            {
+                MonoBehaviour go = (MonoBehaviour)Magazine;
+                if (go.GetComponent<Rigidbody>() != null && go.gameObject != this.gameObject)
+                {
+                    go.GetComponent<Rigidbody>().isKinematic = true;
+                }
+                IgnoreCollision(go.GetComponent<Collider>(), true);
+            }
+
+            if (secondHandGripCollider != null)
+            {
+                secondHandGripCollider.enabled = false;
+            }
+
             audioSource = GetComponent<AudioSource>();
             if (trigger != null) {
                 triggerAngleStart = trigger.localEulerAngles;
@@ -167,13 +198,47 @@ namespace VRWeapons
                     triggerEndRotation = triggerAngleStart;
                 }
             }
+        }
 
+        public int GetRoundCount()
+        {
+            int count = 0;
+            if (IsChambered())
+            {
+                count++;
+            }
             if (Magazine != null)
             {
-                Magazine.MagIn(this);       // Required for internal magazines
+                count += Magazine.GetCurrentRoundCount();
+            }
+            return count;
+        }
+
+        public void IgnoreCollision(Collider collider, bool isIgnored = true)
+        {
+            if (collider == null)
+            {
+                Debug.LogWarning("Cannot ignore null collider");
+                return;
+            }
+
+            if (boltGrabber != null)
+            {
+                if (boltGrabber.GetInteractableCollider() != null)
+                {
+                    Physics.IgnoreCollision(collider, boltGrabber.GetInteractableCollider(), isIgnored);
+                }
+            }            
+            if (weaponBodyCollider != null)
+            {
+                Physics.IgnoreCollision(collider, weaponBodyCollider, isIgnored);
+            }
+            if (secondHandGripCollider != null)
+            {
+                Physics.IgnoreCollision(collider, secondHandGripCollider, isIgnored);
             }
         }
-        
+                
         public void StartFiring(GameObject usingObject)
         {
             isFiring = true;
@@ -196,6 +261,7 @@ namespace VRWeapons
                 Bolt.BoltBack();
             }
             mag.MagIn(this);
+            InsertMagazine(mag);
         }
 
         public void ChamberNewRound(IBulletBehavior round)
@@ -223,7 +289,7 @@ namespace VRWeapons
                     soundToPlay = DryFire;
                     break;
             }
-            if (soundToPlay != null)
+            if (soundToPlay != null && audioSource != null)
             {
                 audioSource.pitch = Time.timeScale;
                 audioSource.clip = soundToPlay;
@@ -235,14 +301,16 @@ namespace VRWeapons
         public void ChangeFireMode(FireMode newMode)
         {
             fireMode = newMode;
-        }
-        
-        public void DropMagazine()
+        }        
+
+        public bool IsLoaded()
         {
+            bool ret = false;
             if (Magazine != null)
             {
-                Magazine.MagOut(this);
+                ret = true;
             }
+            return ret;
         }
 
         public Attack NewAttack(float newDamage, Vector3 newOrigin, RaycastHit newHit)
@@ -264,13 +332,19 @@ namespace VRWeapons
                     if ((Time.time - nextFire >= fireRate) && IsChambered())
                     {
                         Muzzle.StartFiring(chamberedRound);
-                        OnWeaponFired.Invoke(this, chamberedRound);
                         DoOnFireActions();
                         chamberedRound = null;
                         nextFire = Time.time;
                         justFired = true;
                         burstCount++;
-                        shotHaptics.Invoke();
+                        if (shotHaptics != null)
+                        {
+                            shotHaptics.Invoke();
+                        }
+                        if (OnWeaponFired != null)
+                        {
+                            OnWeaponFired.Invoke(this, chamberedRound);
+                        }
                     }
                     else if (!justFired && Time.time - nextFire >= fireRate)
                     {
@@ -333,6 +407,42 @@ namespace VRWeapons
             {
                 Kick.Kick();
             }            
+        }
+
+        public void InsertMagazine(IMagazine newMag)
+        {
+            if (OnMagInserted != null)
+            {
+                OnMagInserted.Invoke(this, newMag);
+            }
+        }
+
+        public void DropMagazine()
+        {
+            if (OnMagRemoved != null)
+            {
+                OnMagRemoved.Invoke(this, Magazine);
+            }
+            if (Magazine != null)
+            {
+                Magazine.MagOut(this);
+            }
+        }
+
+        public void WeaponPickedUp()
+        {
+            if (OnWeaponPickedUp != null)
+            {
+                OnWeaponPickedUp.Invoke(this);
+            }
+        }
+
+        public void WeaponDropped()
+        {
+            if (OnWeaponDropped != null)
+            {
+                OnWeaponDropped.Invoke(this);
+            }
         }
 
         public void SetTriggerAngle(float angle)

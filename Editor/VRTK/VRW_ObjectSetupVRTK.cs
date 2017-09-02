@@ -6,15 +6,7 @@ using VRTK.GrabAttachMechanics;
 namespace VRWeapons.InteractionSystems.VRTK
 {
     public class VRW_ObjectSetupVRTK : EditorWindow
-    {
-
-        enum InteractionSystems
-        {
-            None = 0,
-            VRTK = 1,
-            MoreComingSoon = 2
-        }
-
+    {        
         enum MagazineType
         {
             Simple = 0,
@@ -25,22 +17,31 @@ namespace VRWeapons.InteractionSystems.VRTK
         {
             StraightBack = 0,
             RevolverStyle = 1
-        }                
+        }
+
+        enum BulletType
+        {
+            RaycastBullet = 0,
+            ShotgunShell = 1,
+            Projectile = 2
+        }
+
+        BulletType bulletTypeForMag, bulletType;
 
         MagazineType magType;
 
         BoltType boltType;
 
-        bool twoHanded;
+        bool twoHanded, isInteractable;
 
-        GameObject target, slide;
+        GameObject target, slide, projectile;
 
-        [MenuItem("Window/VRWeapons/Set up new Weapon for VRTK")]
+        [MenuItem("Window/VRWeapons/Set up new Weapon (VRTK)")]
         private static void Init()
         {
             VRW_ObjectSetupVRTK window = (VRW_ObjectSetupVRTK)GetWindow(typeof(VRW_ObjectSetupVRTK));
-            window.minSize = new Vector2(300f, 250f);
-            window.maxSize = new Vector2(300f, 500f);
+            window.minSize = new Vector2(300f, 332f);
+            window.maxSize = new Vector2(300f, 375f);
 
             window.autoRepaintOnSceneChange = true;
             window.titleContent.text = "Weapon setup VRTK";
@@ -91,7 +92,7 @@ namespace VRWeapons.InteractionSystems.VRTK
                         tmp.useOnlyIfGrabbed = true;
                         if (target.GetComponentInChildren<Collider>() != null)
                         {
-                            tmp.SetWeaponBodyCollider(target.GetComponentInChildren<Collider>());
+                            target.GetComponent<Weapon>().weaponBodyCollider = target.GetComponentInChildren<Collider>();
                         }
                     }
                     else
@@ -106,7 +107,7 @@ namespace VRWeapons.InteractionSystems.VRTK
                     {
                         Debug.LogWarning("VRTK_ChildOfControllerGrabAttach already found on " + target + ". No VRTK_ChildOfControllerGrabAttach added.");
                     }
-
+                    target.GetComponent<Weapon_VRTK_InteractableObject>().grabAttachMechanicScript = target.GetComponent<VRTK_ChildOfControllerGrabAttach>();
 
                     if (twoHanded)
                     {
@@ -118,6 +119,7 @@ namespace VRWeapons.InteractionSystems.VRTK
                         {
                             Debug.LogWarning("Weapon_VRTK_ControlDirectionGrabAction already found on " + target + ". No Weapon_VRTK_ControlDirectionGrabAction added.");
                         }
+                        target.GetComponent<Weapon_VRTK_InteractableObject>().secondaryGrabActionScript = target.GetComponent<Weapon_VRTK_ControlDirectionGrabAction>();
                     }
                     if (FindObjectOfType<VRTK_SDKManager>() != null)
                     {
@@ -279,9 +281,11 @@ namespace VRWeapons.InteractionSystems.VRTK
                             GameObject slideControl = GameObject.CreatePrimitive(PrimitiveType.Cube);
                             slideControl.name = "Bolt Grab Point";
                             slideControl.transform.localScale = new Vector3(0.05f, 0.05f, 0.05f);
-                            DestroyImmediate(slideControl.GetComponent<Renderer>());
                             slideControl.transform.parent = target.transform;
                             slideControl.transform.localPosition = Vector3.zero;
+                            var tempMaterial = new Material(slideControl.GetComponent<Renderer>().sharedMaterial);
+                            tempMaterial.color = Color.red;
+                            slideControl.GetComponent<MeshRenderer>().sharedMaterial = tempMaterial;
 
                             Rigidbody rb = slideControl.AddComponent<Rigidbody>();
                             rb.isKinematic = true;
@@ -290,6 +294,7 @@ namespace VRWeapons.InteractionSystems.VRTK
                             tmp.isGrabbable = true;
                             tmp.holdButtonToGrab = true;
                             tmp.isUsable = false;
+                            tmp.disableWhenIdle = false;
 
                             VRTK_TrackObjectGrabAttach tmpTrack = slideControl.AddComponent<VRTK_TrackObjectGrabAttach>();
                             tmpTrack.precisionGrab = true;
@@ -313,34 +318,44 @@ namespace VRWeapons.InteractionSystems.VRTK
             }
             if (GUILayout.Button(new GUIContent("Create new Ejector", "Location of the ejector does not matter, but face ejector so that forward is ejection direction.")))
             {
-                MonoBehaviour slide = (MonoBehaviour)target.GetComponentInChildren<IBoltActions>();
-                if (slide != null)
+                bool weaponFound = false;
+                GameObject parent = null;
+                if (target.GetComponent<Weapon>() == null)
                 {
-                    if (target.GetComponent<Weapon>() == null)
+                    if (target.GetComponentInParent<Weapon>() == null)
                     {
-                        Debug.LogError("No Weapon script found on " + target + ". Please select an object with a valid Weapon script.");
-                    }
-                    else if (slide == null)
-                    {
-                        Debug.LogError("No IBoltActions script found on " + target + ". Please assign a bolt before adding an ejector.");
-                    }
-                    else if (target.GetComponentInChildren<IEjectorActions>() == null)
-                    {
-                        GameObject ejector = new GameObject();
-                        ejector.name = "Ejector";
-                        ejector.transform.parent = target.transform;
-                        ejector.transform.localPosition = Vector3.zero;
-                        ejector.AddComponent<Ejector>();
-                        ejector.transform.localEulerAngles = new Vector3(-15, 90, 0);
-                        Selection.activeGameObject = ejector;
+                        Debug.LogError("No Weapon script found on " + target.name + ". Add a Weapon script first.");
                     }
                     else
                     {
-                        Debug.LogWarning("Class implementing IEjectorActions already found on children of " + target + ". No ejector added.");
+                        parent = target.GetComponentInParent<Weapon>().gameObject;
+                        weaponFound = true;
                     }
                 }
+                else
+                {
+                    parent = target.GetComponent<Weapon>().gameObject;
+                    weaponFound = true;
+                }
+                if (weaponFound && parent.GetComponentInChildren<IEjectorActions>() == null)
+                {
+                    GameObject ejector = new GameObject();
+                    ejector.name = "Ejector";
+                    ejector.transform.parent = parent.transform;
+                    ejector.transform.localPosition = Vector3.zero;
+                    ejector.AddComponent<Ejector>();
+                    ejector.transform.localEulerAngles = new Vector3(-15, 90, 0);
+                    Selection.activeGameObject = ejector;
+                }
+                
             }
             magType = (MagazineType)EditorGUILayout.EnumPopup("Magazine Type", magType);
+
+            if (magType == MagazineType.Simple)
+            {
+                bulletTypeForMag = (BulletType)EditorGUILayout.EnumPopup("Bullet Type", bulletTypeForMag);
+            }
+
             if (GUILayout.Button(new GUIContent("Set up selected object as Magazine", "Simple magazines should have a single bullet type added as a component to the magazine. \n\nComplex " +
                 "magazines are capable of individual bullet behavior, and require rounds to be set up in the magazine. \n\nIf weapon has an internal magazine, select the weapon and press this.")))
             {
@@ -358,6 +373,21 @@ namespace VRWeapons.InteractionSystems.VRTK
                     else
                     {
                         Debug.LogWarning("Class implementing IMagazine already found on " + newMag + ". No magazine added.");
+                    }
+                    if (newMag.GetComponent<IBulletBehavior>() == null && newMag.GetComponent<IMagazine>() != null)
+                    {
+                        switch (bulletTypeForMag)
+                        {
+                            case BulletType.Projectile:
+                                newMag.AddComponent<BulletTypes.ProjectileBullet>();
+                                break;
+                            case BulletType.RaycastBullet:
+                                newMag.AddComponent<BulletTypes.RaycastBullet>();
+                                break;
+                            case BulletType.ShotgunShell:
+                                newMag.AddComponent<BulletTypes.ShotgunBullet>();
+                                break;
+                        }
                     }
                 }
                 else if (magType == MagazineType.Complex)
@@ -427,6 +457,8 @@ namespace VRWeapons.InteractionSystems.VRTK
                         dz.AddComponent<VRTK_PolicyList>();
                     }
                     dz.GetComponent<VRTK_SnapDropZone>().validObjectListPolicy = dz.GetComponent<VRTK_PolicyList>();
+                    dz.GetComponent<VRTK_PolicyList>().operation = VRTK_PolicyList.OperationTypes.Include;         
+                    dz.GetComponent<VRTK_SnapDropZone>().snapType = VRTK_SnapDropZone.SnapTypes.UseParenting;
 
                     if (dz.GetComponent<Collider>() == null)
                     {
@@ -451,7 +483,8 @@ namespace VRWeapons.InteractionSystems.VRTK
                     Selection.activeGameObject = dz;
                 }
             }
-            if (GUILayout.Button(new GUIContent("Set up Bullet DropZone", "For VRTK, this drop zone is to add individual rounds to a complex magazine.")))
+            if (GUILayout.Button(new GUIContent("Set up Bullet DropZone", "For VRTK, this drop zone is to add individual rounds to a complex magazine.\n\n" +
+                "If the weapon has an internal magazine, use this to load rounds into it.")))
             {
                 GameObject mag = (GameObject)Selection.activeObject;
                 if (mag.GetComponent<IMagazine>() == null)
@@ -489,6 +522,89 @@ namespace VRWeapons.InteractionSystems.VRTK
                 }
             }
             
+            EditorGUILayout.TextArea("", GUI.skin.horizontalSlider);
+
+            GUIStyle centeredStyle = GUI.skin.GetStyle("Label");
+            centeredStyle.alignment = TextAnchor.UpperCenter;
+
+            EditorGUILayout.LabelField("Bullet Builder", centeredStyle);
+
+            bulletType = (BulletType)EditorGUILayout.EnumPopup("Bullet Type", bulletType);
+
+            if (bulletType == BulletType.Projectile)
+            {
+                projectile = (GameObject)EditorGUILayout.ObjectField("Projectile Object", projectile, typeof(Object), true);
+            }
+
+            isInteractable = EditorGUILayout.Toggle("Bullet can be picked up", isInteractable);
+
+            EditorGUILayout.BeginHorizontal();
+
+            if (GUILayout.Button(new GUIContent("Set Up\nBullet", "Press this button to set up a bullet for use in complex magazines.")))
+            {
+                if (target.GetComponent<IBulletBehavior>() == null)
+                {
+                    switch (bulletType)
+                    {
+                        case BulletType.RaycastBullet:
+                            target.AddComponent<BulletTypes.RaycastBullet>();
+                            break;
+                        case BulletType.ShotgunShell:
+                            target.AddComponent<BulletTypes.ShotgunBullet>();
+                            break;
+                        case BulletType.Projectile:
+                            {
+                                if (projectile != null)
+                                {
+                                    if (projectile.GetComponent<Rigidbody>() == null)
+                                    {
+                                        projectile.AddComponent<Rigidbody>();
+                                    }
+                                    target.AddComponent<BulletTypes.ProjectileBullet>();
+                                    target.GetComponent<BulletTypes.ProjectileBullet>().projectile = projectile;
+                                    projectile.transform.parent = target.transform;
+                                    projectile.SetActive(false);
+                                }
+                                else
+                                {
+                                    Debug.LogError("Projectile round requires a projectile object. Please assign a projectile object above.", target);
+                                }
+                                break;
+                            }
+                    }
+                    if (target.GetComponent<Rigidbody>() == null)
+                    {
+                        target.AddComponent<Rigidbody>();
+                    }
+                    if (target.GetComponent<Collider>() == null)
+                    {
+                        target.AddComponent<BoxCollider>();
+                    }
+                    if (isInteractable && target.GetComponent<VRTK_InteractableObject>() == null)
+                    {
+                        target.AddComponent<VRTK_InteractableObject>();
+                    }
+                    if (isInteractable)
+                    {
+                        target.GetComponent<VRTK_InteractableObject>().isGrabbable = true;
+                        target.GetComponent<VRTK_InteractableObject>().holdButtonToGrab = false;
+                    }
+                }
+            }
+
+            if (GUILayout.Button(new GUIContent("Set Up\nEmpty Shell", "Press this button to set up an empty bullet shell, for use in ejecting spent rounds.")))
+            {
+                if (target.GetComponent<Rigidbody>() == null)
+                {
+                    target.AddComponent<Rigidbody>();
+                }
+                if (target.GetComponent<Collider>() == null)
+                {
+                    target.AddComponent<BoxCollider>();
+                }
+            }
+            EditorGUILayout.EndHorizontal();
+
         }
     }
 }

@@ -17,7 +17,7 @@ namespace VRWeapons
             if (GUILayout.Button("Fill open slots with round in slot 0"))
             {
                 Undo.RecordObject(mag, "Fill open slots with round in slot 0");
-                if (mag.rounds[0].GetComponent<IBulletBehavior>() != null)
+                if (mag.rounds[0] != null && mag.rounds[0].GetComponent<IBulletBehavior>() != null)
                 {
                     for (int i = 0; i < mag.rounds.Length; i++)
                     {

@@ -22,6 +22,8 @@ namespace VRWeapons
 
         Collider[] roundColliders;
 
+        Collider thisCol;
+
         Weapon currentWeap;
 
         int index;
@@ -41,6 +43,7 @@ namespace VRWeapons
             roundColliders = new Collider[rounds.Length];
             RoundsInMag = new List<IBulletBehavior>(rounds.Length);
             rb = GetComponent<Rigidbody>();
+            thisCol = GetComponent<Collider>();
             if (rb == null)
             {
                 Debug.LogWarning("Rigidbody not found", this);
@@ -48,10 +51,9 @@ namespace VRWeapons
 
             PopulateAllSlotsInList();   // This method is pretty expensive depending on how many rounds there are,
                                         // but happens on loading the scene so it should be fine.
-            DisablePhysicsCollisions();
         }
-
-        public bool PushBullet(GameObject newRound)
+        
+        public bool TryPushBullet(GameObject newRound)
         {
             IBulletBehavior newBulletBehavior = newRound.GetComponent<IBulletBehavior>();
             bool val = false;
@@ -59,11 +61,23 @@ namespace VRWeapons
             {
                 if (RoundsInMag.Count < rounds.Length)
                 {
+                    if (currentWeap != null)
+                    {
+                        currentWeap.IgnoreCollision(newRound.GetComponent<Collider>());
+                    }
+                    if (rounds.Length > 1)
+                    {
+                        index++;
+                    }
                     RoundsInMag.Insert(index, newBulletBehavior);
+                    
                     val = true;
-                                       
-                    rounds[index].GetComponent<Collider>().enabled = false; 
-                    index++;
+
+                    if (index > 0 && rounds[index - 1] != null)
+                    {
+                        rounds[index - 1].GetComponent<Collider>().enabled = false;
+                    }
+                    rounds[index] = newRound;
                     OnBulletPushed();
                 }
             }
@@ -76,7 +90,10 @@ namespace VRWeapons
             if (RoundsInMag.Remove(RoundsInMag[index]))
             {
                 val = true;
-                index--;
+                if (rounds.Length > 1)
+                {
+                    index--;
+                }
                 rounds[index].GetComponent<Collider>().enabled = true;
                 OnBulletPopped();
             }
@@ -110,9 +127,13 @@ namespace VRWeapons
                 RoundsInMag.Remove(tmp);
                 if (roundColliders[index] != null && currentWeap != null)
                 {
-                    currentWeap.IgnoreCollision(roundColliders[index]);                    
+                    currentWeap.IgnoreCollision(roundColliders[index]);
                 }
-                index--;
+                rounds[index] = null;
+                if (rounds.Length > 1)
+                {
+                    index--;
+                }
                 //TODO: Why doesn't FeedRound call PopBullet?
                 OnBulletPopped();
             }
@@ -120,7 +141,7 @@ namespace VRWeapons
         }
 
         public int GetCurrentRoundCount()
-        {
+        {            
             return index + 1;
         }
 
@@ -129,8 +150,13 @@ namespace VRWeapons
             weap.Magazine = this;
             weap.PlaySound(Weapon.AudioClips.MagIn);
             transform.parent = weap.transform;
+            Collider col;
+            if (rounds[index] != null && (col = rounds[index].GetComponent<Collider>()) != null)
+            {
+                weap.IgnoreCollision(col);
+            }
             currentWeap = weap;
-            if (rb != null)
+            if (rb != null && weap.gameObject != this.gameObject)
             {
                 rb.isKinematic = true;
             }
@@ -178,6 +204,10 @@ namespace VRWeapons
                     if (rounds[j].GetComponent<Collider>() != null)
                     {
                         roundColliders[j - offset] = rounds[j].GetComponent<Collider>();
+                        if (GetComponent<Weapon>() != null)
+                        {
+                            GetComponent<Weapon>().IgnoreCollision(roundColliders[j - offset]);
+                        }
                     }
                     
                     index = j - offset;
@@ -203,12 +233,15 @@ namespace VRWeapons
                 {
                     list[i] = list[i + offset];
                 }
-                if (list[i].GetComponent<Collider>() != null)
+                if (list[i] != null && list[i].GetComponent<Collider>() != null)
                 {
                     list[i].GetComponent<Collider>().enabled = false;   // Colliders are causing problems with ejection. Disable them...
                 }
             }
-            list[list.Length - 1].GetComponent<Collider>().enabled = true;  // ...except for the last one, which is the top round in the magazine.
+            if (list.Length > 1)
+            {
+                list[list.Length - 1 - offset].GetComponent<Collider>().enabled = true;  // ...except for the last one, which is the top round in the magazine.
+            }
         }
 
         void ReportRoundsInMag()
@@ -229,17 +262,11 @@ namespace VRWeapons
             }
         }
 
-        void DisablePhysicsCollisions()                                     // Disable collisions on main weapon body colliders. Will still interact with reload point colliders.
+        private void OnCollisionEnter(Collision collision)
         {
-            Collider tmp = GetComponentInChildren<Collider>();
-            if (tmp != null) {
-                foreach (Collider col in control.weaponMainColliders)
-                {
-                    if (col != null)
-                    {
-                        Physics.IgnoreCollision(tmp, col);
-                    }
-                }
+            if (!collision.collider.isTrigger && collision.gameObject.GetComponentInParent<Weapon>() != null)
+            {
+                Physics.IgnoreCollision(collision.collider, thisCol);
             }
         }
 

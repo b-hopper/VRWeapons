@@ -19,7 +19,8 @@ namespace VRWeapons
 
         Dictionary<GameObject, List<ParticleSystem>> flashPool;
 
-        public float range, bulletSpreadRange, damage;
+        [SerializeField]
+        public float range = 200, bulletSpreadRange, damage = 50;
         [SerializeField]
         private float damageMultiplier = 1;
 
