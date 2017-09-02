@@ -51,7 +51,7 @@ public class ImpactProfile : ScriptableObject
         ImpactInfo impact;
         var collider = hitInfo.transform.GetComponent<Collider> ();
         var ImpProfileOverride = hitInfo.transform.GetComponent<ImpactProfileOverride>();
-		if (collider is TerrainCollider) {
+		if (collider is TerrainCollider && textureLookup.Count > 0) {
 			var terrain = collider.GetComponent<Terrain> ();
 			if (terrain != null) {
 				var tex = GetTerrainTextureAt (terrain, hitInfo.point);
