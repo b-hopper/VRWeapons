@@ -8,6 +8,9 @@ namespace VRWeapons.InteractionSystems.VRTK
 {
     public class Bolt_InteractableObject : VRTK_InteractableObject
     {
+        [SerializeField, Tooltip("Optionally override bolt. Will be found automatically if not specified")]
+        private GameObject boltGameObject;
+
         IBoltActions bolt;
 
         Vector3 controllerLocation, offset;
@@ -30,7 +33,13 @@ namespace VRWeapons.InteractionSystems.VRTK
         private void Start()
         {
             thisWeapIntObj = GetComponentInParent<Weapon_VRTK_InteractableObject>();
-            bolt = transform.parent.GetComponentInChildren<IBoltActions>();
+            bolt = boltGameObject != null ? boltGameObject.GetComponent<IBoltActions>() : transform.parent.GetComponentInChildren<IBoltActions>();
+            if(bolt == null)
+            {
+                Debug.LogError("IBoltActions not found", this);
+                enabled = false;
+            }
+
             startPos = transform.localPosition;
             startRot = transform.localEulerAngles;
             thisWeap = GetComponentInParent<Weapon>();
@@ -100,5 +109,16 @@ namespace VRWeapons.InteractionSystems.VRTK
         {
             transform.localPosition = VRWControl.V3Clamp(transform.localPosition, boltOpenPosition, boltClosedPosition);
         }
+
+#if UNITY_EDITOR
+        private void OnValidate()
+        {
+            if(boltGameObject != null && boltGameObject.GetComponent<IBoltActions>() == null)
+            {
+                boltGameObject = null;
+                Debug.LogError("boltGameObject must contain IBoltActions component");
+            }
+        } 
+#endif
     }
 }
