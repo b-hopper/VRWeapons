@@ -24,8 +24,12 @@ namespace VRWeapons
                 if (thisWeapon.impactProfile != null)
                 {
                     ImpactInfo impact = thisWeapon.impactProfile.GetImpactInfo(hit);
-                    GameObject cloneImpact = Instantiate(impact.GetRandomPrefab(), hit.point, Quaternion.LookRotation(hit.normal)) as GameObject;   // Need to decide where Object Pool goes, here
-                    cloneImpact.transform.parent = hit.transform;
+                    var prefab = impact.GetRandomPrefab();
+                    if (prefab != null)
+                    { 
+                        GameObject cloneImpact = Instantiate(prefab, hit.point, Quaternion.LookRotation(hit.normal)) as GameObject;   // Need to decide where Object Pool goes, here
+                        cloneImpact.transform.parent = hit.transform;
+                    }
                 }
                 Rigidbody rb = hit.transform.GetComponent<Rigidbody>();
                 if (rb)
