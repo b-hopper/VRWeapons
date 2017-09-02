@@ -9,8 +9,11 @@ namespace VRWeapons
     {
 
         Weapon thisWeap;
-        IEjectorActions Ejector;
+        private IEjectorActions ejector;
         IObjectPool spentShellPool;
+
+        protected Weapon Weapon { get { return thisWeap; } }
+        protected IEjectorActions Ejector { get { return ejector; } }
 
         public float boltLerpVal { set; get; }
         float boltMoveSpeed, lastboltLerpVal;
@@ -69,7 +72,7 @@ namespace VRWeapons
         [Tooltip("Location of round on bolt face. Should be child of bolt. Align round with desired location, then set it inactive."), SerializeField]
         public Transform chamberedRoundSnapT;
 
-        private void Start()
+        protected virtual void Start()
         {
             thisWeap = GetComponentInParent<Weapon>();
             spentShellPool = GetComponent<IObjectPool>();
@@ -98,7 +101,7 @@ namespace VRWeapons
 
         public void SetEjector(IEjectorActions newEjector)
         {
-            Ejector = newEjector;
+            ejector = newEjector;
         }
 
         public void BoltBack()
@@ -106,7 +109,7 @@ namespace VRWeapons
             movingBack = true;
         }
 
-        public IBulletBehavior ChamberNewRound()
+        public virtual IBulletBehavior ChamberNewRound()
         {
             if (thisWeap.Magazine != null)
             {
@@ -133,7 +136,15 @@ namespace VRWeapons
             }
         }
 
-        private void FixedUpdate()
+        protected virtual void Eject()
+        {
+            if (chamberedRoundT != null && chamberedRoundRB != null)
+            {
+                ejector.Eject(chamberedRoundT, chamberedRoundRB);
+            }
+        }
+
+        protected virtual void FixedUpdate()
         {
             if (startChambered)
             {
@@ -192,9 +203,9 @@ namespace VRWeapons
 
             else if (boltLerpVal >= 0.9f)
             {
-                if (!justEjected && Ejector != null && chamberedRoundT != null && chamberedRoundRB != null)
-                {
-                    Ejector.Eject(chamberedRoundT, chamberedRoundRB);
+                if(!justEjected && ejector != null)
+                { 
+                    Eject();
                 }
 
                 justEjected = true;
@@ -260,7 +271,7 @@ namespace VRWeapons
         }
 
 
-        public void ReplaceRoundWithEmptyShell(GameObject go)
+        public virtual void ReplaceRoundWithEmptyShell(GameObject go)
         {
             go.transform.parent = chamberedRoundSnapT.parent;
             go.transform.localPosition = chamberedRoundSnapT.localPosition;
