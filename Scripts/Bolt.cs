@@ -176,7 +176,6 @@ namespace VRWeapons
                 doNotPlaySound = true;
                 boltLerpVal += boltMoveSpeed * Time.timeScale;
 
-
                 if (boltLerpVal >= 1)
                 {
                     boltLerpVal = 1;
@@ -192,7 +191,7 @@ namespace VRWeapons
                 }
             }
 
-            else if (movingForward && !lockedBack)
+            else if (movingForward/* && !lockedBack*/)
             {
                 boltLerpVal -= boltMoveSpeed * Time.timeScale;
                 if (boltLerpVal <= 0)
@@ -228,7 +227,7 @@ namespace VRWeapons
             }
             
 
-            if (!isManip && boltLerpVal > 0 && thisWeap.autoRackForward && !movingBack)
+            if (!isManip && boltLerpVal > 0 && thisWeap.autoRackForward && !movingBack && !lockedBack)
             {
                 movingForward = true;
             }
@@ -320,6 +319,12 @@ namespace VRWeapons
             lockedBack = false;
             justManip = true;
             isManip = val;
+            if (val)
+            {
+                doNotPlaySound = false;
+                justPlayedSoundForward = false;
+                justPlayedSoundBack = false;
+            }
         }
         public Vector3 GetMinValue() { return GroupStartPosition; }
         public Vector3 GetMaxValue() { return GroupEndPosition; }

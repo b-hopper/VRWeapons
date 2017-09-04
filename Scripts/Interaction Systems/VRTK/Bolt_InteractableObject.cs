@@ -32,9 +32,16 @@ namespace VRWeapons.InteractionSystems.VRTK
 
         Collider thisCol;
 
+        protected override void Awake()
+        {
+            //Otherwise Bolt Controller will not move back when bolt is locked
+            disableWhenIdle = false;
+
+            base.Awake();
+        }
+
         private void Start()
         {
-            
             bolt = boltGameObject != null ? boltGameObject.GetComponent<IBoltActions>() : transform.parent.GetComponentInChildren<IBoltActions>();
             if(bolt == null)
             {
